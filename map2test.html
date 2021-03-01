@@ -1,0 +1,87 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
+    <style>
+      #map {position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <p><a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></p>
+    <script>
+      var map = L.map('map').setView([40.5930, -74.6345], 17);
+      L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=Nsv74JZDukaBYTKp1UK0',{
+        tileSize: 512,
+        zoomOffset: -1,
+        minZoom: 1,
+        attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+        crossOrigin: true
+      }).addTo(map);
+
+      var marker = L.marker([40.5930, -74.6345]).addTo(map);
+
+      var circle = L.circle([40.5930, -74.6345], {
+      	color: 'red',
+      	fillColor: '#f03',
+      	fillOpacity: 0.5,
+      	radius: 50
+      }).addTo(map)
+
+      var polygon = L.polygon([
+      	[40.5930, -74.6345],
+      	[40.5930, -74.6365],
+      	[40.5960, -74.6385]
+      	]).addTo(map)
+
+      	var polyline = L.polyline([
+      		[40.5930, -74.6345],
+	      	[40.5990, -74.6335],
+	      	[40.5960, -74.6325]], 
+	      	{
+	      	color: 'red'
+	      	}).addTo(map);
+
+      	marker.bindPopup("<b> Hey There! </b><br> I am a marker.")
+    </script>
+  </body>
+</html>
+
+
+<!--
+<!DOCTYPE html>
+<html> 
+ <head>
+ 	 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   	 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""> </script>
+   <style>
+    #mapid { 
+   	height: 180px; 
+   }
+  </style>
+ </head>
+
+ <body>
+ 	<div id="mapid"></div>
+ 	<script>
+ 		const mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+ 		const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+ 		const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+ 		const tiles = L.tileLayer(tileUrl, {attribution});
+ 		tiles.addTo{mymap}
+
+ 		const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+ 	</script>
+ </body>
+</html> 
+-->

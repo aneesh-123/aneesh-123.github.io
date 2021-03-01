@@ -1,0 +1,259 @@
+#map {position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
+
+#copyright {
+	position: absolute;
+	top: 582px; 
+	right: 0px; 
+	width: 150px; 
+	height: 25px; 
+	z-index: 400;
+	background-color: #fff;
+	font-size: 13px;
+}
+
+#SelectCoordsButton {
+position: absolute;
+top: 20px; 
+right: 20px; 
+width: 400px; 
+height: 100px;
+padding: 10px; 
+z-index: 400;
+background-color: #7b38d8;
+font-size: 24px;
+}
+
+#Confirm{
+position: absolute;
+top: 150px; 
+right: 250px; 
+width: 150px; 
+height: 75px;
+padding: 10px; 
+z-index: 400;
+background-color: #11ed23;
+font-size: 18px;
+display: none;
+}
+
+#NotCorrect{
+position: absolute;
+top: 150px; 
+right: 75px; 
+width: 150px; 
+height: 75px;
+padding: 10px; 
+z-index: 400;
+background-color: #ff1100;
+font-size: 18px;
+display: none;
+}
+
+#RoofArea{
+position: absolute;
+top: 40px; 
+right: 20px; 
+width: 400px; 
+height: 50px;
+padding: 10px; 
+z-index: 400;
+background-color: #7b38d8;
+font-size: 18px;
+display: none;
+}
+
+#GallonsPerInch{
+position: absolute;
+top: 90px; 
+right: 20px; 
+width: 400px; 
+height: 50px;
+padding: 10px; 
+z-index: 400;
+background-color: #7b38d8;
+font-size: 18px;
+display: none;
+}
+
+#GallonsPerYear{
+position: absolute;
+top: 140px; 
+right: 20px; 
+width: 400px; 
+height: 50px;
+padding: 10px; 
+z-index: 400;
+background-color: #7b38d8;
+font-size: 18px;
+display: none;
+}
+
+#Elevation{
+position: absolute;
+top: 20px; 
+right: 20px; 
+width: 400px; 
+height: 100px;
+padding: 10px; 
+z-index: 400;
+background-color: #7b38d8;
+font-size: 24px;
+}
+
+#SelectStormDrain{
+position: absolute;
+top: 20px; 
+right: 875px; 
+width: 450px; 
+height: 200px;
+padding: 10px; 
+z-index: 400;
+background-color: #03FCCA;
+font-size: 24px;
+display: none;
+white-space: normal;
+}
+
+#StreetSelector {
+position: absolute;
+top: 20px; 
+right: 900px; 
+width: 450px; 
+height: 200px;
+padding: 10px; 
+z-index: 400;
+background-color: #03FCCA;
+font-size: 24px;
+display: none;
+white-space: normal;
+}
+
+#Confirm2{
+position: absolute;
+top: 230px; 
+right: 1150px; 
+width: 150px; 
+height: 75px;
+padding: 10px; 
+z-index: 400;
+background-color: #11ed23;
+font-size: 24px;
+display: none;
+white-space: normal;
+}
+
+#NotCorrect2{
+position: absolute;
+top: 230px; 
+right: 950px; 
+width: 150px; 
+height: 75px;
+padding: 10px; 
+z-index: 400;
+background-color: #ff1100;
+font-size: 24px;
+display: none;
+white-space: normal;
+}
+
+#PollutionStatement {
+position: absolute;
+top: 20px; 
+right: 900px; 
+width: 450px; 
+height: 200px;
+padding: 10px; 
+z-index: 400;
+background-color: #7b38d8;
+font-size: 24px;
+display: none;
+white-space: normal;
+}
+
+#Low{
+position: absolute;
+top: 250px; 
+right: 850px; 
+width: 500px; 
+height: 75px;
+padding: 10px; 
+z-index: 400;
+background-color: #11ed23;
+font-size: 16px;
+display: none;
+white-space: normal;
+}
+
+#Medium{
+position: absolute;
+top: 325px; 
+right: 850px; 
+width: 500px; 
+height: 75px;
+padding: 10px; 
+z-index: 400;
+background-color: #FCBE03;
+font-size: 16px;
+display: none;
+white-space: normal;
+}
+
+#High{
+position: absolute;
+top: 400px; 
+right: 850px; 
+width: 500px; 
+height: 75px;
+padding: 10px; 
+z-index: 400;
+background-color: #ff1100;
+font-size: 16px;
+display: none;
+white-space: normal;
+}
+
+#runoffReport{
+position: absolute;
+top: 100px; 
+right: 850px; 
+width: 500px; 
+height: 300px;
+padding: 10px; 
+z-index: 400;
+background-color: #fff;
+font-size: 16px;
+white-space: normal;
+display: none;
+}
+
+#RestartButton{
+position: absolute;
+top: 20px; 
+right: 500px; 
+width: 200px; 
+height: 100px;
+padding: 10px; 
+z-index: 400;
+background-color: #fff;
+font-size: 18px;
+display: block;
+white-space: normal;
+}
+
+table {
+	width: 400px;
+	/*border-spacing: 40px;*/
+}
+
+th {
+	text-align: left;
+}
+
+table, th, td {
+	border: 1px solid #000;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 10px;
+}

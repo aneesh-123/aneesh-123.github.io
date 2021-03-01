@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
+    <link rel="stylesheet" href="main.css">
+  </head>
+
+  <body>
+
+
+  <!-------------------------FORMATTING BUTTONS AND OTHER ELEMENTS------------------>
+    <div id="map"></div>
+    <input type="button" 
+           id="SelectCoordsButton" 
+           value = "click here to select your building" 
+           onclick = "ButtonClickStyle('#SelectCoordsButton');
+                      map.on('click',appendBuildingPoint);"
+           />
+    <input type="button"
+           id="Confirm"
+           value = "YES"
+           onclick = "determineRunoff(buildingCoords);"
+           />
+
+    <input type = "button"
+           id="NotCorrect"
+           value = "NO"
+           onclick = "for(i = 0; i < layerGroup.length; i++){
+                        map.removeLayer(layerGroup[i])
+                      };
+                      buildingCoords = [];
+                      layerGroup = [];
+                      document.querySelector('#Confirm').style.display = 'none';
+                      document.querySelector('#NotCorrect').style.display = 'none';
+                      var button = document.querySelector('#SelectCoordsButton');
+                      button.style.backgroundColor = '#00FF00';
+                      button.value = 'mark the 4 corners of your building';
+                      "
+           />
+
+    <input type = "button"
+           id="RoofArea"
+           value = "Roof Area (Feet^2) = 0"
+           />
+
+    <input type = "button"
+         id="GallonsPerInch"
+         value = "0"
+         />
+
+    <input type = "button"
+           id="GallonsPerYear"
+           value = "0"
+           />
+
+    <p><a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></p>
+
+
+<!--------------------------------------BEGINNING OF JAVASCRIPT-------------------------------------------->  
+  <script>
+     var map = L.map('map', {renderer: L.svg()}).setView([40.5930, -74.6345], 17);
+      var buildingCoords = [];
+      var layerGroup = [];
+
+      function ButtonClickStyle(reference){
+          var button = document.querySelector(reference);
+          button.style.backgroundColor = "#00FF00";
+          button.value = 'mark the 4 corners of your building';
+      }
+      
+      function determineRunoff(Coords){
+        //convert to feet
+        var width = map.distance(Coords[0], Coords[1]) * 3.28084;
+        var length = map.distance(Coords[1], Coords[2]) * 3.28084;
+        var areaFeet = length * width;
+        var runoffPerInch = areaFeet * 0.62;
+        var runoffPerYear = runoffPerInch * 46.3;
+        //display everything
+        document.querySelector('#RoofArea').style.display = "block";
+        document.querySelector('#RoofArea').value = "Roof Area = " +(Math.round(100 * areaFeet)/100) + " square feet";
+        document.querySelector('#GallonsPerInch').style.display = "block";
+        document.querySelector('#GallonsPerInch').value = "Runoff Rate = " + (Math.round(100*runoffPerInch)/100) + " gallons / inch of rain";
+        document.querySelector('#GallonsPerYear').style.display = "block";
+        document.querySelector('#GallonsPerYear').value = "Annual Runoff = " + (Math.round(100*runoffPerYear)/100) + " gallons per year";
+
+      }
+      function appendBuildingPoint(e){
+          var position = e.latlng;
+           layerGroup.push(L.circle(position, {radius: 3}).addTo(map));
+           buildingCoords.push(position);
+           if(buildingCoords.length == 4){
+              var polygonLayer = L.polygon(buildingCoords, {color: 'red'});
+              layerGroup.push(polygonLayer.addTo(map));
+              var button = document.querySelector('#SelectCoordsButton');
+              button.style.background = "#FCBE03";
+              button.value = "Is this correct?";
+              document.querySelector('#Confirm').style.display = "block";
+              document.querySelector('#NotCorrect').style.display = "block";
+          }          
+        }
+
+
+      L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=Nsv74JZDukaBYTKp1UK0',{
+        tileSize: 512,
+        zoomOffset: -1,
+        minZoom: 1,
+        attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+        crossOrigin: true
+      }).addTo(map);
+  </script>
+</body>
+</html>
