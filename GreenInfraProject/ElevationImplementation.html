@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
+    <link rel="stylesheet" href="main.css">
+    <div id="map"></div>
+    <script src="colorTerrain.js"></script>
+
+     <input type="button" 
+           id="Elevation" 
+           value = "hi" 
+           />
+
+     <script src="https://unpkg.com/esri-leaflet@2.5.3/dist/esri-leaflet.js"
+      integrity="sha512-K0Vddb4QdnVOAuPJBHkgrua+/A9Moyv8AQEWi0xndQ+fqbRfAFd47z4A9u1AW/spLO0gEaiE1z98PK1gl5mC5Q=="
+      crossorigin=""></script>
+  </head>
+
+  <body>
+
+
+  <!-------------------------FORMATTING BUTTONS AND OTHER ELEMENTS------------------>
+<script>
+    //var testCoords = [40.594093, -74.635212];
+    //  lineCoords = [];
+    var MAPBOX_PUBLIC_ACCESS_TOKEN = "pk.eyJ1IjoiZnJvZ2NhdCIsImEiOiJlYmE4ZTE4ZGEzMDAxNWQ5MWIyYmQ0MmFhN2Q5MDUyMCJ9.2jx0Hl7cJmXX4I7pZ-FtYA";
+    var MAPBOX_TERRAIN_RGB = "https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=" + MAPBOX_PUBLIC_ACCESS_TOKEN;
+
+    var map = L.map('map', {renderer: L.svg()}).setView([40.5930, -74.6345], 15);
+    L.esri.basemapLayer('Topographic').addTo(map);
+    const colorpicker = L.tileLayer.colorPicker(MAPBOX_TERRAIN_RGB, {
+      attribution: "© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a>" +
+        " © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>" +
+        " <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+      minZoom: 0,
+      maxZoom: 20,
+      maxNativeZoom: 14,
+      opacity: 0.0
+    }).addTo(map);
+
+    L.polyline([[40.5930, -74.6345],[40.5970, -74.6395]],{color: 'red'}).addTo(map);[40.5930, -74.6345]
+  /*function DrawLine(){
+     for(i =0; i<100; i++){
+      lineCoords.push(testCoords)
+      testCoords[0] += 0.0000001;
+    }
+    L.polyline(lineCoords, {color: 'red'}).addTo(map);
+  }*/
+ 
+  function ElevationFinder(Coords){
+    var a = colorpicker.getColor(Coords);
+    var h = NaN;
+    if (a !== null){
+      h = -10000 + ((a[0] * 256 * 256 + a[1] * 256 + a[2]) * 0.1);
+    }
+    document.querySelector('#Elevation').value = h.toFixed(1) + "m";
+    return h.toFixed(1);
+    }
+
+    /*function DrawSlope(event){
+      map.setZoom(18);
+      var startCoords = event.latlng;
+      map.setView(startCoords);
+      for(i = 0; i < 100; i++){
+        let directions = new Map();
+        var NorthCoords = startCoords.lat + 0.0001;
+        var SouthCoords = startCoords.lat - 0.0001;
+        var EastCoords = startCoords.lng - 0.0001;
+        var WestCoords = startCoords.lng + 0.0001;
+        directions.set("North", ElevationFinder([NorthCoords, startCoords.lng]));
+        directions.set("South", ElevationFinder([SouthCoords, startCoords.lng]));
+        directions.set("East", ElevationFinder([startCoords.lat, EastCoords]));
+        directions.set("West", ElevationFinder([startCoords.lat, WestCoords]));
+        var curMinVal = Number.MAX_VALUE;
+        var curMin = "";
+        for(const [key, value] of directions) {
+          if (value < curMinVal) {
+            curMinVal = value;
+            curMin = key;
+          }
+        }
+        var lineCoords = [];
+        switch(curMin){
+          case "North":
+                lineCoords.push([NorthCoords,startCoords.lng]);
+          case "South":
+                lineCoords.push([SouthCoords,startCoords.lng]);
+          case "East":
+                lineCoords.push([startCoords.lat, EastCoords]);
+          case "West":
+                lineCoords.push([startCoords.lat, WestCoords]);
+          }
+        }
+        console.log("Draing line");
+        L.polyline(lineCoords, {color: 'red'}).addTo(map);
+    }
+*/
+    function findSlope(event){
+      var startCoords = event.latlng;
+      var NorthCoords = startCoords.lat + 0.0001;
+      var SouthCoords = startCoords.lat - 0.0001;
+      var EastCoords = startCoords.lng - 0.0001;
+      var WestCoords = startCoords.lng + 0.0001;
+      
+      console.log("reached here");
+      var eleN = ElevationFinder([NorthCoords, startCoords.lng]);
+      var eleS = ElevationFinder([SouthCoords, startCoords.lng]);
+      var eleE = ElevationFinder([startCoords.lat, EastCoords]);
+      var eleW = ElevationFinder([startCoords.lat, WestCoords]);
+
+      var dx = map.distance([startCoords.lat, EastCoords], [startCoords.lat, WestCoords]);
+      var dy = map.distance([NorthCoords, startCoords.lng], [SouthCoords, startCoords.lng]);
+
+      var dzdx = (eleE - eleW) / dx;
+      var dzdy = (eleN - eleS) / dy;
+
+      const slope = Math.atan(Math.sqrt(dzdx ** 2 + dzdy ** 2)) * (180/Math.PI);
+      const aspect = dx !== 0 // counterclockwise from east
+            ? ( Math.atan2( dzdy, dzdx ) * (180 / Math.PI) + 180 ) % 360
+            : ( 90 * (dy > 0 ? 1 : -1) + 180 ) % 360;
+      console.log("slope " + slope + " aspect " + aspect);
+
+    }
+    map.on('click', function(e){
+      ElevationFinder(e.latlng);
+    });
+    //map.on('click', DrawLine);
+    //map.on('mousemove', ElevationFinder); 
+    /*map.on("mousemove", function(event) {
+      var a = colorpicker.getColor(event.latlng);
+      var h = NaN;
+      if (a !== null)
+        h = -10000 + ((a[0] * 256 * 256 + a[1] * 256 + a[2]) * 0.1);
+      map.attributionControl.setPrefix(isNaN(h) ? "N/A" : h.toFixed(1) + "m");
+    });
+  */
+
+
+
+</script>
+<!------------------------------------------------------END OF JAVA SCRIPT-------------------------->
+</body>
+</html>
+

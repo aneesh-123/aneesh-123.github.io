@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
+    <link rel="stylesheet" href="main.css">
+  </head>
+
+  <body>
+
+
+  <!-------------------------FORMATTING BUTTONS AND OTHER ELEMENTS------------------>
+    <div id="map"></div>
+    <input type="button" 
+           id="SelectCoordsButton" 
+           value = "click here to select your building" 
+           onclick = "ButtonClickStyle('#SelectCoordsButton');
+                      map.on('click',appendBuildingPoint);"
+           />
+    <input type="button"
+           id="Confirm"
+           value = "YES"
+           onclick = "alert('area');"
+           />
+
+    <input type = "button"
+           id="NotCorrect"
+           value = "NO"
+           onclick = "for(i = 0; i < layerGroup.length; i++){
+                        map.removeLayer(layerGroup[i])
+                      };
+                      buildingCoords = [];
+                      layerGroup = [];
+                      document.querySelector('#Confirm').style.display = 'none';
+                      document.querySelector('#NotCorrect').style.display = 'none';
+                      var button = document.querySelector('#SelectCoordsButton');
+                      button.style.backgroundColor = '#00FF00';
+                      button.value = 'mark the 4 corners of your building';
+                      "
+           />
+    <p><a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></p>
+
+
+<!--------------------------------------BEGINNING OF JAVASCRIPT-------------------------------------------->  
+  <script>
+    
+  </script>
+</body>
+</html>
