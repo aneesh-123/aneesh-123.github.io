@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AutoLearn: Kubernetes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#EDF0EC;--surface:#fff;--ink:#18201C;--muted:#5B6660;--line:#D6DCD6;--accent:#1E6B50;--accent-soft:#DCEBE3;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root{--ground:#121714;--surface:#1A211D;--ink:#E6ECE8;--muted:#98A59E;--line:#2E3832;--accent:#5FBF95;--accent-soft:#1F3A2E}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--ground);color:var(--ink);font-family:var(--display);display:grid;place-items:center;padding:24px 16px}
+main{width:min(640px,100%)}
+.k{font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+h1{font-size:clamp(30px,5vw,42px);line-height:1.1;margin:0 0 8px}
+p.sub{color:var(--muted);font-size:18px;margin:0 0 28px}
+a.card{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:14px;transition:border-color .15s,transform .15s}
+a.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+a.card b{display:block;font-size:22px;margin-bottom:4px}
+a.card span{color:var(--muted);font-size:16px}
+a.card i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:3px 10px;float:right}
+</style>
+</head>
+<body>
+<main>
+  <p class="k">AutoLearn · Kubernetes in 5 ideas</p>
+  <h1>Pick a version</h1>
+  <p class="sub">Same Kubernetes lesson, different ways to learn it.</p>
+  <a class="card" href="a-questions-as-you-go.html"><i>A</i><b>Questions as you go</b><span>A quick check after each main idea and rabbit hole.</span></a>
+  <a class="card" href="teach-it-back.html"><i>New</i><b>Teach it back</b><span>Explain it in your own words (talk, type or draw) and watch your map light up.</span></a>
+  <a class="card" href="b-questions-at-the-end.html"><i>B</i><b>Questions at the end</b><span>Learn everything first, then one final check.</span></a>
+</main>
+</body>
+</html>
