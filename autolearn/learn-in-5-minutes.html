@@ -725,10 +725,22 @@ path.k-edge{fill:none}
 .tclock svg{width:22px;height:22px;transform:rotate(-90deg)}
 .ck-bg{fill:none;stroke:var(--line);stroke-width:3}
 .ck-fg{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-dasharray:100 100;transition:stroke-dashoffset 1s linear}
-.tclock.low .ck-fg{stroke:var(--branch)}.tclock.low b{color:var(--branch)}
+.tclock{cursor:pointer}.tclock.mini{padding:4px}.tclock.mini b{display:none}
 .tclock.away b{opacity:.45}
 .dg-clock{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:6}
 .next-idea.hurry{animation:begin-glow 2.2s ease-in-out infinite}
+/* v30: hands-free voice */
+.voice{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font-family:var(--display);font-size:14px;font-weight:600;padding:5px 12px 5px 9px;cursor:pointer}
+.voice[hidden]{display:none}
+.voice svg{width:18px;height:18px;color:var(--accent)}
+.voice.on{background:var(--wrong);border-color:transparent;color:#fff;animation:t-rec 1.3s ease-in-out infinite}
+.voice.on svg{color:#fff}
+.voice-cap{position:fixed;right:16px;top:calc(74px + env(safe-area-inset-top,0px));z-index:30;box-sizing:border-box;max-width:min(420px,calc(100vw - 32px));background:var(--ink);color:var(--ground);border-radius:14px;padding:9px 16px;font-family:var(--display);font-size:15px;line-height:1.4;text-align:left;box-shadow:var(--shadow);animation:better-pop .3s ease both}
+.voice-cap[hidden]{display:none}
+.voice-cap i{opacity:.75}
+.voice-cap.interim{opacity:.8}
+@media (max-width:700px){.voice{padding:5px 7px}.voice span{display:none}.voice-cap{top:calc(64px + env(safe-area-inset-top,0px));left:16px;font-size:14.5px}}
+@media (prefers-reduced-motion:reduce){.voice.on{animation:none}}
 @media (max-width:700px){.tclock{font-size:13px;padding:3px 9px 3px 4px;gap:4px}.tclock svg{width:18px;height:18px}}
 .better-step.in{animation:better-pop .45s cubic-bezier(.2,.9,.3,1.2) both}
 .better .depth{margin:18px auto 4px;text-align:left}
@@ -1021,7 +1033,7 @@ path.k-edge{fill:none}
 <!-- ============ v25: learn it in 5 minutes. A quick check of what you know, then Kubernetes at work ============ -->
 <main class="diag" id="diag" hidden aria-label="Learn it in 5 minutes">
   <button class="reread intro-back" id="dg-back" type="button">← Back to the article</button>
-  <span class="tclock dg-clock" id="dg-clock" hidden title="Time left. It pauses while you're away."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span>
+  <span class="tclock dg-clock" id="dg-clock" hidden title="Time left. Tap to hide the numbers."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span>
   <div class="dg-col">
     <div class="dg-ask" id="dg-ask" aria-live="polite"></div>
     <div class="dg-scene" id="dg-scene" hidden>
@@ -1038,7 +1050,7 @@ path.k-edge{fill:none}
     <h2 id="five-h">That's your 5 minutes</h2>
     <p class="better-sub" id="five-sub"></p>
     <button class="start" id="five-go" type="button">Keep going <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
-    <button class="skip better-no" id="five-more" type="button" hidden>Add 5 minutes</button>
+    <button class="skip better-no" id="five-more" type="button" hidden>Keep learning</button>
     <button class="skip better-no" id="five-stop" type="button">Stop here and see what I learned</button>
   </div>
 </div>
@@ -1080,7 +1092,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v29 · Learn it in 5 minutes</span>
+      <span>v30 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1144,10 +1156,11 @@ path.k-edge{fill:none}
       <nav class="steps" id="steps" aria-label="The 5 main ideas"></nav>
       
     </div>
-    <div class="tools"><span class="tclock" id="clock" hidden title="Time left. It pauses while you're away."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
+    <div class="tools"><button class="voice" id="voice" type="button" aria-pressed="false" title="Hands-free: talk instead of clicking" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Voice</span></button><span class="tclock" id="clock" hidden title="Time left. Tap to hide the numbers."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
       <span class="meter cov"><span>Covered</span><i><b id="m-cov"></b></i><em id="m-cov-n">0%</em></span>
       <span class="meter und"><span>Understood</span><i><b id="m-und"></b></i><em id="m-und-n">0%</em></span></button><button class="tally" id="tally" hidden aria-label="What you've learned" title="What you've learned"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span id="tally-n">0</span></button><button class="tool icon" id="recenter" aria-label="Recenter" title="Recenter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/><path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3"/></svg></button></div>
   </header>
+  <div class="voice-cap" id="voice-cap" hidden aria-live="polite"></div>
   <div class="termpop" id="termpop" hidden><b id="termpop-name"></b><p id="termpop-def"></p><button type="button" id="termpop-more">Ask more →</button></div>
   <div class="words-nudge" id="words-nudge" hidden><button id="words-open" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C5.5 4 9 4 12 6c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></svg>5 words to know first</button><button id="words-nudge-x" type="button" aria-label="Not now" title="Not now"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
   <aside class="recall" id="recall" hidden aria-live="polite">
@@ -1193,7 +1206,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v29 · Learn it in 5 minutes</div>
+    <div class="version-tag">v30 · Learn it in 5 minutes</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -2429,11 +2442,35 @@ path.k-edge{fill:none}
     world.classList.toggle("glide", glide);
     place();
   }
-  // Frame a node: lean toward it from the question, and keep its top in view when it is taller than the screen.
+  // Frame a node. v30: a side question is zoomed and centered so all of it fits on screen, and the camera keeps it
+  // framed as it grows (the drawing, the answer, the buttons), until you move the canvas yourself.
+  let camFocus = null, camFree = false;
+  const camRO = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
+    if (camFocus && !camFree && nodes.get(camFocus.id) === camFocus && !$("canvas").hidden) fitNode(camFocus);
+  }) : null;
+  const camBottom = () => narrow ? 110 : 92;   // room for the bottom pop-ups
+  function fitNode(n) {
+    const w = n.el.offsetWidth, h = n.el.offsetHeight, top0 = 14, side = narrow ? 6 : 84;
+    const aw = vp.clientWidth - side * 2, ah = vp.clientHeight - top0 - camBottom();
+    scale = Math.max(narrow ? 0.8 : 0.6, Math.min(narrow ? 0.94 : 1.08, aw / w, ah / h));
+    cx = vp.clientWidth / 2 - n.x * scale;
+    const top = (n.y - h / 2) * scale;
+    cy = h * scale <= ah ? top0 + (ah - h * scale) / 2 - top : top0 - top;
+    world.classList.add("glide"); place();
+  }
+  // While a long one is taught step by step, keep the newest sentence on screen.
+  function camFollow(n, el) {
+    if (camFocus !== n || camFree || !el) return;
+    const over = el.getBoundingClientRect().bottom - (vp.getBoundingClientRect().bottom - camBottom());
+    if (over > 0) { cy -= over; world.classList.add("glide"); place(); }
+  }
   function frame(n) {
+    if (camRO && camFocus) camRO.unobserve(camFocus.el);
+    camFocus = null; camFree = false;
+    if (n.id !== "root") { camFocus = n; if (camRO) camRO.observe(n.el); return fitNode(n); }
     scale = fitScale();
-    const k = narrow || !is(n, "side") ? 1 : 0.75, h = n.el.offsetHeight * scale, top = (n.y - n.el.offsetHeight / 2) * scale;
-    cx = vp.clientWidth / 2 - n.x * k * scale;
+    const h = n.el.offsetHeight * scale, top = (n.y - n.el.offsetHeight / 2) * scale;
+    cx = vp.clientWidth / 2 - n.x * scale;
     cy = h > vp.clientHeight - 40 ? 20 - top : vp.clientHeight / 2 - n.y * scale;
     world.classList.add("glide");
     place();
@@ -2453,12 +2490,14 @@ path.k-edge{fill:none}
     if (!glide) world.classList.remove("glide");
   }
   function zoomBy(f, px = vp.clientWidth / 2, py = vp.clientHeight / 2, glide = true) {
+    camFree = true;
     const ns = Math.max(0.15, Math.min(1.8, scale * f)), wx = (px - cx) / scale, wy = (py - cy) / scale;
     scale = ns; cx = px - wx * scale; cy = py - wy * scale;
     world.classList.toggle("glide", glide); place();
   }
   // See everything on the canvas at once.
   function fitAll() {
+    camFree = true;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     for (const n of nodes.values()) {
       const w = n.el.offsetWidth / 2, h = n.el.offsetHeight / 2 + (n.id === "root" ? 60 : 0);
@@ -2476,7 +2515,7 @@ path.k-edge{fill:none}
   // Trackpad or mouse wheel moves around; pinch (or ctrl + wheel) zooms where you point.
   vp.addEventListener("wheel", (e) => {
     if (e.target.closest(".quiz, .recall, .termpop, textarea, .askpop")) return;
-    e.preventDefault();
+    e.preventDefault(); camFree = true;
     const r = vp.getBoundingClientRect();
     if (e.ctrlKey || e.metaKey) zoomBy(Math.exp(-Math.max(-60, Math.min(60, e.deltaY)) * 0.005), e.clientX - r.left, e.clientY - r.top, false);
     else { world.classList.remove("glide"); cx -= e.deltaX; cy -= e.deltaY; place(); }
@@ -2497,7 +2536,7 @@ path.k-edge{fill:none}
     else if (e.key === "-" || e.key === "_") zoomBy(0.8);
     else if (e.key === "0") fitAll();
     else if (e.target === document.body && e.key.startsWith("Arrow")) {
-      e.preventDefault(); world.classList.add("glide");
+      e.preventDefault(); world.classList.add("glide"); camFree = true;
       cx += e.key === "ArrowLeft" ? 120 : e.key === "ArrowRight" ? -120 : 0; cy += e.key === "ArrowUp" ? 120 : e.key === "ArrowDown" ? -120 : 0; place();
     }
   });
@@ -2517,7 +2556,7 @@ path.k-edge{fill:none}
   let drag = null;
   vp.addEventListener("pointerdown", (e) => {
     if (e.target.closest(".root, .side, .ghostq, .leaf, .map, button")) return;
-    world.classList.remove("glide");
+    world.classList.remove("glide"); camFree = true;
     drag = { sx: e.clientX - cx, sy: e.clientY - cy }; vp.classList.add("dragging"); vp.setPointerCapture(e.pointerId);
     hidePop();
   });
@@ -3684,7 +3723,7 @@ Rules:
       const rb = n.el.querySelector(".lesson-replay"); rb.classList.remove("hey"); void rb.offsetWidth; rb.classList.add("hey");
     };
     for (const b of beats) {
-      n.lessonT.push(setTimeout(() => b.draw ? b.draw.forEach((g, k) => drawGroup(g, k * 0.45)) : b.say.classList.add("on"), at));
+      n.lessonT.push(setTimeout(() => { if (b.draw) b.draw.forEach((g, k) => drawGroup(g, k * 0.45)); else { b.say.classList.add("on"); camFollow(n, b.say); } }, at));
       at += b.ms;
     }
     n.lessonT.push(setTimeout(finish, at));
@@ -4112,23 +4151,27 @@ Rules:
     if (!oneMinSaid && budgetMs() - learnMs <= 60000 && budgetMs() >= 180000) { oneMinSaid = true; buddySay("One minute left! Then you teach me."); }
   }
   setInterval(renderClock, 1000);
+  // Tap the clock to hide the numbers (just the ring stays); tap again to bring them back.
+  let clockMini = false;
+  try { clockMini = localStorage.getItem("autolearn-clock-mini") === "1"; } catch (e) {}
+  const setMini = (on) => { clockMini = on; document.querySelectorAll(".tclock").forEach((c) => c.classList.toggle("mini", on)); try { localStorage.setItem("autolearn-clock-mini", on ? "1" : "0"); } catch (e) {} };
+  document.querySelectorAll(".tclock").forEach((c) => c.addEventListener("click", () => setMini(!clockMini)));
+  setMini(clockMini);
   setInterval(() => {
     if (!learning || fiveDone || document.hidden || ($("diag").hidden && $("canvas").hidden)) return;
     const idle = Date.now() - lastSeen;
     if (idle < 60000) learnMs += 1000;
     if (!$("diag").hidden && idle >= 40000 && !drifting) { drifting = true; LM.drifts++; }
-    if (timed) pace();
     if (learnMs >= budgetMs() && $("coach").hidden && $("know").hidden && $("words").hidden && $("teach-dlg").hidden && $("kube-intro").hidden) fiveCheck();
   }, 1000);
   function fiveCheck() {
     fiveDone = true; renderClock();
-    const bored = LM.drifts + LM.aways >= 1 || LM.guesses >= 2 || LM.skips >= 2;
     const cov = parseInt($("m-cov-n").textContent, 10) || 0;
     const got = cov ? `You've covered ${cov}% of the article.` : "You've got the big picture.";
     delete $("five").dataset.end;
-    $("five-h").textContent = `That's your ${minsTxt()}`;
-    $("five-sub").textContent = `${got} ${bored ? "A break soon will help it stick. But first, the real test:" : "Now the real test:"} can you teach Kube what you learned?`;
-    $("five-go").firstChild.textContent = "Teach Kube ";
+    $("five-h").textContent = `You've learned for ${minsTxt()}`;
+    $("five-sub").textContent = `${got} Do you feel like you understand it, or do you want to keep learning? No rush either way.`;
+    $("five-go").firstChild.textContent = "I think I get it. Let me teach Kube ";
     $("five-more").hidden = false; $("five-stop").textContent = "Stop here and see what I learned";
     $("five").hidden = false; $("five-go").focus({ preventScroll: true });
   }
@@ -4152,7 +4195,8 @@ Rules:
     $("five").hidden = true;
     if (!$("five").dataset.end) { if ($("diag").hidden && $("canvas").hidden) show("canvas", 0); openTeach(); }
   });
-  $("five-more").addEventListener("click", () => { $("five").hidden = true; extraMs += 300000; fiveDone = false; oneMinSaid = false; paceM = null; renderClock(); });
+  // Keep learning: no more check-ins and no clock. Kube is still there whenever you want to teach it.
+  $("five-more").addEventListener("click", () => { $("five").hidden = true; timed = false; renderClock(); });
   $("five-stop").addEventListener("click", () => { if ($("five").dataset.end) { $("five").hidden = true; show("article"); } else fiveStop(); });
   $("five-toast-stop").addEventListener("click", fiveStop);
   $("five-toast-x").addEventListener("click", () => { $("five-toast").hidden = true; clearTimeout(toastT); });
@@ -4274,6 +4318,131 @@ Reply with only JSON, like:
       note.hidden = false; note.textContent = "Listening… tap the red button when you're done.";
     } catch (e) { note.hidden = false; note.textContent = "Voice isn't available here, so type instead."; btn.hidden = true; }
   }
+
+
+  // ---------- v30: hands-free. Turn on Voice and just say what you want ----------
+  // A question opens the side question it matches (or asks it); "next idea", "simpler", "more detail", "replay",
+  // "skip", "close", "A/B/C", "zoom out", "show everything", "teach Kube". Kube's questions are answered by voice too:
+  // the mic starts on its own, and "I'm done" sends the answer.
+  const VSTOP = new Set("a an the is are was were be to of and or in on at it its this that what whats how why do does did i my me you your can could would should will just so for with about there their they them if then than im i'm get".split(" "));
+  const vWords = (t) => t.toLowerCase().replace(/[^a-z0-9' ]+/g, " ").split(/\s+/).map((w) => w.replace(/'s$/, "").replace(/'/g, "")).filter((w) => w && !VSTOP.has(w)).map((w) => w.length > 3 ? w.replace(/(es|s)$/, "") : w);
+  function vScore(said, cand) {
+    const A = new Set(vWords(said)), B = new Set(vWords(cand));
+    if (!A.size || !B.size) return 0;
+    let n = 0; A.forEach((w) => { if (B.has(w)) n++; });
+    return 0.6 * n / B.size + 0.4 * n / A.size;
+  }
+  const vShown = (el) => !!el && !el.disabled && !el.hidden && el.offsetParent !== null;
+  const vClick = (el) => vShown(el) ? (el.click(), true) : false;
+  let voiceOn = false, vrec = null, vRunning = false, capT = null;
+  function vCap(heard, did, interim) {
+    const c = $("voice-cap");
+    c.innerHTML = (heard ? `<i>“${esc(heard.trim())}”</i>` : "") + (heard && did ? " · " : "") + (did ? esc(did) : "");
+    c.classList.toggle("interim", !!interim); c.hidden = false;
+    clearTimeout(capT); capT = setTimeout(() => { c.hidden = true; }, interim ? 6000 : 4500);
+  }
+  const vFocus = () => (camFocus && nodes.get(camFocus.id) === camFocus) ? camFocus : nodes.get("root");
+  function voiceDo(raw) {
+    const t = raw.toLowerCase().replace(/[.?!,]/g, " ").replace(/\s+/g, " ").trim();
+    if (!t) return;
+    const say = (d) => vCap(raw, d);
+    if (/\b(stop listening|voice off|turn off (the )?voice)\b/.test(t)) { voiceSet(false); return say("Voice off"); }
+    if (!$("five").hidden) {
+      if (/\b(teach|understand|i get it|got it|yes)\b/.test(t)) return vClick($("five-go")) && say("Teaching Kube");
+      if (/\b(keep|more|continue|learning)\b/.test(t)) return vClick($("five-more")) && say("Keep learning");
+      if (/\b(stop|done|finish)\b/.test(t)) return vClick($("five-stop")) && say("Stopping here");
+    }
+    if ($("canvas").hidden || !$("teach-dlg").hidden || !$("kube-intro").hidden) return say("");
+    const n = vFocus(), el = n && n.el;
+    // Multiple choice on screen: say the letter, or the answer itself.
+    if (/\bshow (me )?(the )?(choices|options|answers)\b/.test(t)) { const b = [...document.querySelectorAll("#world .think button")].find(vShown); if (b) { b.click(); return say("Here are the choices"); } }
+    const opts = [...document.querySelectorAll("#world .opt")].filter(vShown);
+    if (opts.length) {
+      const L = t.match(/^(?:option |answer |letter |it'?s |the )?(a|b|c|first|second|third|one|two|three|1|2|3)(?: one)?$/);
+      if (L) { const i = { a: 0, b: 1, c: 2, first: 0, second: 1, third: 2, one: 0, two: 1, three: 2, 1: 0, 2: 1, 3: 2 }[L[1]]; if (opts[i]) { opts[i].click(); return say("Answer " + "ABC"[i]); } }
+      let best = null, bs = 0; opts.forEach((o) => { const sc = vScore(t, o.textContent.slice(1)); if (sc > bs) { bs = sc; best = o; } });
+      if (best && bs >= 0.5) { best.click(); return say("Answered"); }
+    }
+    if (/\b(teach (kube|you|it)|test me|quiz me|i'?m ready|ready to teach)\b/.test(t)) { openTeach(); return say("Teaching Kube"); }
+    if (/\b(simpler|dumb it down|easier|too hard|i don'?t (get|understand)|confus|plain(er)? english|like i'?m five)\b/.test(t))
+      return say(vClick(el && el.querySelector('[data-act="down"]')) ? "Simpler" : "That's as simple as this one gets");
+    if (/\b(dumb it up|more detail|more technical|go deeper|harder)\b/.test(t))
+      return say(vClick(el && el.querySelector('[data-act="up"]')) ? "More detail" : "That's the most detail here");
+    if (/\b(replay|repeat|again|show me again|one more time)\b/.test(t)) return say(vClick(el && el.querySelector(".lesson-replay")) ? "Replaying" : "Nothing to replay here");
+    if (/^(skip|skip it|skip this|skip that)$/.test(t)) {
+      const b = [el && el.querySelector(".lesson-skip"), el && el.querySelector(".quiz .skip"), ...document.querySelectorAll("#world .rq-skip")].find(vShown);
+      return say(b ? (b.click(), "Skipped") : "Nothing to skip");
+    }
+    if (/\b(close|go back|back|i'?m done|got it|that makes sense)\b/.test(t) && !/\bwhat\b/.test(t)) {
+      if (n && n.id !== "root") {
+        const b = [el.querySelector(".closehole.done"), el.querySelector(".closehole.first")].find(vShown);
+        if (b) { b.click(); return say("Closing"); }
+        closeHole(n.id); return say("Closing");
+      }
+      home(); return say("Back to the main question");
+    }
+    if (/\b(next idea|next one|next|move on|keep going|continue|go on)\b/.test(t) && !/\b(what|why|how)\b/.test(t)) {
+      const b = [$("next-idea"), ...document.querySelectorAll("#world .next-mod, #world button")].find((x) => vShown(x) && /^(Next idea|Keep going|See what you learned|See everything you learned)/.test(x.textContent.trim()));
+      return say(b ? (b.click(), "Next") : "Finish this one first");
+    }
+    if (/\b(zoom in|closer|bigger)\b/.test(t)) { zoomBy(1.25); return say("Zooming in"); }
+    if (/\b(zoom out|further|smaller)\b/.test(t)) { zoomBy(0.8); return say("Zooming out"); }
+    if (/\b(show (me )?everything|whole (map|thing)|overview|show all|big picture)\b/.test(t)) { fitAll(); return say("Here's everything"); }
+    if (/\b(center|recenter|main question|go home)\b/.test(t)) { home(); return say("Main question"); }
+    if (/\b(five|5) words\b|\bwords to know\b/.test(t)) { wordsSeen = true; $("words-nudge").hidden = true; show("words"); return say("The 5 words"); }
+    if (/\b(what (do )?i know|my progress|what i('ve| have)? learned)\b/.test(t)) { openKnow(); return say("What you know"); }
+    // Otherwise it's a question: open the side question it matches, or a word's definition, or ask it.
+    const cands = [...nodes.values()].filter((x) => (is(x, "ghostq") || is(x, "leaf")) && x.topic && TOPICS[x.topic]);
+    let best = null, bs = 0;
+    cands.forEach((x) => { const sc = vScore(t, TOPICS[x.topic].q); if (sc > bs) { bs = sc; best = x; } });
+    if (best && bs >= 0.45) { best.el.click(); return say("Opening"); }
+    const m = t.match(/\b(?:what(?: is|'s| are)|define|meaning of|what does) (?:a |an |the )?([a-z -]+?)(?: mean)?$/);
+    if (m) {
+      const term = [...document.querySelectorAll("#world .term")].find((x) => vShown(x) && vScore(m[1], x.dataset.term) >= 0.6);
+      if (term) { term.click(); return say("Here's what it means"); }
+    }
+    if (vWords(t).length >= 2) { openQuestion({ title: raw.trim().replace(/^./, (c) => c.toUpperCase()).replace(/[^?]$/, "$&?"), parent: n ? n.id : "root" }); return say("Asking"); }
+    say("Try a question, “next idea”, “simpler” or “close”");
+  }
+  function voiceStart() {
+    if (vRunning || !SR) return;
+    try {
+      vrec = new SR(); vrec.lang = "en-US"; vrec.continuous = true; vrec.interimResults = true;
+      vrec.onresult = (e) => {
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const r = e.results[i];
+          if (r.isFinal) voiceDo(r[0].transcript); else vCap(r[0].transcript + "…", "", true);
+        }
+      };
+      vrec.onerror = (e) => { if (/not-allowed|service-not-allowed|audio-capture/.test(e.error)) { voiceSet(false); vCap("", "Voice is blocked here. It works on aneesh-123.github.io/autolearn in Chrome, Edge or Safari."); } };
+      vrec.onend = () => { vRunning = false; };
+      vrec.start(); vRunning = true;
+    } catch (e) { vRunning = false; }
+  }
+  function voiceStop() { if (vrec) { vrec.onend = null; vrec.onresult = null; try { vrec.abort(); } catch (e) {} } vrec = null; vRunning = false; }
+  function voiceSet(on) {
+    voiceOn = on; $("voice").classList.toggle("on", on); $("voice").setAttribute("aria-pressed", String(on));
+    $("voice").querySelector("span").textContent = on ? "Listening" : "Voice";
+    if (on) { voiceStart(); vCap("", "Listening. Ask a question, or say “next idea”, “simpler”, “close” or “teach Kube”."); } else voiceStop();
+  }
+  if (SR) $("voice").hidden = false;
+  $("voice").addEventListener("click", () => voiceSet(!voiceOn));
+  // Keeps listening (browsers stop after a pause), and hands the mic to Kube's questions while they're open.
+  setInterval(() => {
+    if (!voiceOn) return;
+    const teach = !$("teach-dlg").hidden;
+    const busy = teach || listening || document.hidden || ($("canvas").hidden && $("five").hidden);
+    if (busy && vRunning) voiceStop(); else if (!busy && !vRunning) voiceStart();
+    if (teach) {
+      const mic = document.querySelector("#teach-card .t-mic"), ta = document.querySelector("#teach-card .t-ta");
+      if (mic && vShown(mic) && !listening && !mic.dataset.auto) { mic.dataset.auto = "1"; mic.click(); }
+      // "I'm done" (or "that's it") at the end sends the answer.
+      if (ta && listening && /\b(i'?m done|that'?s it|that is it|submit( it)?)[.!]?\s*$/i.test(ta.value)) {
+        stopMic(); ta.value = ta.value.replace(/\b(i'?m done|that'?s it|that is it|submit( it)?)[.!]?\s*$/i, "").trim(); ta.dispatchEvent(new Event("input", { bubbles: true }));
+        const go = document.querySelector("#teach-card .t-go"); setTimeout(() => vClick(go), 150);
+      }
+    }
+  }, 700);
 
   let TS = null, teachCtl = null;
   const tCard = () => $("teach-card");
