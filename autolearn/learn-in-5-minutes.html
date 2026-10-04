@@ -713,6 +713,23 @@ path.k-edge{fill:none}
 .better .start{font-size:20px;padding:16px 28px 16px 32px;animation:begin-glow 2.2s ease-in-out infinite}
 .better-no{display:block;margin:16px auto 0}
 .better-step[hidden]{display:none}
+/* v29: pick how many minutes to learn it in */
+.mins{margin:4px 0 22px}
+.mins-n{display:block;font-family:var(--display);font-weight:700;font-size:46px;line-height:1;color:var(--accent)}
+.mins input{display:block;width:100%;height:30px;margin:14px 0 2px;accent-color:var(--accent);cursor:pointer}
+.mins-ticks{display:flex;justify-content:space-between;padding:0 6px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mins-plan{font-size:18px;line-height:1.35;color:var(--ink);margin:14px 0 0;min-height:2.7em}
+/* the clock at the top right counts down your minutes; it pauses while you're away */
+.tclock{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:4px 12px 4px 6px;font-family:var(--mono);font-size:15px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.tclock[hidden]{display:none}
+.tclock svg{width:22px;height:22px;transform:rotate(-90deg)}
+.ck-bg{fill:none;stroke:var(--line);stroke-width:3}
+.ck-fg{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-dasharray:100 100;transition:stroke-dashoffset 1s linear}
+.tclock.low .ck-fg{stroke:var(--branch)}.tclock.low b{color:var(--branch)}
+.tclock.away b{opacity:.45}
+.dg-clock{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:6}
+.next-idea.hurry{animation:begin-glow 2.2s ease-in-out infinite}
+@media (max-width:700px){.tclock{font-size:13px;padding:3px 9px 3px 4px;gap:4px}.tclock svg{width:18px;height:18px}}
 .better-step.in{animation:better-pop .45s cubic-bezier(.2,.9,.3,1.2) both}
 .better .depth{margin:18px auto 4px;text-align:left}
 .better .depth button{padding:14px 18px 14px 16px}
@@ -977,15 +994,20 @@ path.k-edge{fill:none}
     <h2>Conclusion</h2>
     <p>Kubernetes turned running containers at scale from a manual, fragile process into an automated one. You describe the state you want, and Kubernetes schedules, heals, scales and updates your containers to keep it that way, across any number of machines and any cloud. Understanding its core building blocks (Pods, nodes, clusters, Deployments, Services and the rest) is the first step to running modern applications with it.</p>
   </article>
-  <button class="teach" id="teach" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2.5M9.5 2.5h5M12 2.5V6M18.5 6.5l1.5-1.5"/></svg><span>Learn this in 5 minutes</span></button>
+  <button class="teach" id="teach" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2.5M9.5 2.5h5M12 2.5V6M18.5 6.5l1.5-1.5"/></svg><span>Learn it instead</span></button>
   <div class="better" id="better" hidden role="dialog" aria-modal="true" aria-labelledby="better-h">
     <div class="better-card">
       <div class="better-step" id="better-1">
-        <div class="better-spark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2.5M9.5 2.5h5M12 2.5V6M18.5 6.5l1.5-1.5"/></svg></div>
-        <h2 id="better-h">Learn this in 5&nbsp;minutes</h2>
-        <p class="better-sub">Skip the wall of text. Watch it happen, tap around, and actually remember it.</p>
-        <button class="start" id="better-go" type="button">Let's go <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
-        <button class="skip better-no" id="better-no" type="button">Keep reading</button>
+        <h2 id="better-h">Read it, or learn it?</h2>
+        <p class="better-sub">How long do you want to spend learning it?</p>
+        <div class="mins">
+          <output class="mins-n" id="mins-n" for="mins">5 min</output>
+          <input type="range" id="mins" min="5" max="15" step="5" value="5" aria-label="Minutes to learn it in">
+          <div class="mins-ticks" aria-hidden="true"><span>5</span><span>10</span><span>15</span></div>
+          <p class="mins-plan" id="mins-plan"></p>
+        </div>
+        <button class="start" id="better-go" type="button"><span>Learn it in <span id="mins-go">5</span> min</span> <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+        <button class="skip better-no" id="better-no" type="button">Just read it</button>
       </div>
       <div class="better-step" id="better-2" hidden>
         <h2 id="better-q">What's your goal?</h2>
@@ -999,6 +1021,7 @@ path.k-edge{fill:none}
 <!-- ============ v25: learn it in 5 minutes. A quick check of what you know, then Kubernetes at work ============ -->
 <main class="diag" id="diag" hidden aria-label="Learn it in 5 minutes">
   <button class="reread intro-back" id="dg-back" type="button">← Back to the article</button>
+  <span class="tclock dg-clock" id="dg-clock" hidden title="Time left. It pauses while you're away."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span>
   <div class="dg-col">
     <div class="dg-ask" id="dg-ask" aria-live="polite"></div>
     <div class="dg-scene" id="dg-scene" hidden>
@@ -1015,6 +1038,7 @@ path.k-edge{fill:none}
     <h2 id="five-h">That's your 5 minutes</h2>
     <p class="better-sub" id="five-sub"></p>
     <button class="start" id="five-go" type="button">Keep going <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+    <button class="skip better-no" id="five-more" type="button" hidden>Add 5 minutes</button>
     <button class="skip better-no" id="five-stop" type="button">Stop here and see what I learned</button>
   </div>
 </div>
@@ -1056,7 +1080,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v28 · Learn it in 5 minutes</span>
+      <span>v29 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1120,7 +1144,7 @@ path.k-edge{fill:none}
       <nav class="steps" id="steps" aria-label="The 5 main ideas"></nav>
       
     </div>
-    <div class="tools"><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
+    <div class="tools"><span class="tclock" id="clock" hidden title="Time left. It pauses while you're away."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
       <span class="meter cov"><span>Covered</span><i><b id="m-cov"></b></i><em id="m-cov-n">0%</em></span>
       <span class="meter und"><span>Understood</span><i><b id="m-und"></b></i><em id="m-und-n">0%</em></span></button><button class="tally" id="tally" hidden aria-label="What you've learned" title="What you've learned"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span id="tally-n">0</span></button><button class="tool icon" id="recenter" aria-label="Recenter" title="Recenter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/><path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3"/></svg></button></div>
   </header>
@@ -1169,7 +1193,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v28 · Learn it in 5 minutes</div>
+    <div class="version-tag">v29 · Learn it in 5 minutes</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -1241,7 +1265,8 @@ path.k-edge{fill:none}
   // It sets how answers are worded at first, how many side questions each main question offers, and whether follow-ups appear.
   let DEPTH = 1;
   try { const d = localStorage.getItem("autolearn-depth"); if (d === "0" || d === "1" || d === "2") DEPTH = +d; } catch (e) {}
-  const depthLevel = () => [2, 1, 0][DEPTH];
+  let JARGON = null;   // v29: set from the quick check; the time you pick sets DEPTH (how much gets covered)
+  const depthLevel = () => JARGON != null ? JARGON : [2, 1, 0][DEPTH];
   const shownGhosts = (m) => DEPTH === 0 ? m.ghosts.slice(0, 2) : m.ghosts;
 
   // Answers mark terms as [[term]] or [[shown text|glossary key]]. Every marked term can be tapped for a one-line definition,
@@ -3773,7 +3798,18 @@ Rules:
     $("better").hidden = false; $("teach").hidden = true; $("better-go").focus({ preventScroll: true });
   }
   function closeBetter() { $("better").hidden = true; $("teach").hidden = false; }
-  $("better-go").addEventListener("click", () => show("diag"));
+  // v29: the pop-up asks how many minutes, and the session is sized to fit.
+  const MIN_PLAN = { 5: "The big idea and what each of the 5 parts does.", 10: "The 5 parts, plus the questions people ask most.", 15: "Every part, deep enough to teach it." };
+  const timeDepth = () => ({ 5: 0, 10: 1, 15: 2 })[MIN];
+  let MIN = 5, timed = false;
+  try { const m = +localStorage.getItem("autolearn-minutes"); if (MIN_PLAN[m]) MIN = m; } catch (e) {}
+  function setMin(m) {
+    MIN = m; $("mins").value = m; $("mins-n").textContent = m + " min"; $("mins-go").textContent = m; $("mins-plan").textContent = MIN_PLAN[m];
+    try { localStorage.setItem("autolearn-minutes", String(m)); } catch (e) {}
+  }
+  $("mins").addEventListener("input", (e) => setMin(+e.target.value));
+  setMin(MIN);
+  $("better-go").addEventListener("click", () => { learnMs = 0; extraMs = 0; fiveDone = false; oneMinSaid = false; show("diag"); });
   ["better-no", "better-no2"].forEach((id) => $(id).addEventListener("click", closeBetter));
   $("better").addEventListener("click", (e) => { if (e.target === $("better")) closeBetter(); });
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("better").hidden) closeBetter(); });
@@ -3874,7 +3910,7 @@ Rules:
   };
   let dgA = {}, LEVEL = 1, noServer = false, scT = [], learning = false;
   function startDiag() {
-    learning = true; dgA = {};
+    learning = true; dgA = {}; timed = true; renderClock();
     $("dg-ask").hidden = false; $("dg-scene").hidden = true;
     dgNext();
   }
@@ -3906,12 +3942,12 @@ Rules:
     const knowsC = dgA.containerProbe === true, knowsK = dgA.k8sProbe === true;
     noServer = dgA.server === "no";
     LEVEL = !knowsC ? 0 : knowsK ? 2 : 1;
-    setDepth(LEVEL);
+    setDepth(timeDepth()); JARGON = [2, 1, 0][LEVEL];
     const plan = LEVEL === 0
       ? `Got it. We'll start from scratch: <b>what ${noServer ? "a server and " : ""}a container ${noServer ? "are" : "is"}</b>, then why Kubernetes exists.`
       : LEVEL === 1 ? `You know containers, so we'll skip those and go <b>straight to Kubernetes</b>.`
       : `You know the basics, so you'll see <b>the real Kubernetes terms</b>.`;
-    $("dg-ask").innerHTML = `<div class="dg-card in"><div class="dg-k">Here's the plan</div><p class="dg-plan">${plan}</p></div>`;
+    $("dg-ask").innerHTML = `<div class="dg-card in"><div class="dg-k">Here's the plan</div><p class="dg-plan">${plan} In ${MIN} minutes: ${MIN_PLAN[MIN].charAt(0).toLowerCase() + MIN_PLAN[MIN].slice(1)}</p></div>`;
     scT.push(setTimeout(startScene, matchMedia("(prefers-reduced-motion: reduce)").matches ? 600 : 2400));
   }
 
@@ -4042,29 +4078,59 @@ Rules:
 
   // After 5 minutes of actual learning (paused while away or back on the article), check in.
   // If they seem bored (drifting, leaving the tab, guessing fast, skipping), offer a good place to stop; otherwise a quick cheer.
-  const FIVE_MS = (+new URLSearchParams(location.search).get("five") || 300) * 1000;
-  let learnMs = 0, fiveDone = false, toastT = null;
+  // v29: the budget is the minutes picked in the pop-up (?five=N sets it in seconds, for testing), plus any added.
+  const FIVE_Q = +new URLSearchParams(location.search).get("five") || 0;
+  let learnMs = 0, extraMs = 0, fiveDone = false, toastT = null, oneMinSaid = false, paceM = null, paceAt = 0, paceShare = 0, paceSaid = false;
+  const budgetMs = () => (FIVE_Q || MIN * 60) * 1000 + extraMs;
+  const minsTxt = () => { const n = Math.max(1, Math.round(budgetMs() / 60000)); return n + (n === 1 ? " minute" : " minutes"); };
+  function renderClock() {
+    const onDiag = !$("diag").hidden, onCanvas = !$("canvas").hidden;
+    $("dg-clock").hidden = !(timed && onDiag); $("clock").hidden = !(timed && onCanvas);
+    if (!timed) return;
+    const left = Math.max(0, budgetMs() - learnMs), sec = Math.ceil(left / 1000);
+    const idle = Date.now() - lastSeen >= 60000 || document.hidden;
+    document.querySelectorAll(".tclock").forEach((c) => {
+      c.querySelector("b").textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+      c.querySelector(".ck-fg").style.strokeDashoffset = String(100 - (100 * left) / budgetMs());
+      c.classList.toggle("low", left <= 60000); c.classList.toggle("away", idle && !fiveDone);
+      c.setAttribute("aria-label", fiveDone && left > 0 ? "Done" : `${Math.floor(sec / 60)} minutes ${sec % 60} seconds left`);
+    });
+  }
+  // Pace: each idea still to learn gets a fair share of the time left (keeping a minute to teach Kube at the end).
+  // Running well over that share makes the Next idea button glow and Kube nudges once.
+  function pace() {
+    if ($("canvas").hidden || typeof M === "undefined" || !M) return;
+    if (M !== paceM) {
+      paceM = M; paceAt = learnMs; paceSaid = false;
+      const left = MODULES.slice(MODULES.indexOf(M)).filter((m) => !KNOWN.has(m.id)).length || 1;
+      paceShare = Math.max(30000, (budgetMs() - 60000 - learnMs) / left);
+    }
+    if (!paceSaid && learnMs - paceAt > paceShare && MODULES.indexOf(M) < MODULES.length - 1) {
+      paceSaid = true; const nb = document.getElementById("next-idea"); if (nb) nb.classList.add("hurry");
+      buddySay(`Let's go on to the next idea, so we finish in your ${minsTxt()}.`);
+    }
+    if (!oneMinSaid && budgetMs() - learnMs <= 60000 && budgetMs() >= 180000) { oneMinSaid = true; buddySay("One minute left! Then you teach me."); }
+  }
+  setInterval(renderClock, 1000);
   setInterval(() => {
     if (!learning || fiveDone || document.hidden || ($("diag").hidden && $("canvas").hidden)) return;
     const idle = Date.now() - lastSeen;
     if (idle < 60000) learnMs += 1000;
     if (!$("diag").hidden && idle >= 40000 && !drifting) { drifting = true; LM.drifts++; }
-    if (learnMs >= FIVE_MS && $("coach").hidden && $("know").hidden && $("words").hidden) fiveCheck();
+    if (timed) pace();
+    if (learnMs >= budgetMs() && $("coach").hidden && $("know").hidden && $("words").hidden && $("teach-dlg").hidden && $("kube-intro").hidden) fiveCheck();
   }, 1000);
   function fiveCheck() {
-    fiveDone = true;
+    fiveDone = true; renderClock();
     const bored = LM.drifts + LM.aways >= 1 || LM.guesses >= 2 || LM.skips >= 2;
     const cov = parseInt($("m-cov-n").textContent, 10) || 0;
     const got = cov ? `You've covered ${cov}% of the article.` : "You've got the big picture.";
-    if (bored) {
-      $("five-sub").textContent = `${got} A break now helps it stick. Stop here, or keep going?`;
-      $("five").hidden = false; $("five-go").focus({ preventScroll: true });
-    } else {
-      $("five-toast-t").textContent = `5 minutes in. ${got} Nice going!`;
-      $("five-toast").hidden = false;
-      toastT = setTimeout(() => { $("five-toast").hidden = true; }, 9000);
-      setTimeout(() => buddySay("Ready to teach me what you know so far?"), 1500);
-    }
+    delete $("five").dataset.end;
+    $("five-h").textContent = `That's your ${minsTxt()}`;
+    $("five-sub").textContent = `${got} ${bored ? "A break soon will help it stick. But first, the real test:" : "Now the real test:"} can you teach Kube what you learned?`;
+    $("five-go").firstChild.textContent = "Teach Kube ";
+    $("five-more").hidden = false; $("five-stop").textContent = "Stop here and see what I learned";
+    $("five").hidden = false; $("five-go").focus({ preventScroll: true });
   }
   function fiveStop() {
     $("five-toast").hidden = true; clearTimeout(toastT);
@@ -4072,9 +4138,9 @@ Rules:
     if (!learnedN) {
       // Stopped before any questions: there's nothing on the knowledge map yet, so sum up the story instead.
       $("five-h").textContent = "Nice work";
-      $("five-sub").textContent = "In 5 minutes you saw the big idea: you write down what you want, and Kubernetes keeps it running, even when a server dies or shoppers flood in. Come back anytime to go deeper.";
+      $("five-sub").textContent = "You saw the big idea: you write down what you want, and Kubernetes keeps it running, even when a server dies or shoppers flood in. Come back anytime to go deeper.";
       $("five-go").firstChild.textContent = "Keep going ";
-      $("five-stop").textContent = "Back to the article";
+      $("five-stop").textContent = "Back to the article"; $("five-more").hidden = true;
       $("five").hidden = false; $("five").dataset.end = "1";
       return;
     }
@@ -4082,7 +4148,11 @@ Rules:
     if ($("canvas").hidden) show("canvas", Math.max(0, MODULES.indexOf(M)));
     openKnow(false);
   }
-  $("five-go").addEventListener("click", () => { $("five").hidden = true; });
+  $("five-go").addEventListener("click", () => {
+    $("five").hidden = true;
+    if (!$("five").dataset.end) { if ($("diag").hidden && $("canvas").hidden) show("canvas", 0); openTeach(); }
+  });
+  $("five-more").addEventListener("click", () => { $("five").hidden = true; extraMs += 300000; fiveDone = false; oneMinSaid = false; paceM = null; renderClock(); });
   $("five-stop").addEventListener("click", () => { if ($("five").dataset.end) { $("five").hidden = true; show("article"); } else fiveStop(); });
   $("five-toast-stop").addEventListener("click", fiveStop);
   $("five-toast-x").addEventListener("click", () => { $("five-toast").hidden = true; clearTimeout(toastT); });
@@ -4378,7 +4448,7 @@ Reply with only JSON, like:
   const KNOWN = new Set();
   function nextIdx(mi) { for (let i = mi + 1; i < MODULES.length; i++) if (!KNOWN.has(MODULES[i].id)) return i; return -1; }
   function startExam() {
-    LEVEL = 2; setDepth(2);
+    LEVEL = 2; setDepth(2); JARGON = 0;
     $("dg-ask").innerHTML = "";
     kubeIntro({
       l1: "Hi! I'm Kube. I'm learning Kubernetes.",
@@ -4393,6 +4463,7 @@ Reply with only JSON, like:
     const solid = TS.items.filter((_, i) => TS.res[i] === "solid"), gaps = TS.items.filter((_, i) => TS.res[i] !== "solid");
     const LBL = { solid: "you know this", partly: "partly", off: "to learn", dk: "to learn", skip: "to learn" };
     const all = !gaps.length;
+    if (all) { fiveDone = true; renderClock(); }
     const el = teachShell(`<div class="coach-k"><span>${all ? "You passed" : "Your gaps"}</span></div>
       <div class="t-head">${FACE(all ? "happy" : "smile")}<div class="t-bubble">${all ? "You taught me all of it. You really know Kubernetes!" : solid.length ? "You know a lot! But I still have questions about a few things." : "Hmm, I'm still confused. Let's learn it together from the start."}</div></div>
       <div class="coach-big">${solid.length} of ${TS.items.length}</div>
