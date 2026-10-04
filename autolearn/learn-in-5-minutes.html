@@ -836,6 +836,63 @@ path.k-edge{fill:none}
 .five-toast .five-x{color:var(--muted);font-size:20px;line-height:1;padding:0 4px}
 @media (max-width:700px){.five-toast{border-radius:18px;font-size:15px}.sc{max-height:none}.sc-row{gap:12px}.diag{padding-top:56px;align-items:start}.sc text{font-size:13px}.sc .mach text{font-size:13px}.sc .copy text{font-size:11.5px}.sc .note text{font-size:13px}.sc .note .t1{font-size:12px}.sc .down text{font-size:16px}.sc .clock text{font-size:14px}.sc .ctag text{font-size:14px}}
 @media (prefers-reduced-motion:reduce){.sc .el,.sc .chip{transition:none}.sc .wire,.sc .cmd,.sc.hot .mach[data-m="1"],.sc-row .start.glow{animation:none}}
+/* v26: a little buddy on the side asks to be taught; the learner decides when they're ready */
+.buddy{position:absolute;left:16px;bottom:42px;z-index:6;display:flex;align-items:flex-end;gap:8px;pointer-events:none}
+.buddy-btn{pointer-events:auto;width:64px;height:64px;border-radius:50%;border:2px solid var(--line);background:var(--surface);box-shadow:var(--shadow);padding:4px;cursor:pointer;transition:transform .2s ease,border-color .2s ease;animation:buddy-bob 4s ease-in-out infinite}
+.buddy-btn:hover,.buddy-btn:focus-visible{transform:scale(1.08);border-color:var(--accent)}
+.buddy-btn svg{width:100%;height:100%;display:block}
+.buddy-say{pointer-events:auto;position:relative;margin-bottom:34px;max-width:220px;background:var(--surface);border:1.5px solid var(--accent);border-radius:16px 16px 16px 4px;padding:10px 14px;font-family:var(--display);font-weight:600;font-size:16px;line-height:1.3;color:var(--ink);box-shadow:var(--shadow);cursor:pointer}
+.buddy-say.in{animation:better-pop .45s cubic-bezier(.2,.9,.3,1.2) both}
+.buddy-say[hidden]{display:none}
+@keyframes buddy-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.bf-head{fill:var(--branch-soft);stroke:var(--branch);stroke-width:2.2}
+.bf-hair{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.bf-eye{fill:var(--ink)}
+.bf-eyes{transform-box:fill-box;transform-origin:center;animation:buddy-blink 5s infinite}
+.bf-line{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.bf-cheek{fill:var(--wrong);opacity:.22}
+.bf-happy,.bf-huh{display:none}
+.face-happy .bf-eyes,.face-happy .bf-smile{display:none}.face-happy .bf-happy{display:inline}
+.face-huh .bf-smile{display:none}.face-huh .bf-huh{display:inline}
+@keyframes buddy-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.teach-in .t-head{display:flex;align-items:flex-start;gap:14px;margin:4px 0 18px}
+.teach-in .t-head svg{flex:none;width:72px;height:72px}
+.t-bubble{position:relative;background:var(--surface-2,var(--ground));border:1.5px solid var(--line);border-radius:4px 18px 18px 18px;padding:12px 16px;font-family:var(--display);font-weight:600;font-size:clamp(19px,2.3vw,22px);line-height:1.3;color:var(--ink)}
+.t-in{display:flex;gap:12px;align-items:flex-start}
+.t-mic{flex:none;width:60px;height:60px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);padding:0}
+.t-mic svg{width:26px;height:26px}
+.t-mic.on{background:var(--wrong);animation:t-rec 1.3s ease-in-out infinite}
+@keyframes t-rec{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--wrong) 45%,transparent)}60%{box-shadow:0 0 0 12px transparent}}
+.t-ta{flex:1;min-width:0;box-sizing:border-box;min-height:110px;resize:vertical;border:1.5px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;font-size:18px;line-height:1.45;padding:12px 14px}
+.t-ta:focus{outline:2px solid var(--accent);outline-offset:1px}
+.t-note,.t-conn{font-size:15px;color:var(--muted);margin:10px 0 0;line-height:1.4}
+.t-conn button,.t-link{border:0;background:none;padding:0;font:inherit;color:var(--accent);font-weight:600;text-decoration:underline;cursor:pointer}
+.t-key{display:grid;gap:8px;margin-top:10px}
+.t-key input{box-sizing:border-box;width:100%;font:15px var(--mono);padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.t-err{color:var(--wrong);font-size:15px;margin:0}
+.t-err[hidden],.t-note[hidden],.t-conn[hidden]{display:none}
+.t-quote{font-style:italic;color:var(--muted);font-size:16px;line-height:1.4;margin:0 0 12px;border-left:3px solid var(--line);padding-left:12px;max-height:5.6em;overflow:auto}
+.t-sub{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.t-list{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.t-list li{display:flex;gap:10px;font-size:17px;line-height:1.35}
+.t-list li::before{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;margin-top:1px}
+.t-list.got li::before{content:"✓";background:var(--accent-soft);color:var(--accent)}
+.t-list.miss li::before{content:"?";background:var(--branch-soft);color:var(--branch)}
+.t-list.off li::before{content:"!";background:var(--wrong-soft);color:var(--wrong)}
+.t-list.off li b{color:var(--wrong);font-weight:600}
+.t-wait{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:17px;margin-top:6px}
+.t-wait::before{content:"";width:16px;height:16px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--accent);animation:t-spin .8s linear infinite}
+@keyframes t-spin{to{transform:rotate(360deg)}}
+.t-sum{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:8px}
+.t-sum li{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:10px 14px;font-size:17px}
+.t-sum li i{font-style:normal;font-family:var(--mono);font-size:12.5px;border-radius:99px;padding:3px 10px;white-space:nowrap}
+.t-sum li i.solid{background:var(--accent-soft);color:var(--accent)}
+.t-sum li i.partly{background:var(--branch-soft);color:var(--branch)}
+.t-sum li i.off{background:var(--wrong-soft);color:var(--wrong)}
+.teach-in .coach-row .start{margin-left:auto}
+.teach-in .coach-row .start:disabled{opacity:.45;cursor:default;animation:none}
+@media (max-width:700px){.buddy{left:auto;right:6px;bottom:calc(188px + env(safe-area-inset-bottom,0px))}.buddy-btn{width:50px;height:50px;padding:3px}.buddy-say{font-size:15px;max-width:170px;margin-bottom:22px;border-radius:16px 16px 4px 16px}.teach-in .t-head svg{width:56px;height:56px}.t-mic{width:52px;height:52px}}
+@media (prefers-reduced-motion:reduce){.buddy-btn,.bf-eyes,.t-mic.on{animation:none}}
 </style>
 
 <!-- ============ SCREEN 0: the article, as a learner would first meet it ============ -->
@@ -969,7 +1026,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v25 · Learn it in 5 minutes</span>
+      <span>v26 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1062,6 +1119,7 @@ path.k-edge{fill:none}
     </figure>
   </div>
   <div class="coach" id="coach" hidden role="dialog" aria-modal="true" aria-label="Quick check"><div class="coach-card" id="coach-card"></div></div>
+  <div class="coach teach-dlg" id="teach-dlg" hidden role="dialog" aria-modal="true" aria-label="Teach it back"><div class="coach-card" id="teach-card"></div></div>
   <div class="learned" id="learned" hidden><ul id="learned-list"></ul></div>
   <section class="know" id="know" hidden aria-label="Your knowledge">
     <div class="know-bar"><button class="tool" id="know-close" type="button">← Canvas</button><span class="know-count" id="know-count"></span></div>
@@ -1082,7 +1140,8 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v25 · Learn it in 5 minutes</div>
+    <div class="version-tag">v26 · Learn it in 5 minutes</div>
+    <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
       <span id="map-label">Your map</span>
@@ -3657,7 +3716,7 @@ Rules:
     for (const id of ["article", "diag", "title", "words", "canvas"]) $(id).hidden = id !== which;
     scT.forEach(clearTimeout); scT = [];
     if (which !== "article") $("better").hidden = true;
-    coachClose();
+    coachClose(); if (which !== "canvas" && typeof closeTeach === "function" && !$("teach-dlg").hidden) closeTeach();
     clearTimeout(teachTimer); introT.forEach(clearTimeout); introT = [];
     hidePop(); if (recallKey) hideRecall(false);
     if (which !== "canvas") { const el = $(which); el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); }
@@ -3967,6 +4026,7 @@ Rules:
       $("five-toast-t").textContent = `5 minutes in. ${got} Nice going!`;
       $("five-toast").hidden = false;
       toastT = setTimeout(() => { $("five-toast").hidden = true; }, 9000);
+      setTimeout(() => buddySay("Ready to teach me what you know so far?"), 1500);
     }
   }
   function fiveStop() {
@@ -3990,6 +4050,228 @@ Rules:
   $("five-toast-stop").addEventListener("click", fiveStop);
   $("five-toast-x").addEventListener("click", () => { $("five-toast").hidden = true; clearTimeout(toastT); });
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("five").hidden) $("five").hidden = true; });
+
+  // ---------- v26: a little buddy who asks to be taught ----------
+  // The learner decides when they're done exploring. The buddy on the side asks "Ready to teach me this?" now and then;
+  // tapping it starts teach-back questions on the main ideas they visited. Claude grades the explanation (claude.ai's sample,
+  // or the learner's own API key on the hosted site); without either it can only match words.
+  const FACE = (mood) => `<svg class="face-${mood}" viewBox="0 0 64 64" aria-hidden="true"><circle class="bf-head" cx="32" cy="35" r="24"/><path class="bf-hair" d="M17 24c3-9 13-14 22-10 3-5 10-5 12-1-5-.5-8 2-9 5"/><g class="bf-eyes"><ellipse class="bf-eye" cx="24" cy="34" rx="3" ry="3.7"/><ellipse class="bf-eye" cx="40" cy="34" rx="3" ry="3.7"/></g><path class="bf-line bf-happy" d="M20.5 35q3.5-5 7 0M36.5 35q3.5-5 7 0"/><path class="bf-line bf-smile" d="M25 43.5c4 4 10 4 14 0"/><path class="bf-line bf-huh" d="M26 45q3-2.5 6 0t6 0M36 26.5l8-2.5"/><circle class="bf-cheek" cx="17.5" cy="42" r="3.2"/><circle class="bf-cheek" cx="46.5" cy="42" r="3.2"/></svg>`;
+  const BUDDY_Q = {
+    why: "I've never heard of Kubernetes. Why do teams even need it?",
+    cluster: "What does a Kubernetes cluster look like? What runs on each machine?",
+    deploy: "What do I hand Kubernetes, and what does it do with it?",
+    services: "If my app's copies keep changing, how do people still find it?",
+    config: "OK, the big one: what is Kubernetes, and what are its main parts?"
+  };
+  const BUDDY_LINES = ["Ready to teach me this?", "Think you could explain it to me?", "Can you teach me what you just learned?"];
+  const MIC_I = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
+  const STOP_I = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>`;
+  const ARR = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>`;
+  $("buddy-btn").innerHTML = FACE("smile");
+  let buddyN = 0, sayT = null, rootsSeen = 0, lastBuddy = Date.now(), canvasSince = null;
+  function buddySay(text) {
+    if ($("canvas").hidden || !$("teach-dlg").hidden || !$("coach").hidden || !$("know").hidden) return;
+    const b = $("buddy-say");
+    b.textContent = text || BUDDY_LINES[buddyN++ % BUDDY_LINES.length];
+    b.hidden = false; b.classList.remove("in"); void b.offsetWidth; b.classList.add("in");
+    clearTimeout(sayT); sayT = setTimeout(() => { b.hidden = true; }, 8000);
+    lastBuddy = Date.now();
+  }
+  // When it speaks up: after each main idea is answered, about 45 s into the canvas, then every few minutes of activity.
+  setInterval(() => {
+    if ($("canvas").hidden || document.hidden) { canvasSince = null; return; }
+    if (canvasSince == null) canvasSince = Date.now();
+    const roots = learned.filter((l) => l.key.startsWith("root-")).length;
+    if (roots > rootsSeen) { rootsSeen = roots; setTimeout(() => buddySay(), 4800); return; }
+    const quiet = Date.now() - lastSeen < 20000 && $("coach").hidden && $("know").hidden && !recallKey;
+    const wait = rootsSeen ? 180000 : 45000;
+    if (quiet && Date.now() - Math.max(lastBuddy, canvasSince) > wait) buddySay();
+  }, 2000);
+  $("buddy-btn").addEventListener("mouseenter", () => { if ($("buddy-say").hidden) buddySay("Ready to teach me this?"); });
+  $("buddy-btn").addEventListener("click", openTeach);
+  $("buddy-say").addEventListener("click", openTeach);
+
+  // Grading: the page's sample inside claude.ai, else the learner's own Anthropic key (kept only in this browser), else none.
+  const APIKEY = "autolearn-api-key";
+  const apiKey = () => { try { return localStorage.getItem(APIKEY) || ""; } catch (e) { return ""; } };
+  async function apiJson(text, signal, key = apiKey()) {
+    let res;
+    try {
+      res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", signal,
+        headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-beta": "server-side-fallback-2026-07-01", "anthropic-dangerous-direct-browser-access": "true" },
+        body: JSON.stringify({ model: "claude-opus-5-5", max_tokens: 1500, output_config: { effort: "medium" }, fallbacks: "default", messages: [{ role: "user", content: text }] })
+      });
+    } catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "network" }; }
+    if (!res.ok) throw { code: res.status === 401 || res.status === 403 ? "bad_key" : res.status === 429 || res.status === 529 ? "rate_limited" : "api" };
+    const j = await res.json();
+    if (j.stop_reason === "refusal") throw { code: "refusal" };
+    const out = (j.content || []).filter((b) => b.type === "text").map((b) => b.text).join(""), m = out.match(/\{[\s\S]*\}/);
+    if (!m) throw { code: "parse" };
+    return JSON.parse(m[0]);
+  }
+  async function teachGrader() {
+    const sm = await getSample();
+    if (sm && typeof sm.json === "function") return (p, signal) => sm.json(p, { modelTier: "default", signal });
+    if (apiKey()) return (p, signal) => apiJson(p, signal);
+    return null;
+  }
+  function teachPrompt(m, text) {
+    const facts = [...topicsOf(m)].map((k) => `- ${TOPICS[k].q} ${plainTerms(TOPICS[k].a[1])}`).join("\n");
+    return `You are playing a curious beginner who knows nothing about Kubernetes. A learner is teaching you, often by voice, so expect speech-to-text slips; ignore typos and filler.
+
+You asked: "${BUDDY_Q[m.id] || plainTerms(m.explainQ)}"
+They said: """${text}"""
+
+A full answer covers these points:
+${m.explain.map((k, i) => `${i + 1}. ${k}`).join("\n")}
+
+Facts from the lesson, to check what they say against:
+${facts}
+
+Mark it honestly:
+- "covered": the numbers of the points they actually explained correctly in their own words. Naming a term is not explaining it.
+- "wrong": anything they said that is incorrect, as {"quote": a short exact phrase of theirs, "fix": a kind correction under 20 words}.
+- "level": "solid" if they explained the heart of the question correctly (most points, nothing badly wrong), "partly" if some of it, "off" if little or mostly wrong.
+- "say": your reaction as the beginner, first person, warm and specific, under 20 words.
+- "ask": if something important is still missing, one short follow-up question you'd ask as the beginner; otherwise null.
+
+Reply with only JSON, like:
+{"covered":[1,3],"wrong":[],"level":"partly","say":"Oh, so it restarts my app on another machine. Neat!","ask":"But how does it know a machine died?"}`;
+  }
+  const STOPW = new Set("about after their there these those which where while would could should every other being with from into your that this them they what when have will just like than then also because".split(" "));
+  function quickTeach(m, text) {
+    const t = text.toLowerCase(), words = t.split(/\s+/).filter(Boolean).length, covered = [];
+    if (words >= 8) m.explain.forEach((pt, i) => {
+      const kws = [...new Set(pt.toLowerCase().match(/[a-z]{5,}/g) || [])].filter((w) => !STOPW.has(w));
+      const hit = kws.filter((w) => t.includes(w.slice(0, Math.max(5, w.length - 2)))).length;
+      if (kws.length && hit >= Math.min(2, kws.length)) covered.push(i + 1);
+    });
+    return { covered, wrong: [], level: covered.length ? "partly" : "off", say: covered.length ? "I think I get some of it." : "Hmm, I'm not sure I follow yet.", ask: null, quick: true };
+  }
+
+  // Voice, where the browser allows it (not inside claude.ai, which blocks the microphone).
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = null, listening = false;
+  function stopMic() { if (rec && listening) { try { rec.stop(); } catch (e) {} } listening = false; }
+  function toggleMic(btn, ta, note, sync) {
+    if (listening) return stopMic();
+    try {
+      rec = new SR(); rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true;
+      const base = ta.value.trim() ? ta.value.trimEnd() + " " : "";
+      rec.onresult = (e) => { let t = ""; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; ta.value = base + t.trimStart(); sync(); };
+      rec.onerror = (e) => { if (/not-allowed|service-not-allowed|audio-capture/.test(e.error)) { note.hidden = false; note.textContent = "Voice is blocked here, so type instead. Voice works on aneesh-123.github.io/autolearn in Chrome, Edge or Safari."; btn.hidden = true; } };
+      rec.onend = () => { listening = false; btn.classList.remove("on"); btn.innerHTML = MIC_I; btn.setAttribute("aria-label", "Talk"); if (/Listening/.test(note.textContent)) note.hidden = true; };
+      rec.start(); listening = true;
+      btn.classList.add("on"); btn.innerHTML = STOP_I; btn.setAttribute("aria-label", "Stop listening");
+      note.hidden = false; note.textContent = "Listening… tap the red button when you're done.";
+    } catch (e) { note.hidden = false; note.textContent = "Voice isn't available here, so type instead."; btn.hidden = true; }
+  }
+
+  let TS = null, teachCtl = null;
+  const tCard = () => $("teach-card");
+  function openTeach() {
+    $("buddy-say").hidden = true; $("words-nudge").hidden = true; hidePop(); if (recallKey) hideRecall(false);
+    const vis = MODULES.filter((m) => lmT("root-" + m.id).opens);
+    TS = { items: vis.length ? vis : [MODULES[0]], i: 0, res: [] };
+    $("teach-dlg").hidden = false;
+    askTeach();
+  }
+  function closeTeach() { stopMic(); if (teachCtl) teachCtl.abort(); $("teach-dlg").hidden = true; }
+  function teachShell(inner) {
+    const c = tCard(); c.innerHTML = `<div class="coach-in in teach-in">${inner}</div>`;
+    c.querySelectorAll(".t-close").forEach((b) => b.addEventListener("click", closeTeach));
+    return c.firstElementChild;
+  }
+  function askTeach(prefill = "") {
+    const m = TS.items[TS.i], last = TS.i === TS.items.length - 1;
+    const el = teachShell(`<div class="coach-k"><span>Teach me · ${TS.i + 1} of ${TS.items.length}</span><button class="skip t-close" type="button">Not ready yet</button></div>
+      <div class="t-head">${FACE("smile")}<div class="t-bubble">${esc(BUDDY_Q[m.id] || plainTerms(m.explainQ))}</div></div>
+      <div class="t-in">${SR ? `<button class="t-mic" type="button" aria-label="Talk">${MIC_I}</button>` : ""}<textarea class="t-ta" rows="4" aria-label="Your explanation" placeholder="${SR ? "Tap the mic and talk, or type…" : "Explain it like I'm new to this…"}"></textarea></div>
+      <p class="t-note" hidden></p><p class="t-conn" hidden></p>
+      <div class="coach-row"><button class="skip t-skip" type="button">${last ? "I'm done" : "Skip this one"}</button><button class="start t-go" type="button" disabled>Teach me ${ARR}</button></div>`);
+    const ta = el.querySelector(".t-ta"), go = el.querySelector(".t-go"), note = el.querySelector(".t-note"), mic = el.querySelector(".t-mic");
+    const sync = () => { go.disabled = ta.value.trim().split(/\s+/).filter(Boolean).length < 3; };
+    ta.value = prefill; sync();
+    ta.addEventListener("input", sync);
+    if (mic) mic.addEventListener("click", () => toggleMic(mic, ta, note, sync));
+    go.addEventListener("click", () => gradeTeach(m, ta.value.trim()));
+    el.querySelector(".t-skip").addEventListener("click", () => { stopMic(); TS.res[TS.i] = TS.res[TS.i] || "skip"; nextTeach(); });
+    teachGrader().then((g) => { if (!g) connLine(el.querySelector(".t-conn")); });
+    setTimeout(() => ta.focus({ preventScroll: true }), 60);
+  }
+  function connLine(p) {
+    p.hidden = false;
+    p.innerHTML = `Claude isn't connected here, so I can only match words. <button type="button">Connect Claude</button> with your own API key for real grading.`;
+    p.querySelector("button").addEventListener("click", () => {
+      p.innerHTML = `<span class="t-key"><input type="password" autocomplete="off" spellcheck="false" placeholder="Anthropic API key (sk-ant-…)" aria-label="Anthropic API key"><span>Saved only in this browser and sent only to Anthropic. Get a key at <a class="t-link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</span><span class="t-err" hidden></span><span><button class="start t-keygo" type="button">Connect</button></span></span>`;
+      const inp = p.querySelector("input"), err = p.querySelector(".t-err"), b = p.querySelector(".t-keygo");
+      inp.focus();
+      b.addEventListener("click", async () => {
+        const k = inp.value.trim(); if (!k) return inp.focus();
+        b.disabled = true; b.firstChild.textContent = "Checking…"; err.hidden = true;
+        try { await apiJson('Reply with only this JSON: {"ok":true}', undefined, k); try { localStorage.setItem(APIKEY, k); } catch (e) {} p.innerHTML = "Claude is connected. I'll grade what you teach me."; }
+        catch (e) { err.hidden = false; err.textContent = e.code === "bad_key" ? "That key didn't work. Check it was copied in full." : e.code === "network" ? "Couldn't reach Anthropic. Check your connection." : "Something went wrong. Try again."; b.disabled = false; b.firstChild.textContent = "Connect"; }
+      });
+    });
+  }
+  async function gradeTeach(m, text) {
+    stopMic();
+    const el = teachShell(`<div class="coach-k"><span>Teach me · ${TS.i + 1} of ${TS.items.length}</span></div>
+      <div class="t-head">${FACE("smile")}<div class="t-bubble">${esc(BUDDY_Q[m.id] || plainTerms(m.explainQ))}</div></div>
+      <p class="t-quote">${esc(text)}</p><div class="t-wait">Thinking about what you said…</div>
+      <div class="coach-row"><button class="skip t-stop" type="button">Stop</button></div>`);
+    teachCtl = new AbortController();
+    el.querySelector(".t-stop").addEventListener("click", () => teachCtl.abort());
+    let r = null, note = "";
+    const g = await teachGrader();
+    if (g) {
+      try { r = await g(teachPrompt(m, text), teachCtl.signal); }
+      catch (e) {
+        const code = e && e.code;
+        if (code === "cancelled") return askTeach(text);
+        if (HIDE_CODES.has(code)) samplePromise = Promise.resolve(null);
+        note = code === "rate_limited" ? "Claude is busy, so this was a quick word match." : code === "bad_key" ? "Your API key stopped working, so this was a quick word match." : "Claude couldn't grade this one, so this was a quick word match.";
+      }
+    }
+    if (!r || !Array.isArray(r.covered)) { r = quickTeach(m, text); if (!note) note = "Quick word match, since Claude isn't connected here. It can only tell what you mentioned."; }
+    if ($("teach-dlg").hidden) return;
+    teachResult(m, text, r, note);
+  }
+  function teachResult(m, text, r, note) {
+    const cov = new Set((r.covered || []).map(Number).filter((n) => n >= 1 && n <= m.explain.length));
+    const lvl = r.level === "solid" ? "solid" : r.level === "partly" ? "partly" : "off";
+    TS.res[TS.i] = lvl;
+    const got = m.explain.filter((_, i) => cov.has(i + 1)), miss = m.explain.filter((_, i) => !cov.has(i + 1));
+    const wrong = (r.wrong || []).filter((w) => w && w.fix);
+    const head = lvl === "solid" ? "You taught me!" : lvl === "partly" ? "Getting there" : "I'm still confused";
+    const last = TS.i === TS.items.length - 1;
+    const el = teachShell(`<div class="coach-k"><span>${head}</span><button class="skip t-close" type="button">Close</button></div>
+      <div class="t-head">${FACE(lvl === "solid" ? "happy" : lvl === "partly" ? "smile" : "huh")}<div class="t-bubble">${esc(r.say || "")}${r.ask && lvl !== "solid" ? `<br>${esc(r.ask)}` : ""}</div></div>
+      <p class="t-quote">${esc(text)}</p>
+      ${got.length ? `<div class="t-sub">What you taught me</div><ul class="t-list got">${got.map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
+      ${wrong.length ? `<div class="t-sub">Not quite</div><ul class="t-list off">${wrong.map((w) => `<li><span>${w.quote ? `<b>“${esc(w.quote)}”</b> ` : ""}${esc(w.fix)}</span></li>`).join("")}</ul>` : ""}
+      ${lvl !== "solid" && miss.length ? `<div class="t-sub">I still don't get</div><ul class="t-list miss">${miss.slice(0, 3).map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
+      ${note ? `<p class="t-note">${esc(note)}</p>` : ""}
+      <div class="coach-row">${lvl !== "solid" ? `<button class="skip t-again" type="button">Try again</button><button class="skip t-show" type="button">Show me that part</button>` : ""}<button class="start t-next" type="button">${last ? "See how I did" : "Next question"} ${ARR}</button></div>`);
+    const again = el.querySelector(".t-again"), showB = el.querySelector(".t-show");
+    if (again) again.addEventListener("click", () => askTeach(text));
+    if (showB) showB.addEventListener("click", () => { closeTeach(); show("canvas", MODULES.indexOf(m)); });
+    el.querySelector(".t-next").addEventListener("click", nextTeach);
+  }
+  function nextTeach() { if (TS.i < TS.items.length - 1) { TS.i++; askTeach(); } else teachSummary(); }
+  function teachSummary() {
+    const n = TS.res.filter((x) => x === "solid").length, weak = TS.items.find((_, i) => TS.res[i] !== "solid");
+    const LBL = { solid: "taught me", partly: "partly", off: "not yet", skip: "skipped" };
+    const el = teachShell(`<div class="coach-k"><span>How you did</span><button class="skip t-close" type="button">Close</button></div>
+      <div class="t-head">${FACE(n === TS.items.length ? "happy" : "smile")}<div class="t-bubble">${n === TS.items.length ? "You taught me all of it. Thank you!" : n ? `You taught me ${n} of ${TS.items.length}. I'm getting it!` : TS.res.includes("partly") ? "I'm getting some of it! Want to look again and teach me once more?" : "I'm not there yet. Want to look again and then teach me?"}</div></div>
+      <ul class="t-sum">${TS.items.map((m, i) => { const r = TS.res[i] || "skip"; return `<li><span>${esc(m.title)}</span><i class="${r === "skip" ? "off" : r}">${LBL[r]}</i></li>`; }).join("")}</ul>
+      <div class="coach-row">${weak ? `<button class="skip t-show" type="button">Go over ${esc(weak.title.toLowerCase())}</button>` : ""}<button class="start t-close" type="button">Keep exploring ${ARR}</button></div>`);
+    const showB = el.querySelector(".t-show");
+    if (showB) showB.addEventListener("click", () => { closeTeach(); show("canvas", MODULES.indexOf(weak)); });
+  }
+  $("teach-dlg").addEventListener("click", (e) => { if (e.target === $("teach-dlg")) closeTeach(); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("teach-dlg").hidden) closeTeach(); });
   $("reread").addEventListener("click", () => show("article"));
   $("start").addEventListener("click", () => show("canvas", 0));
   function setDepth(d) {
