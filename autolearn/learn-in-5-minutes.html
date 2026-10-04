@@ -893,6 +893,36 @@ path.k-edge{fill:none}
 .teach-in .coach-row .start:disabled{opacity:.45;cursor:default;animation:none}
 @media (max-width:700px){.buddy{left:auto;right:6px;bottom:calc(188px + env(safe-area-inset-bottom,0px))}.buddy-btn{width:50px;height:50px;padding:3px}.buddy-say{font-size:15px;max-width:170px;margin-bottom:22px;border-radius:16px 16px 4px 16px}.teach-in .t-head svg{width:56px;height:56px}.t-mic{width:52px;height:52px}}
 @media (prefers-reduced-motion:reduce){.buddy-btn,.bf-eyes,.t-mic.on{animation:none}}
+/* v27: Kube's entrance, and noticing when you can't teach it yet */
+.kube-intro{position:absolute;inset:0;z-index:44;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ground) 72%,transparent);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);transition:background .6s ease,backdrop-filter .6s ease}
+.kube-intro[hidden]{display:none}
+.kube-intro.leaving{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
+.ki-stage{display:grid;justify-items:center;gap:18px;text-align:center;max-width:460px}
+.ki-face{width:150px;height:150px;transform-origin:center;transition:transform .9s cubic-bezier(.6,0,.3,1)}
+.ki-face svg{width:100%;height:100%;display:block;overflow:visible}
+.ki-face.wave{animation:ki-hop .7s ease}
+.ki-say{position:relative;min-height:1.3em;background:var(--surface);border:1.5px solid var(--accent);border-radius:18px;padding:12px 20px;font-family:var(--display);font-weight:600;font-size:clamp(21px,3vw,26px);line-height:1.3;color:var(--ink);box-shadow:var(--shadow)}
+.ki-say:empty{visibility:hidden}
+.ki-say.in{animation:better-pop .45s cubic-bezier(.2,.9,.3,1.2) both}
+.ki-say::before{content:"";position:absolute;left:50%;top:-8px;width:14px;height:14px;background:var(--surface);border-left:1.5px solid var(--accent);border-top:1.5px solid var(--accent);transform:translateX(-50%) rotate(45deg)}
+.ki-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.ki-btns[hidden]{display:none}
+.ki-btns .start{animation:begin-glow 2.2s ease-in-out infinite}
+.kube-intro.leaving .ki-say,.kube-intro.leaving .ki-btns{opacity:0;transition:opacity .3s ease}
+.buddy.pending{visibility:hidden}
+/* drawing itself into being */
+.forming .bf-head{stroke-dasharray:1.1;stroke-dashoffset:1.1;fill-opacity:0;animation:ki-draw .9s ease forwards,ki-fill .5s .8s ease forwards}
+.forming .bf-hair{stroke-dasharray:1.1;stroke-dashoffset:1.1;animation:ki-draw .5s .9s ease forwards}
+.forming .bf-eyes{transform:scale(0);animation:ki-pop .35s 1.3s cubic-bezier(.2,.9,.3,1.6) forwards}
+.forming .bf-smile{stroke-dasharray:1.1;stroke-dashoffset:1.1;animation:ki-draw .4s 1.6s ease forwards}
+.forming .bf-cheek{opacity:0;animation:ki-cheek .4s 1.8s ease forwards}
+@keyframes ki-draw{to{stroke-dashoffset:0}}
+@keyframes ki-fill{to{fill-opacity:1}}
+@keyframes ki-pop{to{transform:scale(1)}}
+@keyframes ki-cheek{to{opacity:.22}}
+@keyframes ki-hop{30%{transform:translateY(-14px) rotate(-6deg)}60%{transform:translateY(0) rotate(4deg)}}
+.t-dk{margin-right:auto}
+@media (prefers-reduced-motion:reduce){.forming .bf-head,.forming .bf-hair,.forming .bf-eyes,.forming .bf-smile,.forming .bf-cheek{animation:none;stroke-dashoffset:0;fill-opacity:1;transform:none;opacity:1}.ki-face{transition:none}.ki-face.wave,.ki-btns .start{animation:none}}
 </style>
 
 <!-- ============ SCREEN 0: the article, as a learner would first meet it ============ -->
@@ -1026,7 +1056,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v26 · Learn it in 5 minutes</span>
+      <span>v27 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1119,6 +1149,10 @@ path.k-edge{fill:none}
     </figure>
   </div>
   <div class="coach" id="coach" hidden role="dialog" aria-modal="true" aria-label="Quick check"><div class="coach-card" id="coach-card"></div></div>
+  <div class="kube-intro" id="kube-intro" hidden role="dialog" aria-modal="true" aria-label="Meet Kube">
+    <div class="ki-stage"><div class="ki-face" id="ki-face"></div><div class="ki-say" id="ki-say" aria-live="polite"></div>
+      <div class="ki-btns" id="ki-btns" hidden><button class="start" id="ki-yes" type="button">Yes, I'll teach you</button><button class="words-prev" id="ki-no" type="button">Not yet</button></div></div>
+  </div>
   <div class="coach teach-dlg" id="teach-dlg" hidden role="dialog" aria-modal="true" aria-label="Teach it back"><div class="coach-card" id="teach-card"></div></div>
   <div class="learned" id="learned" hidden><ul id="learned-list"></ul></div>
   <section class="know" id="know" hidden aria-label="Your knowledge">
@@ -1140,7 +1174,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v26 · Learn it in 5 minutes</div>
+    <div class="version-tag">v27 · Learn it in 5 minutes</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -3716,7 +3750,8 @@ Rules:
     for (const id of ["article", "diag", "title", "words", "canvas"]) $(id).hidden = id !== which;
     scT.forEach(clearTimeout); scT = [];
     if (which !== "article") $("better").hidden = true;
-    coachClose(); if (which !== "canvas" && typeof closeTeach === "function" && !$("teach-dlg").hidden) closeTeach();
+    coachClose(); if (which !== "canvas" && !$("kube-intro").hidden) { kubeT.forEach(clearTimeout); $("kube-intro").hidden = true; $("buddy").classList.remove("pending"); kubeMet = false; }
+    if (which !== "canvas" && typeof closeTeach === "function" && !$("teach-dlg").hidden) closeTeach();
     clearTimeout(teachTimer); introT.forEach(clearTimeout); introT = [];
     hidePop(); if (recallKey) hideRecall(false);
     if (which !== "canvas") { const el = $(which); el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); }
@@ -3727,7 +3762,7 @@ Rules:
     if (which === "title") { scrollTo(0, 0); runIntro(); if (learning) endIntro(); }
     if (which === "diag") { scrollTo(0, 0); startDiag(); }
     if (which === "words") { scrollTo(0, 0); setWord(0, false); }
-    if (which === "canvas") { build(mi); home(false); scheduleNudge(); }
+    if (which === "canvas") { build(mi); home(false); if (!kubeMet) setTimeout(() => { if (!$("canvas").hidden && !kubeMet) kubeIntro(); }, 700); else scheduleNudge(); }
     try { history.replaceState(null, "", which === "canvas" ? "#" + MODULES[mi].id : which === "title" ? "#intro" : which === "words" ? "#words" : which === "diag" ? "#start" : "#"); } catch (e) {}
   }
   // After a moment on the article (or on reaching the end), a pop-up in the middle says there's a better way to learn it.
@@ -4055,7 +4090,7 @@ Rules:
   // The learner decides when they're done exploring. The buddy on the side asks "Ready to teach me this?" now and then;
   // tapping it starts teach-back questions on the main ideas they visited. Claude grades the explanation (claude.ai's sample,
   // or the learner's own API key on the hosted site); without either it can only match words.
-  const FACE = (mood) => `<svg class="face-${mood}" viewBox="0 0 64 64" aria-hidden="true"><circle class="bf-head" cx="32" cy="35" r="24"/><path class="bf-hair" d="M17 24c3-9 13-14 22-10 3-5 10-5 12-1-5-.5-8 2-9 5"/><g class="bf-eyes"><ellipse class="bf-eye" cx="24" cy="34" rx="3" ry="3.7"/><ellipse class="bf-eye" cx="40" cy="34" rx="3" ry="3.7"/></g><path class="bf-line bf-happy" d="M20.5 35q3.5-5 7 0M36.5 35q3.5-5 7 0"/><path class="bf-line bf-smile" d="M25 43.5c4 4 10 4 14 0"/><path class="bf-line bf-huh" d="M26 45q3-2.5 6 0t6 0M36 26.5l8-2.5"/><circle class="bf-cheek" cx="17.5" cy="42" r="3.2"/><circle class="bf-cheek" cx="46.5" cy="42" r="3.2"/></svg>`;
+  const FACE = (mood) => `<svg class="face-${mood}" viewBox="0 0 64 64" aria-hidden="true"><circle class="bf-head" pathLength="1" cx="32" cy="35" r="24"/><path class="bf-hair" pathLength="1" d="M17 24c3-9 13-14 22-10 3-5 10-5 12-1-5-.5-8 2-9 5"/><g class="bf-eyes"><ellipse class="bf-eye" cx="24" cy="34" rx="3" ry="3.7"/><ellipse class="bf-eye" cx="40" cy="34" rx="3" ry="3.7"/></g><path class="bf-line bf-happy" d="M20.5 35q3.5-5 7 0M36.5 35q3.5-5 7 0"/><path class="bf-line bf-smile" pathLength="1" d="M25 43.5c4 4 10 4 14 0"/><path class="bf-line bf-huh" d="M26 45q3-2.5 6 0t6 0M36 26.5l8-2.5"/><circle class="bf-cheek" cx="17.5" cy="42" r="3.2"/><circle class="bf-cheek" cx="46.5" cy="42" r="3.2"/></svg>`;
   const BUDDY_Q = {
     why: "I've never heard of Kubernetes. Why do teams even need it?",
     cluster: "What does a Kubernetes cluster look like? What runs on each machine?",
@@ -4070,7 +4105,7 @@ Rules:
   $("buddy-btn").innerHTML = FACE("smile");
   let buddyN = 0, sayT = null, rootsSeen = 0, lastBuddy = Date.now(), canvasSince = null;
   function buddySay(text) {
-    if ($("canvas").hidden || !$("teach-dlg").hidden || !$("coach").hidden || !$("know").hidden) return;
+    if ($("canvas").hidden || !$("teach-dlg").hidden || !$("coach").hidden || !$("know").hidden || !$("kube-intro").hidden) return;
     const b = $("buddy-say");
     b.textContent = text || BUDDY_LINES[buddyN++ % BUDDY_LINES.length];
     b.hidden = false; b.classList.remove("in"); void b.offsetWidth; b.classList.add("in");
@@ -4170,10 +4205,11 @@ Reply with only JSON, like:
 
   let TS = null, teachCtl = null;
   const tCard = () => $("teach-card");
-  function openTeach() {
+  function openTeach(pre) {
+    pre = pre === true;
     $("buddy-say").hidden = true; $("words-nudge").hidden = true; hidePop(); if (recallKey) hideRecall(false);
     const vis = MODULES.filter((m) => lmT("root-" + m.id).opens);
-    TS = { items: vis.length ? vis : [MODULES[0]], i: 0, res: [] };
+    TS = { items: pre || !vis.length ? MODULES.slice() : vis, i: 0, res: [], miss: 0, pre: pre || !vis.length };
     $("teach-dlg").hidden = false;
     askTeach();
   }
@@ -4189,7 +4225,7 @@ Reply with only JSON, like:
       <div class="t-head">${FACE("smile")}<div class="t-bubble">${esc(BUDDY_Q[m.id] || plainTerms(m.explainQ))}</div></div>
       <div class="t-in">${SR ? `<button class="t-mic" type="button" aria-label="Talk">${MIC_I}</button>` : ""}<textarea class="t-ta" rows="4" aria-label="Your explanation" placeholder="${SR ? "Tap the mic and talk, or type…" : "Explain it like I'm new to this…"}"></textarea></div>
       <p class="t-note" hidden></p><p class="t-conn" hidden></p>
-      <div class="coach-row"><button class="skip t-skip" type="button">${last ? "I'm done" : "Skip this one"}</button><button class="start t-go" type="button" disabled>Teach me ${ARR}</button></div>`);
+      <div class="coach-row"><button class="words-prev t-dk" type="button">I don't know</button><button class="skip t-skip" type="button">${last ? "I'm done" : "Skip"}</button><button class="start t-go" type="button" disabled>Teach me ${ARR}</button></div>`);
     const ta = el.querySelector(".t-ta"), go = el.querySelector(".t-go"), note = el.querySelector(".t-note"), mic = el.querySelector(".t-mic");
     const sync = () => { go.disabled = ta.value.trim().split(/\s+/).filter(Boolean).length < 3; };
     ta.value = prefill; sync();
@@ -4197,6 +4233,7 @@ Reply with only JSON, like:
     if (mic) mic.addEventListener("click", () => toggleMic(mic, ta, note, sync));
     go.addEventListener("click", () => gradeTeach(m, ta.value.trim()));
     el.querySelector(".t-skip").addEventListener("click", () => { stopMic(); TS.res[TS.i] = TS.res[TS.i] || "skip"; nextTeach(); });
+    el.querySelector(".t-dk").addEventListener("click", () => { stopMic(); dontKnow(m); });
     teachGrader().then((g) => { if (!g) connLine(el.querySelector(".t-conn")); });
     setTimeout(() => ta.focus({ preventScroll: true }), 60);
   }
@@ -4242,6 +4279,7 @@ Reply with only JSON, like:
     const cov = new Set((r.covered || []).map(Number).filter((n) => n >= 1 && n <= m.explain.length));
     const lvl = r.level === "solid" ? "solid" : r.level === "partly" ? "partly" : "off";
     TS.res[TS.i] = lvl;
+    if (lvl === "off") { TS.miss++; if (TS.miss >= 2) return notYet(m); } else TS.miss = 0;
     const got = m.explain.filter((_, i) => cov.has(i + 1)), miss = m.explain.filter((_, i) => !cov.has(i + 1));
     const wrong = (r.wrong || []).filter((w) => w && w.fix);
     const head = lvl === "solid" ? "You taught me!" : lvl === "partly" ? "Getting there" : "I'm still confused";
@@ -4259,19 +4297,75 @@ Reply with only JSON, like:
     if (showB) showB.addEventListener("click", () => { closeTeach(); show("canvas", MODULES.indexOf(m)); });
     el.querySelector(".t-next").addEventListener("click", nextTeach);
   }
+
+  // "I don't know" is an answer too: it's the moment you find out there's more to learn.
+  function dontKnow(m) {
+    TS.res[TS.i] = "dk"; TS.miss++;
+    if (TS.miss >= 2) return notYet(m);
+    const last = TS.i === TS.items.length - 1;
+    const el = teachShell(`<div class="coach-k"><span>That's OK</span><button class="skip t-close" type="button">Close</button></div>
+      <div class="t-head">${FACE("huh")}<div class="t-bubble">Then we're both new to it! Want to look at that part first, then teach me?</div></div>
+      <div class="coach-row"><button class="skip t-next" type="button">${last ? "See how I did" : "Ask me something else"}</button><button class="start t-show" type="button">Show me that part ${ARR}</button></div>`);
+    el.querySelector(".t-next").addEventListener("click", nextTeach);
+    el.querySelector(".t-show").addEventListener("click", () => { closeTeach(); show("canvas", MODULES.indexOf(m)); });
+  }
+  // Two answers in a row that don't land: Kube says so kindly and sends you off to explore.
+  function notYet(m) {
+    const first = TS.items.find((_, i) => TS.res[i] === "off" || TS.res[i] === "dk") || m;
+    const el = teachShell(`<div class="coach-k"><span>Not quite ready</span><button class="skip t-close" type="button">Close</button></div>
+      <div class="t-head">${FACE("huh")}<div class="t-bubble">${TS.pre ? "I think there's more to learn here before you can teach me. Let's explore it first!" : "Hmm, I'm still confused. Looks like there's more to explore before you can teach me this."}</div></div>
+      <p class="coach-sub">That's the point of teaching it back: it shows what you don't know yet. Come back and tap Kube when you're ready.</p>
+      <div class="coach-row"><button class="start t-show" type="button">Let's explore ${esc(first.title.toLowerCase())} ${ARR}</button></div>`);
+    el.querySelector(".t-show").addEventListener("click", () => { closeTeach(); show("canvas", MODULES.indexOf(first)); });
+  }
   function nextTeach() { if (TS.i < TS.items.length - 1) { TS.i++; askTeach(); } else teachSummary(); }
   function teachSummary() {
     const n = TS.res.filter((x) => x === "solid").length, weak = TS.items.find((_, i) => TS.res[i] !== "solid");
-    const LBL = { solid: "taught me", partly: "partly", off: "not yet", skip: "skipped" };
+    const LBL = { solid: "taught me", partly: "partly", off: "not yet", dk: "didn't know yet", skip: "skipped" };
     const el = teachShell(`<div class="coach-k"><span>How you did</span><button class="skip t-close" type="button">Close</button></div>
       <div class="t-head">${FACE(n === TS.items.length ? "happy" : "smile")}<div class="t-bubble">${n === TS.items.length ? "You taught me all of it. Thank you!" : n ? `You taught me ${n} of ${TS.items.length}. I'm getting it!` : TS.res.includes("partly") ? "I'm getting some of it! Want to look again and teach me once more?" : "I'm not there yet. Want to look again and then teach me?"}</div></div>
-      <ul class="t-sum">${TS.items.map((m, i) => { const r = TS.res[i] || "skip"; return `<li><span>${esc(m.title)}</span><i class="${r === "skip" ? "off" : r}">${LBL[r]}</i></li>`; }).join("")}</ul>
+      <ul class="t-sum">${TS.items.map((m, i) => { const r = TS.res[i] || "skip"; return `<li><span>${esc(m.title)}</span><i class="${r === "skip" || r === "dk" ? "off" : r}">${LBL[r]}</i></li>`; }).join("")}</ul>
       <div class="coach-row">${weak ? `<button class="skip t-show" type="button">Go over ${esc(weak.title.toLowerCase())}</button>` : ""}<button class="start t-close" type="button">Keep exploring ${ARR}</button></div>`);
     const showB = el.querySelector(".t-show");
     if (showB) showB.addEventListener("click", () => { closeTeach(); show("canvas", MODULES.indexOf(weak)); });
   }
   $("teach-dlg").addEventListener("click", (e) => { if (e.target === $("teach-dlg")) closeTeach(); });
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("teach-dlg").hidden) closeTeach(); });
+
+  // ---------- v27: Kube's entrance ----------
+  // The first time the canvas opens, Kube draws itself in the middle, says hi, and asks to be taught.
+  // "Not yet" sends it to its corner; "Yes" starts the questions straight away.
+  let kubeMet = false, kubeT = [];
+  function kubeIntro() {
+    kubeMet = true;
+    const box = $("kube-intro"), face = $("ki-face"), say = $("ki-say"), calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    $("buddy").classList.add("pending"); $("words-nudge").hidden = true; clearTimeout(nudgeT);
+    face.innerHTML = FACE("smile"); face.firstElementChild.classList.add("forming"); face.style.transform = ""; face.classList.remove("wave");
+    say.textContent = ""; $("ki-btns").hidden = true; box.classList.remove("leaving"); box.hidden = false;
+    const at = (ms, fn) => kubeT.push(setTimeout(fn, calm ? 0 : ms));
+    const line = (t) => { say.textContent = t; say.classList.remove("in"); void say.offsetWidth; say.classList.add("in"); };
+    at(2000, () => { face.classList.add("wave"); line("Hi! I'm Kube. I'm learning Kubernetes too."); });
+    at(4300, () => { line("Can you teach me this?"); $("ki-btns").hidden = false; $("ki-yes").focus({ preventScroll: true }); });
+  }
+  function kubeDone(yes) {
+    kubeT.forEach(clearTimeout); kubeT = [];
+    const box = $("kube-intro"), face = $("ki-face");
+    const resumeLesson = () => { const r = nodes.get("root"); if (r && r.lessonFinish) { r.lessonFinish(); const rb = r.el.querySelector(".lesson-replay"); if (rb) rb.click(); } };
+    if (yes) { box.hidden = true; $("buddy").classList.remove("pending"); openTeach(true); return; }
+    // Not yet: Kube shrinks and glides over to its corner, then waits there.
+    $("ki-say").textContent = ""; $("ki-btns").hidden = true;
+    const dock = $("buddy-btn").getBoundingClientRect(), f = face.getBoundingClientRect();
+    const dx = dock.left + dock.width / 2 - (f.left + f.width / 2), dy = dock.top + dock.height / 2 - (f.top + f.height / 2);
+    box.classList.add("leaving");
+    face.style.transform = `translate(${dx}px, ${dy}px) scale(${dock.width / f.width})`;
+    setTimeout(() => {
+      box.hidden = true; box.classList.remove("leaving"); $("buddy").classList.remove("pending");
+      buddySay("OK! Tap me when you're ready to teach me.");
+      resumeLesson(); scheduleNudge();
+    }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 950);
+  }
+  $("ki-yes").addEventListener("click", () => kubeDone(true));
+  $("ki-no").addEventListener("click", () => kubeDone(false));
   $("reread").addEventListener("click", () => show("article"));
   $("start").addEventListener("click", () => show("canvas", 0));
   function setDepth(d) {
