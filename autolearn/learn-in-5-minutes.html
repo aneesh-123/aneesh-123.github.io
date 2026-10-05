@@ -729,13 +729,50 @@ path.k-edge{fill:none}
 .tclock.away b{opacity:.45}
 .dg-clock{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:6}
 .next-idea.hurry{animation:begin-glow 2.2s ease-in-out infinite}
+/* v31: a new word is explained in the middle the first time it shows up, then kept in the word bank */
+.wordpop{position:fixed;inset:0;z-index:38;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ground) 45%,transparent);animation:better-fade .3s ease both}
+.wordpop[hidden]{display:none}
+.wordpop.leaving{background:transparent;transition:background .5s ease}
+.wp-card{box-sizing:border-box;width:min(400px,100%);background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 80px -20px rgba(0,0,0,.45);padding:20px 22px 22px;text-align:center}
+.wp-card.in{animation:better-pop .45s cubic-bezier(.2,.9,.3,1.2) both}
+.wp-k{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.wp-card .wp-pic{display:block;width:100%;height:170px;max-height:none;margin:0 auto 14px}
+.wp-card .wp-pic > g{transform-origin:0 0;transition:transform 1s cubic-bezier(.4,0,.2,1)}
+.wp-term{font-family:var(--display);font-weight:700;font-size:34px;line-height:1.1;margin:0 0 6px;color:var(--ink)}
+.wp-def{font-size:20px;line-height:1.4;color:var(--ink);margin:0 0 18px}
+.wbank{position:absolute;top:78px;right:16px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.wbank[hidden]{display:none}
+.wb-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font-family:var(--display);font-size:14px;font-weight:600;padding:6px 8px 6px 10px;cursor:pointer;box-shadow:var(--shadow)}
+.wb-toggle svg{width:18px;height:18px;color:var(--accent)}
+.wb-toggle b{min-width:22px;height:22px;border-radius:11px;background:var(--accent-soft);color:var(--accent);font-size:12.5px;display:grid;place-items:center;padding:0 6px;box-sizing:border-box}
+.wb-toggle.pulse{animation:wb-pulse .9s ease}
+@keyframes wb-pulse{0%{transform:scale(1)}35%{transform:scale(1.18);box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 28%,transparent)}100%{transform:scale(1)}}
+.wb-list{display:none;list-style:none;margin:0;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);max-height:min(50vh,360px);overflow:auto;width:250px;box-sizing:border-box}
+.wbank.open .wb-list{display:block}
+.wb-list button{display:block;width:100%;text-align:left;border:0;background:none;font-family:var(--display);font-size:16px;font-weight:600;color:var(--ink);padding:7px 10px;border-radius:10px;cursor:pointer}
+.wb-list button:hover{background:var(--surface-2)}
+.wb-list button[aria-expanded="true"]{color:var(--accent)}
+.wb-list p{margin:0 10px 8px;font-size:15px;line-height:1.4;color:var(--muted)}
+@media (max-width:700px){.wbank{top:64px;right:8px}.wb-toggle span{display:none}.wb-list{width:min(250px,calc(100vw - 24px))}.wp-term{font-size:30px}.wp-def{font-size:18px}.wp-card .wp-pic{height:140px}}
+@media (prefers-reduced-motion:reduce){.wb-toggle.pulse,.wp-card.in{animation:none}}
+/* v31: why an answer is wrong, only when you ask */
+.fb .fb-why,.fb .fb-review{margin-left:4px}
+.fb-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:12px}
+/* v31: Kube says what it wants to understand, and ticks off what you covered */
+.t-hints{margin:2px 0 12px}
+.t-hints ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.t-hints li{display:flex;align-items:flex-start;gap:9px;font-size:17px;line-height:1.35;color:var(--ink)}
+.t-hints li i{flex:none;width:16px;height:16px;margin-top:3px;border-radius:50%;border:2px solid var(--line);box-sizing:border-box}
+.t-hints li.yes i{border-color:var(--accent);background:var(--accent)}
+.t-hints li.some i{border-color:var(--accent);background:linear-gradient(90deg,var(--accent) 50%,transparent 50%)}
+.t-hints li.no span{color:var(--muted)}
 /* v30: hands-free voice */
 .voice{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font-family:var(--display);font-size:14px;font-weight:600;padding:5px 12px 5px 9px;cursor:pointer}
 .voice[hidden]{display:none}
 .voice svg{width:18px;height:18px;color:var(--accent)}
 .voice.on{background:var(--wrong);border-color:transparent;color:#fff;animation:t-rec 1.3s ease-in-out infinite}
 .voice.on svg{color:#fff}
-.voice-cap{position:fixed;right:16px;top:calc(74px + env(safe-area-inset-top,0px));z-index:30;box-sizing:border-box;max-width:min(420px,calc(100vw - 32px));background:var(--ink);color:var(--ground);border-radius:14px;padding:9px 16px;font-family:var(--display);font-size:15px;line-height:1.4;text-align:left;box-shadow:var(--shadow);animation:better-pop .3s ease both}
+.voice-cap{position:fixed;right:16px;top:calc(124px + env(safe-area-inset-top,0px));z-index:30;box-sizing:border-box;max-width:min(420px,calc(100vw - 32px));background:var(--ink);color:var(--ground);border-radius:14px;padding:9px 16px;font-family:var(--display);font-size:15px;line-height:1.4;text-align:left;box-shadow:var(--shadow);animation:better-pop .3s ease both}
 .voice-cap[hidden]{display:none}
 .voice-cap i{opacity:.75}
 .voice-cap.interim{opacity:.8}
@@ -1092,7 +1129,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v30 · Learn it in 5 minutes</span>
+      <span>v31 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1160,6 +1197,7 @@ path.k-edge{fill:none}
       <span class="meter cov"><span>Covered</span><i><b id="m-cov"></b></i><em id="m-cov-n">0%</em></span>
       <span class="meter und"><span>Understood</span><i><b id="m-und"></b></i><em id="m-und-n">0%</em></span></button><button class="tally" id="tally" hidden aria-label="What you've learned" title="What you've learned"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span id="tally-n">0</span></button><button class="tool icon" id="recenter" aria-label="Recenter" title="Recenter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/><path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3"/></svg></button></div>
   </header>
+  <aside class="wbank" id="wbank" hidden aria-label="Word bank"><button class="wb-toggle" id="wb-toggle" type="button" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C5.5 4 9 4 12 6c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></svg><span>Word bank</span><b id="wb-n">0</b></button><ul class="wb-list" id="wb-list"></ul></aside>
   <div class="voice-cap" id="voice-cap" hidden aria-live="polite"></div>
   <div class="termpop" id="termpop" hidden><b id="termpop-name"></b><p id="termpop-def"></p><button type="button" id="termpop-more">Ask more →</button></div>
   <div class="words-nudge" id="words-nudge" hidden><button id="words-open" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C5.5 4 9 4 12 6c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></svg>5 words to know first</button><button id="words-nudge-x" type="button" aria-label="Not now" title="Not now"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
@@ -1206,7 +1244,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v30 · Learn it in 5 minutes</div>
+    <div class="version-tag">v31 · Learn it in 5 minutes</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -1226,6 +1264,9 @@ path.k-edge{fill:none}
       <div class="ki-btns" id="ki-btns" hidden><button class="start" id="ki-yes" type="button">Yes, I'll teach you</button><button class="words-prev" id="ki-no" type="button">Not yet</button></div></div>
   </div>
   <div class="coach teach-dlg" id="teach-dlg" hidden role="dialog" aria-modal="true" aria-label="Teach it back"><div class="coach-card" id="teach-card"></div></div>
+<div class="wordpop" id="wordpop" hidden role="dialog" aria-modal="true" aria-labelledby="wp-term">
+  <div class="wp-card" id="wp-card"><div class="wp-k">New word</div><svg id="wp-pic"></svg><h2 class="wp-term" id="wp-term"></h2><p class="wp-def" id="wp-def"></p><button class="start" id="wp-ok" type="button">Got it</button></div>
+</div>
 <script>
 (() => {
   // ---------- icons ----------
@@ -2605,7 +2646,14 @@ path.k-edge{fill:none}
     wireCheck(root.el.querySelector(".root-quiz"), M.quick, (missed) => {
       addLearned("root-" + M.id, "root", root.el.querySelector(".q")); root.el.classList.add("answered"); focusKey = null;
       // Got it wrong first? Go over it again, a simpler way, with a new question, before moving on.
-      if (missed != null) return setTimeout(() => reteachNow("root-" + M.id, missed, `Main idea ${mi + 1}`, () => { finish(); openKnow(true); }), 1400);
+      if (missed != null) {
+        const fb = root.el.querySelector(".root-quiz .fb");
+        fb.insertAdjacentHTML("beforeend", `<span class="fb-row"><button type="button" class="next-idea fb-go">Keep going ${ARROW_RIGHT}</button><button type="button" class="skip fb-review">Why was my first pick wrong?</button></span>`);
+        fb.querySelector(".fb-go").addEventListener("click", () => { finish(); openKnow(true); });
+        fb.querySelector(".fb-review").addEventListener("click", () => reteachNow("root-" + M.id, missed, `Main idea ${mi + 1}`, () => { finish(); openKnow(true); }));
+        requestAnimationFrame(() => frame(root));
+        return;
+      }
       // Let "Right." land. Then the knowledge graph opens by itself to show what just moved out of the textbook, and closes again.
       setTimeout(() => {
         if (!EXPLAIN_BACK) { finish(); openKnow(true); return; }
@@ -2905,9 +2953,13 @@ path.k-edge{fill:none}
 
   // Multiple choice waits a few seconds so the learner forms their own answer before seeing the options.
   const THINK_MS = 5000;
+  // v31: no waiting for the choices (?think=1 brings the 5-second "think first" back), and closing a rabbit hole
+  // just closes it (?closecheck=1 brings back the question on close, for an A/B test).
+  const QS = new URLSearchParams(location.search), THINK_WAIT = QS.get("think") === "1", CLOSE_CHECK = QS.get("closecheck") === "1";
   function thinkFirst(scope, onShown, ms = THINK_MS) {
     const opts = scope.querySelector(".opts"); if (!opts || opts.dataset.thought) return;
     opts.dataset.thought = "1";
+    if (!THINK_WAIT) { scope.dataset.shownAt = Date.now(); if (onShown) requestAnimationFrame(onShown); return; }
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) { scope.dataset.shownAt = Date.now(); return; }
     opts.classList.add("thinking");
     const t = document.createElement("div"); t.className = "think"; t.style.setProperty("--think", ms + "ms");
@@ -2932,7 +2984,8 @@ path.k-edge{fill:none}
         onRight && onRight(firstWrong);
       } else {
         b.classList.add("wrong"); b.disabled = true;
-        fb.className = "fb no"; fb.innerHTML = `<b>Not quite.</b> ${c.no && c.no[i] ? esc(c.no[i]) + " " : ""}Try another.`;
+        fb.className = "fb no"; fb.innerHTML = `<b>Not quite.</b> Try another.${c.no && c.no[i] ? ` <button type="button" class="skip fb-why">Why?</button><span class="fb-why-t" hidden> ${esc(c.no[i])}</span>` : ""}`;
+        const why = fb.querySelector(".fb-why"); if (why) why.addEventListener("click", () => { why.remove(); fb.querySelector(".fb-why-t").hidden = false; });
       }
       fb.hidden = false;
     }));
@@ -2949,7 +3002,7 @@ path.k-edge{fill:none}
     const first = n.el.querySelector(".closehole.first");
     if (!check) { first.addEventListener("click", () => closeHole(n.id)); return; }
     // Questions at the end: closing just closes. What you read is saved for the final check.
-    if (QUIZ === "end") { first.addEventListener("click", () => { n.seen = true; closeHole(n.id); }); return; }
+    if (QUIZ === "end" || !CLOSE_CHECK) { first.addEventListener("click", () => { n.seen = true; closeHole(n.id); }); return; }
     const quiz = n.el.querySelector(".quiz"), peek = n.el.querySelector(".peek");
     const fit = () => {
       const need = n.el.querySelector(".quiz-inner").offsetHeight + 56;
@@ -2971,7 +3024,11 @@ path.k-edge{fill:none}
       n.answered = true;
       done.hidden = false; skip.hidden = true;
       requestAnimationFrame(() => showBottom(n));
-      if (missed != null) setTimeout(() => reteachNow(n.topic, missed, "Rabbit hole", () => closeHole(n.id)), 1100);
+      if (missed != null) {
+        const fb = quiz.querySelector(".fb");
+        fb.insertAdjacentHTML("beforeend", ` <button type="button" class="skip fb-review">Why was my first pick wrong?</button>`);
+        fb.querySelector(".fb-review").addEventListener("click", (e) => { e.target.remove(); reteachNow(n.topic, missed, "Rabbit hole", null); });
+      }
     }, n.topic);
     done.addEventListener("click", () => closeHole(n.id));
     n.el.querySelector(".skip").addEventListener("click", () => { LM.skips++; closeHole(n.id); });
@@ -3483,7 +3540,7 @@ Rules:
     const open = () => openTopic(topic, n.parent);
     n.el.addEventListener("click", open);
     n.el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
-    if (entry) entry.nodeId = id; else if (seenTopics.has(topic)) { n.el.classList.add("seen"); n.el.title = "Read. Checked at the end"; }
+    if (entry) entry.nodeId = id; else if (seenTopics.has(topic)) { n.el.classList.add("seen"); n.el.title = QUIZ === "end" ? "Read. Checked at the end" : "You read this. Tap to open it again"; }
     return n;
   }
 
@@ -3657,6 +3714,7 @@ Rules:
     if (termAt === b) return hideTerm();
     termAt = b; b.classList.add("seen");
     const key = b.dataset.term;
+    if (typeof bankAdd === "function") bankAdd(key);
     $("termpop-name").textContent = b.textContent;
     $("termpop-def").textContent = GLOSSARY[key] || "";
     termpop.hidden = false;
@@ -3926,11 +3984,78 @@ Rules:
   $("words-prev").addEventListener("click", () => { if (wordAt > 0) setWord(wordAt - 1); });
   $("words-skip").addEventListener("click", backToCanvas);
   $("words-back").addEventListener("click", backToCanvas);
+
+  // ---------- v31: words, one at a time ----------
+  // No "5 words" button. The first time one of the 5 words shows up on screen, it's explained in a card in the middle,
+  // with the same picture that builds from a container up to a cluster. "Got it" sends it to the word bank on the right.
+  // Dotted words you tap go into the bank too.
+  const BANK = [], WORD_KEYS = WORDS.map((w) => w.term);
+  const defOf = (k) => { const w = WORDS.find((x) => x.term === k); return w ? w.def : GLOSSARY[k] || ""; };
+  function renderBank(pulse) {
+    $("wbank").hidden = !BANK.length; $("wb-n").textContent = BANK.length;
+    $("wb-list").innerHTML = BANK.map((k) => `<li><button type="button" data-k="${esc(k)}" aria-expanded="false">${esc(k)}</button><p hidden>${esc(defOf(k))}</p></li>`).join("");
+    if (pulse) { const t = $("wb-toggle"); t.classList.remove("pulse"); void t.offsetWidth; t.classList.add("pulse"); }
+  }
+  function bankAdd(k, pulse = true) { if (!BANK.includes(k) && defOf(k)) { BANK.push(k); renderBank(pulse); } }
+  function bankOpen(on) { $("wbank").classList.toggle("open", on); $("wb-toggle").setAttribute("aria-expanded", String(on)); }
+  $("wb-toggle").addEventListener("click", () => bankOpen(!$("wbank").classList.contains("open")));
+  $("wb-list").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-k]"); if (!b) return;
+    const p = b.nextElementSibling; p.hidden = !p.hidden; b.setAttribute("aria-expanded", String(!p.hidden));
+  });
+  document.addEventListener("pointerdown", (e) => { if ($("wbank").classList.contains("open") && !e.target.closest("#wbank")) bankOpen(false); });
+  const wordPic = $("words-pic").cloneNode(true);
+  wordPic.removeAttribute("id"); wordPic.querySelector("#words-cam").removeAttribute("id"); wordPic.classList.add("wp-pic"); wordPic.setAttribute("aria-hidden", "true");
+  $("wp-pic").replaceWith(wordPic);
+  let wordOpen = null, wordLast = 0;
+  function openWord(k) {
+    const i = WORD_KEYS.indexOf(k), w = WORDS[i];
+    wordOpen = k;
+    const cam = wordPic.querySelector("g"), [bx, by, bw, bh] = w.cam, sc = Math.min(400 / bw, 290 / bh);
+    cam.style.transform = `translate(${(400 - bw * sc) / 2 - bx * sc}px, ${(290 - bh * sc) / 2 - by * sc}px) scale(${sc})`;
+    wordPic.querySelectorAll("[data-w]").forEach((g) => g.classList.toggle("on", +g.dataset.w <= i + 1));
+    $("wp-term").textContent = w.term; $("wp-def").textContent = w.def;
+    const card = $("wp-card"); card.style.transform = ""; card.style.opacity = ""; card.style.transition = "";
+    card.classList.remove("in"); void card.offsetWidth; card.classList.add("in");
+    $("wordpop").hidden = false; $("wp-ok").focus({ preventScroll: true });
+  }
+  function closeWord() {
+    if (!wordOpen) return;
+    const k = wordOpen; wordOpen = null; wordLast = Date.now();
+    bankAdd(k, false);
+    const card = $("wp-card"), from = card.getBoundingClientRect(), to = $("wb-toggle").getBoundingClientRect();
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !to.width) { $("wordpop").hidden = true; renderBank(true); return; }
+    card.classList.remove("in");
+    card.style.transition = "transform .55s cubic-bezier(.5,0,.3,1), opacity .55s ease";
+    card.style.transform = `translate(${to.left + to.width / 2 - (from.left + from.width / 2)}px, ${to.top + to.height / 2 - (from.top + from.height / 2)}px) scale(.1)`;
+    card.style.opacity = "0"; $("wordpop").classList.add("leaving");
+    setTimeout(() => { $("wordpop").hidden = true; $("wordpop").classList.remove("leaving"); renderBank(true); }, 560);
+  }
+  $("wp-ok").addEventListener("click", closeWord);
+  $("wordpop").addEventListener("click", (e) => { if (e.target === $("wordpop")) closeWord(); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && wordOpen) closeWord(); });
+  // Every second or so: is one of the 5 words on screen for the first time? Only when nothing else is going on.
+  setInterval(() => {
+    if (wordOpen || $("canvas").hidden || Date.now() - wordLast < 2500 || drag) return;
+    if (!$("coach").hidden || !$("know").hidden || !$("teach-dlg").hidden || !$("kube-intro").hidden || !$("five").hidden || !$("figbox").hidden || recallKey || !termpop.hidden) return;
+    if (document.querySelector("#world .node.lesson")) return;
+    const v = vp.getBoundingClientRect();
+    const t = [...document.querySelectorAll("#world .term")].find((x) => {
+      if (!WORD_KEYS.includes(x.dataset.term) || BANK.includes(x.dataset.term)) return false;
+      const ls = x.closest(".ls"); if (ls && !ls.classList.contains("on")) return false;
+      const r = x.getBoundingClientRect();
+      return r.width > 0 && r.top > v.top + 10 && r.bottom < v.bottom - 10 && r.left > v.left && r.right < v.right;
+    });
+    if (!t) return;
+    // People who already know it (or proved it to Kube) just get the word in the bank.
+    if (wordsNotNow || JARGON === 0) return bankAdd(t.dataset.term);
+    openWord(t.dataset.term);
+  }, 1200);
   // The canvas opens on the first question; a moment later a button asks to teach the 5 words first.
   let wordsSeen = false, wordsNotNow = false, nudgeT = null;
   function scheduleNudge() {
     clearTimeout(nudgeT); $("words-nudge").hidden = true;
-    if (wordsSeen || wordsNotNow) return;
+    return;   // v31: no button; each of the 5 words is explained when it first shows up (see the word bank)
     nudgeT = setTimeout(() => { if (!$("canvas").hidden && !recallKey) $("words-nudge").hidden = false; }, 1600);
   }
   $("words-open").addEventListener("click", () => { wordsSeen = true; $("words-nudge").hidden = true; show("words"); });
@@ -4214,6 +4339,20 @@ Rules:
     services: "If my app's copies keep changing, how do people still find it?",
     config: "OK, the big one: what is Kubernetes, and what are its main parts?"
   };
+  // v31: what Kube wants to understand for each idea, as beginner questions. Each maps to the key points it covers.
+  const BUDDY_HINTS = {
+    why: [["What's a container, and why use one?", [1, 2]], ["What got too hard to do by hand?", [3]], ["So what does Kubernetes do about it?", [4, 5]]],
+    cluster: [["What's a cluster made of?", [1, 3]], ["What's the brain, and what does it decide?", [2, 5]], ["What runs on each machine?", [4]]],
+    deploy: [["What's in the file I hand it?", [1, 2]], ["What's a Pod?", [3]], ["What if one crashes, or traffic grows?", [4, 5]], ["How do updates work?", [6]]],
+    services: [["Why can't people just use one copy's address?", [1]], ["So how do they find my app?", [2, 3]], ["How does traffic from the internet get in?", [4]]],
+    config: [["What is it, and where did it come from?", [1, 2]], ["Why did teams need it?", [3]], ["What's in a cluster, and on each node?", [4, 5]], ["How do I tell it what to run?", [6, 7, 8]], ["How do people reach my app?", [9]], ["Where do settings, passwords and data go?", [10]]]
+  };
+  function hintsHTML(m, cov) {
+    const h = BUDDY_HINTS[m.id]; if (!h) return "";
+    return `<div class="t-hints"><div class="t-sub">${cov ? "What you covered" : "Help me understand"}</div><ul>${h.map(([q, pts]) => {
+      const n = cov ? pts.filter((p) => cov.has(p)).length : 0, st = !cov ? "" : n === pts.length ? "yes" : n ? "some" : "no";
+      return `<li class="${st}"><i aria-hidden="true"></i><span>${esc(q)}</span></li>`; }).join("")}</ul></div>`;
+  }
   const BUDDY_LINES = ["Ready to teach me this?", "Think you could explain it to me?", "Can you teach me what you just learned?"];
   const MIC_I = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
   const STOP_I = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>`;
@@ -4389,7 +4528,7 @@ Reply with only JSON, like:
     if (/\b(zoom out|further|smaller)\b/.test(t)) { zoomBy(0.8); return say("Zooming out"); }
     if (/\b(show (me )?everything|whole (map|thing)|overview|show all|big picture)\b/.test(t)) { fitAll(); return say("Here's everything"); }
     if (/\b(center|recenter|main question|go home)\b/.test(t)) { home(); return say("Main question"); }
-    if (/\b(five|5) words\b|\bwords to know\b/.test(t)) { wordsSeen = true; $("words-nudge").hidden = true; show("words"); return say("The 5 words"); }
+    if (/\b(word bank|my words|(five|5) words|words to know)\b/.test(t)) { if (!BANK.length) return say("No words in your bank yet"); bankOpen(true); return say("Your word bank"); }
     if (/\b(what (do )?i know|my progress|what i('ve| have)? learned)\b/.test(t)) { openKnow(); return say("What you know"); }
     // Otherwise it's a question: open the side question it matches, or a word's definition, or ask it.
     const cands = [...nodes.values()].filter((x) => (is(x, "ghostq") || is(x, "leaf")) && x.topic && TOPICS[x.topic]);
@@ -4460,19 +4599,22 @@ Reply with only JSON, like:
     c.querySelectorAll(".t-close").forEach((b) => b.addEventListener("click", () => TS && TS.exam ? examSummary() : closeTeach()));
     return c.firstElementChild;
   }
-  function askTeach(prefill = "") {
+  function askTeach(prefill = "", follow = null) {
     const m = TS.items[TS.i], last = TS.i === TS.items.length - 1;
+    // A follow-up keeps what you already said; you just add the missing part.
+    const base = follow ? prefill : "";
     const el = teachShell(`<div class="coach-k"><span>${TS.exam ? "Prove it" : "Teach me"} · ${TS.i + 1} of ${TS.items.length}</span><button class="skip t-close" type="button">${TS.exam ? "Stop here" : "Not ready yet"}</button></div>
-      <div class="t-head">${FACE("smile")}<div class="t-bubble">${esc(BUDDY_Q[m.id] || plainTerms(m.explainQ))}</div></div>
+      <div class="t-head">${FACE("smile")}<div class="t-bubble">${esc(follow || BUDDY_Q[m.id] || plainTerms(m.explainQ))}</div></div>
+      ${hintsHTML(m, follow ? TS.lastCov : null)}
       <div class="t-in">${SR ? `<button class="t-mic" type="button" aria-label="Talk">${MIC_I}</button>` : ""}<textarea class="t-ta" rows="4" aria-label="Your explanation" placeholder="${SR ? "Tap the mic and talk, or type…" : "Explain it like I'm new to this…"}"></textarea></div>
       <p class="t-note" hidden></p><p class="t-conn" hidden></p>
       <div class="coach-row"><button class="words-prev t-dk" type="button">I don't know</button><button class="skip t-skip" type="button">${last ? "I'm done" : "Skip"}</button><button class="start t-go" type="button" disabled>Teach me ${ARR}</button></div>`);
     const ta = el.querySelector(".t-ta"), go = el.querySelector(".t-go"), note = el.querySelector(".t-note"), mic = el.querySelector(".t-mic");
-    const sync = () => { go.disabled = ta.value.trim().split(/\s+/).filter(Boolean).length < 3; };
-    ta.value = prefill; sync();
+    const sync = () => { go.disabled = ta.value.trim().split(/\s+/).filter(Boolean).length < (follow ? 2 : 3); };
+    ta.value = follow ? "" : prefill; sync();
     ta.addEventListener("input", sync);
     if (mic) mic.addEventListener("click", () => toggleMic(mic, ta, note, sync));
-    go.addEventListener("click", () => gradeTeach(m, ta.value.trim()));
+    go.addEventListener("click", () => gradeTeach(m, ((base ? base + " " : "") + ta.value.trim()).trim()));
     el.querySelector(".t-skip").addEventListener("click", () => { stopMic(); TS.res[TS.i] = TS.res[TS.i] || "skip"; nextTeach(); });
     el.querySelector(".t-dk").addEventListener("click", () => { stopMic(); dontKnow(m); });
     teachGrader().then((g) => { if (!g) connLine(el.querySelector(".t-conn")); });
@@ -4525,16 +4667,21 @@ Reply with only JSON, like:
     const wrong = (r.wrong || []).filter((w) => w && w.fix);
     const head = lvl === "solid" ? "You taught me!" : lvl === "partly" ? "Getting there" : "I'm still confused";
     const last = TS.i === TS.items.length - 1;
+    TS.lastCov = cov;
+    // Kube's follow-up: Claude's own question, or the first thing on its list you haven't covered yet.
+    const hs = BUDDY_HINTS[m.id] || [];
+    const openHint = hs.find(([, pts]) => !pts.some((p) => cov.has(p))) || hs.find(([, pts]) => !pts.every((p) => cov.has(p)));
+    const follow = lvl === "solid" || TS.exam ? null : r.ask || (openHint && openHint[0]) || null;
     const el = teachShell(`<div class="coach-k"><span>${head}</span><button class="skip t-close" type="button">Close</button></div>
-      <div class="t-head">${FACE(lvl === "solid" ? "happy" : lvl === "partly" ? "smile" : "huh")}<div class="t-bubble">${esc(r.say || "")}${r.ask && lvl !== "solid" ? `<br>${esc(r.ask)}` : ""}</div></div>
+      <div class="t-head">${FACE(lvl === "solid" ? "happy" : lvl === "partly" ? "smile" : "huh")}<div class="t-bubble">${esc(r.say || "")}${follow ? `<br>${esc(follow)}` : ""}</div></div>
       <p class="t-quote">${esc(text)}</p>
-      ${got.length ? `<div class="t-sub">What you taught me</div><ul class="t-list got">${got.map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
+      ${BUDDY_HINTS[m.id] ? hintsHTML(m, cov) : got.length ? `<div class="t-sub">What you taught me</div><ul class="t-list got">${got.map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
       ${wrong.length ? `<div class="t-sub">Not quite</div><ul class="t-list off">${wrong.map((w) => `<li><span>${w.quote ? `<b>“${esc(w.quote)}”</b> ` : ""}${esc(w.fix)}</span></li>`).join("")}</ul>` : ""}
-      ${lvl !== "solid" && miss.length ? `<div class="t-sub">I still don't get</div><ul class="t-list miss">${miss.slice(0, 3).map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
+      ${lvl !== "solid" && miss.length && !BUDDY_HINTS[m.id] ? `<div class="t-sub">I still don't get</div><ul class="t-list miss">${miss.slice(0, 3).map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
       ${note ? `<p class="t-note">${esc(note)}</p>` : ""}
-      <div class="coach-row">${lvl !== "solid" && !TS.exam ? `<button class="skip t-again" type="button">Try again</button><button class="skip t-show" type="button">Show me that part</button>` : ""}<button class="start t-next" type="button">${last ? "See how I did" : "Next question"} ${ARR}</button></div>`);
+      <div class="coach-row">${lvl !== "solid" && !TS.exam ? `<button class="skip t-show" type="button">Show me that part</button><button class="skip t-next" type="button">${last ? "See how I did" : "Next question"}</button>${follow ? `<button class="start t-again" type="button">Answer that ${ARR}</button>` : ""}` : `<button class="start t-next" type="button">${last ? "See how I did" : "Next question"} ${ARR}</button>`}</div>`);
     const again = el.querySelector(".t-again"), showB = el.querySelector(".t-show");
-    if (again) again.addEventListener("click", () => askTeach(text));
+    if (again) again.addEventListener("click", () => askTeach(text, follow));
     if (showB) showB.addEventListener("click", () => { closeTeach(); show("canvas", MODULES.indexOf(m)); });
     el.querySelector(".t-next").addEventListener("click", nextTeach);
   }
