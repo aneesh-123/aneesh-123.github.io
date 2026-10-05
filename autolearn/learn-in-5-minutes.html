@@ -944,6 +944,28 @@ path.k-edge{fill:none}
 .buddy-say{pointer-events:auto;position:relative;margin-bottom:34px;max-width:220px;background:var(--surface);border:1.5px solid var(--accent);border-radius:16px 16px 16px 4px;padding:10px 14px;font-family:var(--display);font-weight:600;font-size:16px;line-height:1.3;color:var(--ink);box-shadow:var(--shadow);cursor:pointer}
 .buddy-say.in{animation:better-pop .45s cubic-bezier(.2,.9,.3,1.2) both}
 .buddy-say[hidden]{display:none}
+/* v34: Kube comes over to a wrong answer, and can talk with buttons */
+.buddy.gone{visibility:hidden}
+.buddy-say.acts{max-width:270px;cursor:default}
+.bs-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.bs-row button,.kn-row button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:6px 13px;font:600 14.5px var(--display);cursor:pointer}
+.bs-row button.main,.kn-row button.main{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.bs-row button:hover,.kn-row button:hover{border-color:var(--accent)}
+.kube-near{display:flex;align-items:flex-start;gap:12px;margin-top:14px;animation:appear .35s ease both}
+.kube-near .kn-face{flex:none;width:56px;height:56px;border-radius:50%;border:2px solid var(--accent);background:var(--surface);padding:3px;box-shadow:var(--shadow)}
+.kube-near .kn-face svg{width:100%;height:100%;display:block}
+.kube-near.landing .kn-face{visibility:hidden}
+.kn-say{flex:1;min-width:0;background:var(--surface-2,var(--ground));border:1.5px solid var(--accent);border-radius:4px 18px 18px 18px;padding:11px 15px;font-family:var(--display);font-weight:600;font-size:17px;line-height:1.35;color:var(--ink)}
+.kn-say p{margin:0}
+.kn-say .kn-off{font-weight:400;margin-top:6px}
+.kn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.opts.held .opt:not(:disabled){opacity:.45;pointer-events:none}
+.kube-fly{position:fixed;z-index:60;border-radius:50%;border:2px solid var(--accent);background:var(--surface);padding:3px;box-sizing:border-box;box-shadow:var(--shadow);pointer-events:none;transition:transform .75s cubic-bezier(.45,0,.2,1)}
+.kube-fly svg{width:100%;height:100%;display:block}
+@media (max-width:700px){.tclock .ck-x{display:none}.tools{gap:5px}.buddy-say.acts{max-width:230px}.kube-near .kn-face{width:46px;height:46px}.kn-say{font-size:16px}}
+@media (max-width:700px){.back{width:30px;height:30px}.crumb{gap:6px}.steps{gap:2px}.stp{width:20px;height:20px}}
+@media (max-width:380px){.stp{width:19px;height:19px}.topbar{gap:8px;padding-left:10px;padding-right:10px}.tools{gap:4px}}
+@media (prefers-reduced-motion:reduce){.kube-fly{transition:none}}
 @keyframes buddy-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 .bf-head{fill:var(--branch-soft);stroke:var(--branch);stroke-width:2.2}
 .bf-hair{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
@@ -1121,7 +1143,8 @@ path.k-edge{fill:none}
     <h2 id="five-h">That's your 5 minutes</h2>
     <p class="better-sub" id="five-sub"></p>
     <button class="start" id="five-go" type="button">Keep going <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
-    <button class="skip better-no" id="five-more" type="button" hidden>Keep learning</button>
+    <button class="skip better-no" id="five-add" type="button" hidden>Add 5 more minutes</button>
+    <button class="skip better-no" id="five-more" type="button" hidden>Keep learning, no clock</button>
     <button class="skip better-no" id="five-stop" type="button">Stop here and see what I learned</button>
   </div>
 </div>
@@ -1163,7 +1186,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v33 · Learn it in 5 minutes</span>
+      <span>v34 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1278,7 +1301,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v33 · Learn it in 5 minutes</div>
+    <div class="version-tag">v34 · Learn it in 5 minutes</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -3015,11 +3038,13 @@ path.k-edge{fill:none}
       if (key) noteAnswer(key, scope, i === c.right, c.opts[i]);
       if (i === c.right) {
         opts.forEach((o) => (o.disabled = true));
+        if (scope.querySelector(".kube-near")) kubeLeave(true);
         b.classList.add("right");
         fb.className = "fb"; fb.innerHTML = `<b>Right.</b> ${esc(c.why)}`;
         onRight && onRight(firstWrong);
       } else {
         b.classList.add("wrong"); b.disabled = true;
+        if (kubeWrong(scope, c, i)) { fb.className = "fb no"; fb.innerHTML = "<b>Not quite.</b>"; fb.hidden = false; return; }
         fb.className = "fb no"; fb.innerHTML = `<b>Not quite.</b> Try another.${c.no && c.no[i] ? ` <button type="button" class="skip fb-why">Why?</button><span class="fb-why-t" hidden> ${esc(c.no[i])}</span>` : ""}`;
         const why = fb.querySelector(".fb-why"); if (why) why.addEventListener("click", () => { why.remove(); fb.querySelector(".fb-why-t").hidden = false; });
       }
@@ -3956,7 +3981,7 @@ Rules:
   }
   $("mins").addEventListener("input", (e) => setMin(+e.target.value));
   setMin(MIN);
-  $("better-go").addEventListener("click", () => { learnMs = 0; extraMs = 0; fiveDone = false; oneMinSaid = false; show("diag"); });
+  $("better-go").addEventListener("click", () => { learnMs = 0; extraMs = 0; fiveDone = false; oneMinSaid = false; nearSaid = false; show("diag"); });
   ["better-no", "better-no2"].forEach((id) => $(id).addEventListener("click", closeBetter));
   $("better").addEventListener("click", (e) => { if (e.target === $("better")) closeBetter(); });
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("better").hidden) closeBetter(); });
@@ -4295,6 +4320,7 @@ Rules:
   // If they seem bored (drifting, leaving the tab, guessing fast, skipping), offer a good place to stop; otherwise a quick cheer.
   // v29: the budget is the minutes picked in the pop-up (?five=N sets it in seconds, for testing), plus any added.
   const FIVE_Q = +new URLSearchParams(location.search).get("five") || 0;
+  let nearSaid = false;
   let learnMs = 0, extraMs = 0, fiveDone = false, toastT = null, oneMinSaid = false, paceM = null, paceAt = 0, paceShare = 0, paceSaid = false;
   const budgetMs = () => (FIVE_Q || MIN * 60) * 1000 + extraMs;
   const minsTxt = () => { const n = Math.max(1, Math.round(budgetMs() / 60000)); return n + (n === 1 ? " minute" : " minutes"); };
@@ -4362,6 +4388,10 @@ Rules:
     const idle = Date.now() - lastSeen;
     if (idle < 60000) learnMs += 1000;
     if (!$("diag").hidden && idle >= 40000 && !drifting) { drifting = true; LM.drifts++; }
+    if (timed && !nearSaid && !clockMini) {
+      const left = budgetMs() - learnMs;
+      if (left > 0 && left <= Math.min(60000, budgetMs() * 0.25)) nearSaid = kubeNearTime();
+    }
     if (learnMs >= budgetMs() && $("coach").hidden && $("know").hidden && $("words").hidden && $("teach-dlg").hidden && $("kube-intro").hidden) fiveCheck();
   }, 1000);
   function fiveCheck() {
@@ -4372,7 +4402,7 @@ Rules:
     $("five-h").textContent = `You've learned for ${minsTxt()}`;
     $("five-sub").textContent = `${got} Do you feel like you understand it, or do you want to keep learning? No rush either way.`;
     $("five-go").firstChild.textContent = "I think I get it. Let me teach Kube ";
-    $("five-more").hidden = false; $("five-stop").textContent = "Stop here and see what I learned";
+    $("five-more").hidden = false; $("five-add").hidden = false; $("five-stop").textContent = "Stop here and see what I learned";
     $("five").hidden = false; $("five-go").focus({ preventScroll: true });
   }
   function fiveStop() {
@@ -4383,7 +4413,7 @@ Rules:
       $("five-h").textContent = "Nice work";
       $("five-sub").textContent = "You saw the big idea: you write down what you want, and Kubernetes keeps it running, even when a server dies or shoppers flood in. Come back anytime to go deeper.";
       $("five-go").firstChild.textContent = "Keep going ";
-      $("five-stop").textContent = "Back to the article"; $("five-more").hidden = true;
+      $("five-stop").textContent = "Back to the article"; $("five-more").hidden = true; $("five-add").hidden = true;
       $("five").hidden = false; $("five").dataset.end = "1";
       return;
     }
@@ -4397,6 +4427,9 @@ Rules:
   });
   // Keep learning: no more check-ins and no clock. Kube is still there whenever you want to teach it.
   $("five-more").addEventListener("click", () => { $("five").hidden = true; timed = false; renderClock(); });
+  // v34: or just add 5 more minutes to the clock.
+  function addFive() { extraMs += 300000; fiveDone = false; nearSaid = false; timed = true; renderClock(); }
+  $("five-add").addEventListener("click", () => { $("five").hidden = true; addFive(); setTimeout(() => buddySay(`OK! ${minsLeftTxt()} more. Take your time.`), 600); });
   $("five-stop").addEventListener("click", () => { if ($("five").dataset.end) { $("five").hidden = true; show("article"); } else fiveStop(); });
   $("five-toast-stop").addEventListener("click", fiveStop);
   $("five-toast-x").addEventListener("click", () => { $("five-toast").hidden = true; clearTimeout(toastT); });
@@ -4434,13 +4467,77 @@ Rules:
   const ARR = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>`;
   $("buddy-btn").innerHTML = FACE("smile");
   let buddyN = 0, sayT = null, rootsSeen = 0, lastBuddy = Date.now(), canvasSince = null;
-  function buddySay(text) {
-    if ($("canvas").hidden || !$("teach-dlg").hidden || !$("coach").hidden || !$("know").hidden || !$("kube-intro").hidden) return;
+  // v34: Kube can also offer buttons (acts: [[label, fn, main?]]). A bubble with buttons stays up longer and doesn't open teach-back.
+  function buddySay(text, acts) {
+    if ($("canvas").hidden || !$("teach-dlg").hidden || !$("coach").hidden || !$("know").hidden || !$("kube-intro").hidden || document.querySelector(".kube-near")) return false;
     const b = $("buddy-say");
     b.textContent = text || BUDDY_LINES[buddyN++ % BUDDY_LINES.length];
+    b.classList.toggle("acts", !!acts);
+    if (acts) {
+      const row = document.createElement("div"); row.className = "bs-row";
+      acts.forEach(([label, fn, main]) => { const x = document.createElement("button"); x.type = "button"; x.textContent = label; if (main) x.className = "main"; x.addEventListener("click", (e) => { e.stopPropagation(); fn(x); }); row.append(x); });
+      b.append(row);
+    }
     b.hidden = false; b.classList.remove("in"); void b.offsetWidth; b.classList.add("in");
-    clearTimeout(sayT); sayT = setTimeout(() => { b.hidden = true; }, 8000);
+    clearTimeout(sayT); sayT = setTimeout(() => { b.hidden = true; }, acts ? 25000 : 8000);
     lastBuddy = Date.now();
+    return true;
+  }
+  const buddyHush = () => { clearTimeout(sayT); $("buddy-say").hidden = true; };
+  const minsLeftTxt = () => { const n = Math.max(1, Math.round((budgetMs() - learnMs) / 60000)); return n + (n === 1 ? " minute" : " minutes"); };
+  // Near the end of the time: a friendly heads-up, never pressure. "+5 minutes" can be tapped again and again.
+  function kubeNearTime() {
+    return buddySay("About a minute left. No rush! You can wrap up this idea, or take more time.", [
+      ["+5 minutes", (btn) => {
+        addFive();
+        $("buddy-say").firstChild.textContent = `Done! You have ${minsLeftTxt()} now.`;
+        btn.textContent = "+5 more"; clearTimeout(sayT); sayT = setTimeout(buddyHush, 6000);
+      }, true],
+      ["I'm good", buddyHush]
+    ]);
+  }
+  // On a wrong answer, Kube comes over to the question and asks you to slow down and look at why before picking again.
+  function kubeFly(from, to, done) {
+    const a = from.getBoundingClientRect(), z = to.getBoundingClientRect();
+    if (!a.width || !z.width || matchMedia("(prefers-reduced-motion: reduce)").matches) return done();
+    const g = document.createElement("div"); g.className = "kube-fly"; g.innerHTML = FACE("huh");
+    Object.assign(g.style, { left: a.left + "px", top: a.top + "px", width: a.width + "px", height: a.height + "px" });
+    document.body.append(g);
+    requestAnimationFrame(() => requestAnimationFrame(() => { g.style.transform = `translate(${z.left - a.left}px, ${z.top - a.top}px) scale(${z.width / a.width})`; g.style.transformOrigin = "0 0"; }));
+    setTimeout(() => { g.remove(); done(); }, 800);
+  }
+  function kubeLeave(happy) {
+    document.querySelectorAll(".kube-near").forEach((k) => k.remove());
+    document.querySelectorAll(".opts.held").forEach((o) => o.classList.remove("held"));
+    $("buddy").classList.remove("gone");
+    if (happy) { $("buddy-btn").innerHTML = FACE("happy"); setTimeout(() => { $("buddy-btn").innerHTML = FACE("smile"); }, 2500); }
+  }
+  function kubeWrong(scope, c, i) {
+    if ($("canvas").hidden || !scope.closest("#canvas") || !$("coach").hidden) return false;
+    kubeLeave(false); buddyHush();
+    const off = c.no && c.no[i], opts = scope.querySelector(".opts");
+    const k = document.createElement("div"); k.className = "kube-near landing"; k.setAttribute("role", "status");
+    k.innerHTML = `<span class="kn-face">${FACE("huh")}</span><div class="kn-say"><p>${off ? "Hmm, not that one. Let's figure out why before you pick again." : "Hmm, not that one. Take another look, then pick again."}</p>
+      <div class="kn-row">${off ? `<button type="button" class="main kn-why">Show me why</button>` : ""}<button type="button" class="${off ? "" : "main "}kn-try">${off ? "I'll try again" : "OK"}</button></div></div>`;
+    scope.querySelector(".fb").after(k);
+    if (opts) opts.classList.add("held");
+    const nodeEl = scope.closest(".root, .side"), n = nodeEl && [...nodes.values()].find((x) => x.el === nodeEl);
+    if (n) {
+      const qi = scope.querySelector(".quiz-inner"); if (qi && n.el.classList.contains("quizzing")) { const need = qi.offsetHeight + 56; if (need > n.el.offsetHeight) n.el.style.minHeight = need + "px"; }
+      requestAnimationFrame(() => showBottom(n));
+    }
+    $("buddy").classList.add("gone");
+    setTimeout(() => kubeFly($("buddy-btn"), k.querySelector(".kn-face"), () => k.classList.remove("landing")), 380);
+    const go = () => { if (opts) opts.classList.remove("held"); };
+    k.querySelector(".kn-try").addEventListener("click", () => kubeLeave(false));
+    const why = k.querySelector(".kn-why");
+    if (why) why.addEventListener("click", () => {
+      go();
+      k.querySelector(".kn-say").innerHTML = `<p>You picked “${esc(c.opts[i].replace(/\.$/, ""))}”.</p><p class="kn-off">${esc(off)}</p><p class="kn-off">Now try another one.</p>`;
+      k.querySelector(".kn-face").innerHTML = FACE("smile");
+      if (n) requestAnimationFrame(() => showBottom(n));
+    });
+    return true;
   }
   // When it speaks up: after each main idea is answered, about 45 s into the canvas, then every few minutes of activity.
   setInterval(() => {
@@ -4454,7 +4551,8 @@ Rules:
   }, 2000);
   $("buddy-btn").addEventListener("mouseenter", () => { if ($("buddy-say").hidden) buddySay("Ready to teach me this?"); });
   $("buddy-btn").addEventListener("click", openTeach);
-  $("buddy-say").addEventListener("click", openTeach);
+  setInterval(() => { if ($("buddy").classList.contains("gone") && !document.querySelector(".kube-near")) $("buddy").classList.remove("gone"); }, 1000);
+  $("buddy-say").addEventListener("click", () => { if (!$("buddy-say").classList.contains("acts")) openTeach(); });
 
   // Grading: the page's sample inside claude.ai, else the learner's own Anthropic key (kept only in this browser), else none.
   const APIKEY = "autolearn-api-key";
