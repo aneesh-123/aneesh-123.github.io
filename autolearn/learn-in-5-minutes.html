@@ -1186,7 +1186,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v34 · Learn it in 5 minutes</span>
+      <span>v35 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1301,7 +1301,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v34 · Learn it in 5 minutes</div>
+    <div class="version-tag">v35 · Learn it in 5 minutes</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -4496,7 +4496,8 @@ Rules:
       ["I'm good", buddyHush]
     ]);
   }
-  // On a wrong answer, Kube comes over to the question and asks you to slow down and look at why before picking again.
+  // On a wrong answer, Kube comes over to the question and offers a tip on why. It's only an offer (v35): the choices stay
+  // clickable, and picking again or "No thanks" sends Kube back.
   function kubeFly(from, to, done) {
     const a = from.getBoundingClientRect(), z = to.getBoundingClientRect();
     if (!a.width || !z.width || matchMedia("(prefers-reduced-motion: reduce)").matches) return done();
@@ -4517,10 +4518,9 @@ Rules:
     kubeLeave(false); buddyHush();
     const off = c.no && c.no[i], opts = scope.querySelector(".opts");
     const k = document.createElement("div"); k.className = "kube-near landing"; k.setAttribute("role", "status");
-    k.innerHTML = `<span class="kn-face">${FACE("huh")}</span><div class="kn-say"><p>${off ? "Hmm, not that one. Let's figure out why before you pick again." : "Hmm, not that one. Take another look, then pick again."}</p>
-      <div class="kn-row">${off ? `<button type="button" class="main kn-why">Show me why</button>` : ""}<button type="button" class="${off ? "" : "main "}kn-try">${off ? "I'll try again" : "OK"}</button></div></div>`;
+    k.innerHTML = `<span class="kn-face">${FACE("huh")}</span><div class="kn-say"><p>${off ? "Want a quick tip on why?" : "Take another look. You can do it."}</p>
+      <div class="kn-row">${off ? `<button type="button" class="main kn-why">Show me why</button>` : ""}<button type="button" class="kn-try">${off ? "No thanks" : "OK"}</button></div></div>`;
     scope.querySelector(".fb").after(k);
-    if (opts) opts.classList.add("held");
     const nodeEl = scope.closest(".root, .side"), n = nodeEl && [...nodes.values()].find((x) => x.el === nodeEl);
     if (n) {
       const qi = scope.querySelector(".quiz-inner"); if (qi && n.el.classList.contains("quizzing")) { const need = qi.offsetHeight + 56; if (need > n.el.offsetHeight) n.el.style.minHeight = need + "px"; }
@@ -4533,7 +4533,7 @@ Rules:
     const why = k.querySelector(".kn-why");
     if (why) why.addEventListener("click", () => {
       go();
-      k.querySelector(".kn-say").innerHTML = `<p>You picked “${esc(c.opts[i].replace(/\.$/, ""))}”.</p><p class="kn-off">${esc(off)}</p><p class="kn-off">Now try another one.</p>`;
+      k.querySelector(".kn-say").innerHTML = `<p>You picked “${esc(c.opts[i].replace(/\.$/, ""))}”.</p><p class="kn-off">${esc(off)}</p>`;
       k.querySelector(".kn-face").innerHTML = FACE("smile");
       if (n) requestAnimationFrame(() => showBottom(n));
     });
