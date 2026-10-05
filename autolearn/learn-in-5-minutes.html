@@ -725,7 +725,20 @@ path.k-edge{fill:none}
 .tclock svg{width:22px;height:22px;transform:rotate(-90deg)}
 .ck-bg{fill:none;stroke:var(--line);stroke-width:3}
 .ck-fg{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-dasharray:100 100;transition:stroke-dashoffset 1s linear}
-.tclock{cursor:pointer}.tclock.mini{padding:4px}.tclock.mini b{display:none}
+.tclock{cursor:pointer;position:relative}
+.tclock .ck-hands{display:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
+.ck-x{color:var(--muted);font-size:15px;line-height:1;margin-left:2px;font-weight:400}
+.tclock.mini{padding:5px;opacity:.5;border-color:transparent;background:transparent}
+.tclock.mini:hover,.tclock.mini:focus-visible{opacity:1}
+.tclock.mini b,.tclock.mini .ck-x,.tclock.mini .ck-fg{display:none}
+.tclock.mini .ck-bg{stroke:var(--muted);stroke-width:2}
+.tclock.mini .ck-hands{display:block}
+.tclock.arrive{animation:clock-arrive 1.8s ease both}
+@keyframes clock-arrive{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.ck-tip{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--display);font-size:13.5px;color:var(--muted);opacity:0;transition:opacity 1s ease;pointer-events:none}
+.ck-tip.on{opacity:1}
+@media (max-width:700px){.ck-tip{right:0;top:calc(100% + 7px);transform:none;font-size:12.5px}}
+@media (prefers-reduced-motion:reduce){.tclock.arrive{animation:none}}
 /* v32: the clock introduces itself big in the middle, then glides to the top right and pulses */
 .clock-intro{position:fixed;inset:0;z-index:45;display:grid;place-items:center;pointer-events:none}
 .clock-intro[hidden]{display:none}
@@ -1091,7 +1104,7 @@ path.k-edge{fill:none}
 <!-- ============ v25: learn it in 5 minutes. A quick check of what you know, then Kubernetes at work ============ -->
 <main class="diag" id="diag" hidden aria-label="Learn it in 5 minutes">
   <button class="reread intro-back" id="dg-back" type="button">← Back to the article</button>
-  <span class="tclock dg-clock" id="dg-clock" hidden title="Time left. Tap to hide the numbers."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span>
+  <span class="tclock dg-clock" id="dg-clock" hidden title="Time left. Tap to hide the clock." role="button" tabindex="0" aria-label="Hide the clock"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/><path class="ck-hands" d="M12 7v5l3 2" transform="rotate(90 12 12)"/></svg><b>5:00</b><span class="ck-x" aria-hidden="true">×</span></span>
   <div class="dg-col">
     <div class="dg-ask" id="dg-ask" aria-live="polite"></div>
     <div class="dg-scene" id="dg-scene" hidden>
@@ -1150,7 +1163,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v32 · Learn it in 5 minutes</span>
+      <span>v33 · Learn it in 5 minutes</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1214,7 +1227,7 @@ path.k-edge{fill:none}
       <nav class="steps" id="steps" aria-label="The 5 main ideas"></nav>
       
     </div>
-    <div class="tools"><button class="voice" id="voice" type="button" aria-pressed="false" title="Hands-free: talk instead of clicking" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Voice</span></button><span class="tclock" id="clock" hidden title="Time left. Tap to hide the numbers."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b>5:00</b></span><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
+    <div class="tools"><button class="voice" id="voice" type="button" aria-pressed="false" title="Hands-free: talk instead of clicking" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Voice</span></button><span class="tclock" id="clock" hidden title="Time left. Tap to hide the clock." role="button" tabindex="0" aria-label="Hide the clock"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/><path class="ck-hands" d="M12 7v5l3 2" transform="rotate(90 12 12)"/></svg><b>5:00</b><span class="ck-x" aria-hidden="true">×</span></span><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
       <span class="meter cov"><span>Covered</span><i><b id="m-cov"></b></i><em id="m-cov-n">0%</em></span>
       <span class="meter und"><span>Understood</span><i><b id="m-und"></b></i><em id="m-und-n">0%</em></span></button><button class="tally" id="tally" hidden aria-label="What you've learned" title="What you've learned"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span id="tally-n">0</span></button><button class="tool icon" id="recenter" aria-label="Recenter" title="Recenter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/><path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3"/></svg></button></div>
   </header>
@@ -1265,7 +1278,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v32 · Learn it in 5 minutes</div>
+    <div class="version-tag">v33 · Learn it in 5 minutes</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -4295,7 +4308,7 @@ Rules:
       c.querySelector("b").textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
       c.querySelector(".ck-fg").style.strokeDashoffset = String(100 - (100 * left) / budgetMs());
       c.classList.toggle("low", left <= 60000); c.classList.toggle("away", idle && !fiveDone);
-      c.setAttribute("aria-label", fiveDone && left > 0 ? "Done" : `${Math.floor(sec / 60)} minutes ${sec % 60} seconds left`);
+      if (!c.classList.contains("mini")) c.setAttribute("aria-label", `${fiveDone && left > 0 ? "Done" : `${Math.floor(sec / 60)} minutes ${sec % 60} seconds left`}. Tap to hide the clock.`);
     });
   }
   // Pace: each idea still to learn gets a fair share of the time left (keeping a minute to teach Kube at the end).
@@ -4314,31 +4327,35 @@ Rules:
     if (!oneMinSaid && budgetMs() - learnMs <= 60000 && budgetMs() >= 180000) { oneMinSaid = true; buddySay("One minute left! Then you teach me."); }
   }
   setInterval(renderClock, 1000);
-  // v32: the first time, the clock shows up big in the middle ("Your 5 minutes start now"), then glides into its
-  // corner and pulses, so you know it's there. The first time the canvas opens, it pulses again.
-  let clockMet = false, clockCanvasMet = false;
-  function heyClock(el) { el.classList.remove("hey"); void el.offsetWidth; el.classList.add("hey"); setTimeout(() => el.classList.remove("hey"), 3400); }
+  // v33: the first time, the clock fades in at the top right with a quiet "Your 5 minutes · tap to hide" beside it.
+  // No pulsing: it should be noticed, not be the focus. Tap it to hide it (a faint clock icon stays to bring it back).
+  let clockMet = false;
   function clockIntro() {
     clockMet = true;
-    const box = $("clock-intro"), card = $("ci-card"), target = $("dg-clock");
-    $("ci-t").textContent = target.querySelector("b").textContent; $("ci-say").textContent = `Your ${minsTxt()} start now`;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return heyClock(target);
-    target.style.visibility = "hidden";
-    card.classList.remove("go"); card.style.transform = ""; card.style.opacity = ""; box.hidden = false;
-    setTimeout(() => {
-      const a = card.getBoundingClientRect(), t = target.getBoundingClientRect();
-      card.classList.add("go");
-      card.style.transform = `translate(${t.left + t.width / 2 - (a.left + a.width / 2)}px, ${t.top + t.height / 2 - (a.top + a.height / 2)}px) scale(${Math.max(0.2, t.height / a.height)})`;
-      card.style.opacity = "0.3";
-    }, 1700);
-    setTimeout(() => { box.hidden = true; target.style.visibility = ""; heyClock(target); }, 2450);
+    const c = $("dg-clock");
+    if (clockMini) return;
+    c.classList.remove("arrive"); void c.offsetWidth; c.classList.add("arrive");
+    let tip = c.querySelector(".ck-tip");
+    if (!tip) { tip = document.createElement("span"); tip.className = "ck-tip"; c.prepend(tip); }
+    tip.textContent = `Your ${minsTxt()} · tap to hide`;
+    setTimeout(() => tip.classList.add("on"), 900);
+    setTimeout(() => tip.classList.remove("on"), 6500);
   }
-  setInterval(() => { if (timed && !clockCanvasMet && !$("canvas").hidden && !$("clock").hidden) { clockCanvasMet = true; setTimeout(() => heyClock($("clock")), 900); } }, 500);
   // Tap the clock to hide the numbers (just the ring stays); tap again to bring them back.
   let clockMini = false;
   try { clockMini = localStorage.getItem("autolearn-clock-mini") === "1"; } catch (e) {}
-  const setMini = (on) => { clockMini = on; document.querySelectorAll(".tclock").forEach((c) => c.classList.toggle("mini", on)); try { localStorage.setItem("autolearn-clock-mini", on ? "1" : "0"); } catch (e) {} };
-  document.querySelectorAll(".tclock").forEach((c) => c.addEventListener("click", () => setMini(!clockMini)));
+  const setMini = (on) => {
+    clockMini = on;
+    document.querySelectorAll(".tclock").forEach((c) => {
+      c.classList.toggle("mini", on); c.title = on ? "Show the clock" : "Time left. Tap to hide the clock."; c.setAttribute("aria-label", on ? "Show the clock" : "Hide the clock");
+      const tip = c.querySelector(".ck-tip"); if (tip) tip.classList.remove("on");
+    });
+    try { localStorage.setItem("autolearn-clock-mini", on ? "1" : "0"); } catch (e) {}
+  };
+  document.querySelectorAll(".tclock").forEach((c) => {
+    c.addEventListener("click", () => setMini(!clockMini));
+    c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setMini(!clockMini); } });
+  });
   setMini(clockMini);
   setInterval(() => {
     if (!learning || fiveDone || document.hidden || ($("diag").hidden && $("canvas").hidden)) return;
