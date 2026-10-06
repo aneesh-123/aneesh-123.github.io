@@ -158,6 +158,21 @@ body{margin:0;min-height:100vh;display:flex;flex-direction:column;overflow-x:hid
 .tk-sum em.partly{background:var(--branch-soft);color:var(--branch)}
 .tk-sum em.none{background:var(--surface-2);color:var(--muted)}
 
+/* v38: the syllabus and the gaps */
+.tk-syl{margin:10px 0 0 100px;padding:0;list-style:none;counter-reset:syl;display:grid;gap:8px}
+.tk-syl li{counter-increment:syl;display:grid;grid-template-columns:30px 1fr;column-gap:12px;align-items:start;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:11px 14px}
+.tk-syl li::before{content:counter(syl);grid-row:span 2;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:600 14px var(--mono)}
+.tk-syl b{font-family:var(--display);font-size:17px}
+.tk-syl span{color:var(--muted);font-size:15.5px;line-height:1.35}
+.tk-how{margin:18px 0 0 100px;font-family:var(--display);font-size:17px;line-height:1.4}
+a.tk-btn{text-decoration:none}
+.tk-gaps{margin:18px 0 0 100px;padding:0;list-style:none;display:grid;gap:8px}
+.tk-gaps li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:11px 14px}
+.tk-gaps b{font-family:var(--display);font-size:17px}
+.tk-gaps em{font-style:normal;font-family:var(--mono);font-size:12px;border-radius:99px;padding:3px 10px;white-space:nowrap;background:var(--branch-soft);color:var(--branch)}
+.tk-gaps span{grid-column:1 / -1;color:var(--muted);font-size:15.5px;line-height:1.4}
+.tk-gaps li.ok{opacity:.7}.tk-gaps li.ok em{background:var(--accent-soft);color:var(--accent)}
+
 /* Ask anything */
 .tk-ask{position:sticky;top:76px;display:flex;flex-direction:column;max-height:calc(100vh - 110px);background:var(--surface);border:1.5px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;animation:ask-in .3s ease both}
 @keyframes ask-in{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
@@ -211,7 +226,7 @@ body{margin:0;min-height:100vh;display:flex;flex-direction:column;overflow-x:hid
   .kb-face{width:58px;height:58px;padding:3px}
   .kb-row{gap:10px}
   .kb-say{padding:13px 15px}
-  .kb-hints,.kb-hints-t,.tk-answer,.tk-quote,.tk-list,.tk-sub2,.tk-wait,.tk-acts,.tk-sum{margin-left:0}
+  .kb-hints,.kb-hints-t,.tk-answer,.tk-quote,.tk-list,.tk-sub2,.tk-wait,.tk-acts,.tk-sum,.tk-syl,.tk-how,.tk-gaps{margin-left:0}
   .tk-ta{min-height:120px;font-size:17px}
   .tk-mic{width:50px;height:50px}
 }
@@ -232,7 +247,7 @@ body{margin:0;min-height:100vh;display:flex;flex-direction:column;overflow-x:hid
     <form class="ask-form" id="ask-form" autocomplete="off"><input id="ask-in" type="text" placeholder="Ask anything about Kubernetes…" aria-label="Your question"><button type="submit" aria-label="Ask">Ask</button></form>
   </aside>
 </main>
-<footer class="tk-foot">Based on GeeksforGeeks' Introduction to Kubernetes (K8s). Learning format by Aneesh Nagalkar. <span class="tk-ver">v37 · Teach Kube</span></footer>
+<footer class="tk-foot">Based on GeeksforGeeks' Introduction to Kubernetes (K8s). Learning format by Aneesh Nagalkar. <span class="tk-ver">v38 · Teach Kube</span></footer>
 <div class="tk-modal" id="tk-key" hidden role="dialog" aria-modal="true" aria-labelledby="tk-key-h">
   <div class="tk-card">
     <h2 id="tk-key-h">Connect Claude</h2>
@@ -1462,6 +1477,8 @@ Reply with only JSON, like:
   // Teaching is the whole app. Kube asks about each of the 5 ideas, high level first; you explain in your own words
   // (talk or type), and Claude checks what you got right. Stuck? Ask anything on the side, then go back to Kube.
   // Pictures only show when you ask for one, or when you've said an idea is new to you.
+  // v38: first a quick round where you teach Kube all 5 ideas with no lessons, so Kube can spot your gaps.
+  // Then you only learn the gaps (Aneesh: "I'd rather fill in the gaps of what I don't know than read the whole article").
   const $ = (id) => document.getElementById(id);
   const IDS = ["why", "cluster", "deploy", "services", "config"];
   const MOD = Object.fromEntries(MODULES.map((m) => [m.id, m]));
@@ -1477,13 +1494,24 @@ Reply with only JSON, like:
     "It means ship captain in Greek! K8s is a short way to write it."] };
 
   // ---------- saved progress ----------
-  const KEY = "autolearn-kube-1";
-  let S = { i: 0, ideas: {}, met: false, done: false, asked: [] };
+  const KEY = "autolearn-kube-2";
+  const fresh = () => ({ i: 0, ideas: {}, met: false, done: false, asked: [], phase: "intro" });
+  let S = fresh();
   try { const v = JSON.parse(localStorage.getItem(KEY) || "null"); if (v && v.ideas) S = Object.assign(S, v); } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
   const idea = (id) => S.ideas[id] || (S.ideas[id] = { level: "none", cov: [], dk: false, text: "", draft: "", follow: null });
   const RANK = { none: 0, partly: 1, solid: 2 };
   const cur = () => MOD[IDS[S.i]];
+  const checking = () => S.phase === "check";
+  const ABOUT = {
+    why: "Why teams need it: containers, and what got too hard to do by hand",
+    cluster: "What a cluster is: the brain, and the machines that do the work",
+    deploy: "What you hand it: Deployments, Pods, and keeping copies running",
+    services: "How users find your app: Services and Ingress",
+    config: "The big picture, plus where settings, passwords and data live"
+  };
+  // A missing piece Kube still wants to understand, as one of its own questions.
+  const gapQ = (m) => { const c = new Set(idea(m.id).cov), h = (BUDDY_HINTS[m.id] || []).find(([, p]) => !p.every((x) => c.has(x))); return h ? h[0] : null; };
 
   // [[term]] marks become tappable words with a one-line definition.
   const fmt = (t) => esc(t).replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, shown, key) => {
@@ -1504,11 +1532,14 @@ Reply with only JSON, like:
   }
   $("tk-ideas").addEventListener("click", (e) => {
     const b = e.target.closest(".tk-idea"); if (!b) return;
-    stopAll(); S.i = +b.dataset.i; S.done = false; save(); askView(idea(IDS[S.i]).follow);
+    if (S.phase === "intro") return;
+    stopAll(); S.i = +b.dataset.i; S.done = false; save();
+    if (S.phase === "learn" || S.phase === "gaps") return learnIdea(S.i);
+    askView();
   });
 
   const kube = (mood, inner) => `<div class="kb-row"><div class="kb-face">${FACE(mood)}</div><div class="kb-say">${inner}</div></div>`;
-  const tag = (m) => `<p class="kb-tag">Idea ${IDS.indexOf(m.id) + 1} of 5 · ${esc(m.title)}</p>`;
+  const tag = (m) => `<p class="kb-tag">${checking() ? "Round 1 · " : ""}Idea ${IDS.indexOf(m.id) + 1} of 5 · ${esc(m.title)}</p>`;
   function hintsList(m, cov) {
     const h = BUDDY_HINTS[m.id] || []; if (!h.length) return "";
     const c = new Set(cov);
@@ -1523,21 +1554,32 @@ Reply with only JSON, like:
     if (scrollY > 80) scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
 
+  // ---------- the start: what you'll teach Kube ----------
+  const ARTICLE = "https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/";
+  function introView() {
+    token++; S.phase = "intro"; save(); closeAsk(true);
+    view(kube("smile", `<p class="kb-hi">Hi, I'm Kube! I've never heard of Kubernetes.</p><p class="kb-q">Can you teach it to me?</p>`)
+      + `<p class="tk-sub2">What you'll teach me</p><ol class="tk-syl">${IDS.map((id) => `<li><b>${esc(MOD[id].title)}</b><span>${esc(ABOUT[id])}</span></li>`).join("")}</ol>
+        <p class="tk-how">Teach me what you already know. I'll spot what's missing, and you'll only learn those parts.</p>
+        <div class="tk-row tk-acts"><button class="tk-btn main" id="i-go" type="button">Start teaching Kube ${ARR}</button><a class="tk-btn quiet push" href="${ARTICLE}" target="_blank" rel="noopener">Rather read the whole article?</a></div>`);
+    $("i-go").addEventListener("click", () => { S.phase = "check"; S.i = 0; save(); askView(); });
+  }
+
   // ---------- Kube asks ----------
   function askView(follow, hi) {
     token++;
     const m = cur(), s = idea(m.id), first = !S.met && S.i === 0 && !follow;
-    const lead = hi ? `<p class="kb-hi">${esc(hi)}</p>` : first ? `<p class="kb-hi">Hi, I'm Kube! I've never heard of Kubernetes. Can you teach me?</p>` : follow ? `<p class="kb-hi">One more thing I'm wondering:</p>` : "";
-    view(tag(m) + kube(hi ? "huh" : "smile", `${lead}<p class="kb-q">${esc(follow || BUDDY_Q[m.id])}</p>`) + hintsList(m, s.cov)
+    const lead = hi ? `<p class="kb-hi">${esc(hi)}</p>` : first ? `<p class="kb-hi">Teach me what you already know. It's fine to skip what you don't.</p>` : follow ? `<p class="kb-hi">One more thing I'm wondering:</p>` : "";
+    view(tag(m) + kube(hi && S.phase !== "learn" ? "huh" : "smile", `${lead}<p class="kb-q">${esc(follow || BUDDY_Q[m.id])}</p>`) + hintsList(m, s.cov)
       + `<div class="tk-answer"><div class="tk-in"><textarea class="tk-ta" id="tk-ta" placeholder="Explain it in your own words, like you're telling a friend…" aria-label="Your explanation"></textarea>${SR ? `<button class="tk-mic" id="tk-mic" type="button" aria-label="Talk">${MIC}</button>` : ""}</div>
         <p class="tk-note" id="tk-note" hidden></p>
-        <div class="tk-row"><button class="tk-btn main" id="tk-go" type="button" disabled>Teach Kube ${ARR}</button><button class="tk-btn" id="tk-stuck" type="button">I'm stuck. Let me ask something</button><button class="tk-btn quiet push" id="tk-dk" type="button">I don't know this yet</button></div></div>`);
+        <div class="tk-row"><button class="tk-btn main" id="tk-go" type="button" disabled>Teach Kube ${ARR}</button>${checking() ? "" : `<button class="tk-btn" id="tk-stuck" type="button">I'm stuck. Let me ask something</button>`}<button class="tk-btn quiet push" id="tk-dk" type="button">${checking() ? "I don't know this one" : "I don't know this yet"}</button></div></div>`);
     const ta = $("tk-ta"), go = $("tk-go"), sync = () => { go.disabled = !ta.value.trim(); s.draft = ta.value; save(); };
     ta.value = s.draft || ""; sync();
     ta.addEventListener("input", sync);
     ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && ta.value.trim()) go.click(); });
     go.addEventListener("click", () => teach(ta.value.trim(), follow));
-    $("tk-stuck").addEventListener("click", () => openAsk(true));
+    if ($("tk-stuck")) $("tk-stuck").addEventListener("click", () => openAsk(true));
     $("tk-dk").addEventListener("click", () => dontKnow(m));
     const mic = $("tk-mic"); if (mic) mic.addEventListener("click", () => toggleMic(mic, ta, $("tk-note"), sync));
     if (!matchMedia("(max-width:640px)").matches) ta.focus({ preventScroll: true });
@@ -1569,6 +1611,7 @@ Reply with only JSON, like:
     s.text = full; s.cov = [...new Set([...s.cov, ...cov])].sort((a, b) => a - b);
     if (lvl !== "off" && RANK[lvl] > RANK[s.level]) s.level = lvl;
     save();
+    if (checking()) return checkResult(m, text, r, lvl, note);
     resultView(m, text, r, lvl, note);
   }
   function noClaudeNote() {
@@ -1601,12 +1644,53 @@ Reply with only JSON, like:
     on("r-again", () => askView(lvl === "off" ? null : follow));
     on("r-ask", () => openAsk(true));
     on("r-look", () => { openLesson(m, true); askView(null, "Read the short version, ask anything you like, then try me again."); });
-    on("r-next", () => { if (!more) return doneView(); S.i = nx; save(); askView(idea(IDS[nx]).follow); });
+    on("r-next", () => { if (!more) return doneView(); learnIdea(nx); });
+  }
+
+  // Round 1: a quick reaction and on to the next idea. No lessons yet; that's what the gaps are for.
+  function checkResult(m, text, r, lvl, note) {
+    const wrong = (r.wrong || []).filter((w) => w && w.fix), last = S.i === IDS.length - 1;
+    view(tag(m) + kube(lvl === "solid" ? "happy" : lvl === "partly" ? "smile" : "huh", `<p class="kb-react">${esc(r.say || (lvl === "off" ? "Hmm, I'm not sure I follow yet." : "I think I get some of it."))}</p>`)
+      + `<p class="tk-quote">${esc(text)}</p>` + hintsList(m, idea(m.id).cov)
+      + (wrong.length ? `<p class="tk-sub2">Not quite</p><ul class="tk-list">${wrong.map((w) => `<li><span>${w.quote ? `<b>“${esc(w.quote)}”</b> ` : ""}${esc(w.fix)}</span></li>`).join("")}</ul>` : "")
+      + (note ? `<p class="tk-note tk-acts">${esc(note)}</p>` : "")
+      + `<div class="tk-row tk-acts"><button class="tk-btn main" id="c-next" type="button">${last ? "See what I still need to learn" : "Next idea"} ${ARR}</button></div>`);
+    $("c-next").addEventListener("click", checkNext);
+  }
+  function checkNext() {
+    if (S.i < IDS.length - 1) { S.i++; save(); return askView(); }
+    gapsView();
+  }
+
+  // ---------- your gaps ----------
+  function gapsView() {
+    token++; S.phase = "gaps"; save(); closeAsk(true);
+    const gaps = IDS.filter((id) => idea(id).level !== "solid");
+    if (!gaps.length) return doneView();
+    const n = IDS.length - gaps.length;
+    view(kube(n ? "smile" : "huh", `<p class="kb-react">${n ? `You already taught me ${n} of the 5 ideas. Nice!` : "Thanks! We're starting fresh, so let's learn it together."}</p><p class="kb-q">${gaps.length === 1 ? "Here's the one gap to fill:" : `Here are the ${gaps.length} gaps to fill:`}</p>`)
+      + `<ul class="tk-gaps">${IDS.map((id) => { const s = idea(id), h = BUDDY_HINTS[id] || [], c = new Set(s.cov);
+          if (s.level === "solid") return `<li class="ok"><b>${esc(MOD[id].title)}</b><em>You taught me</em></li>`;
+          const miss = h.filter(([, p]) => !p.every((x) => c.has(x))).map(([q]) => q);
+          return `<li><b>${esc(MOD[id].title)}</b><em>${s.level === "partly" ? "Partly" : "New"}</em>${miss.length ? `<span>${miss.map(esc).join(" · ")}</span>` : ""}</li>`; }).join("")}</ul>`
+      + `<div class="tk-row tk-acts"><button class="tk-btn main" id="g-go" type="button">Fill the gaps ${ARR}</button><button class="tk-btn quiet push" id="g-redo" type="button">Start over</button></div>`);
+    $("g-go").addEventListener("click", () => learnIdea(IDS.indexOf(gaps[0])));
+    $("g-redo").addEventListener("click", () => { S = fresh(); save(); $("ask-log").innerHTML = ""; introView(); });
+  }
+  // Learn one gap: the short version opens on the side (with its picture only if the idea is new to you),
+  // and Kube asks about the first thing it still doesn't get.
+  function learnIdea(i) {
+    S.phase = "learn"; S.done = false; S.i = i; save();
+    const m = cur(), s = idea(m.id);
+    if (s.level === "solid") return askView();
+    openLesson(m, s.dk || s.level === "none");
+    askView(gapQ(m), s.level === "partly" ? "You got part of this. Read the short version or ask anything, then fill me in:" : "Let's learn this one. Read the short version or ask anything, then teach me:");
   }
 
   // "I don't know" is fine: it's how you find out what to learn. The idea is new, so the picture shows up front.
   function dontKnow(m) {
     const s = idea(m.id); s.dk = true; save();
+    if (checking()) { s.draft = ""; save(); return checkNext(); }
     openLesson(m, true);
     askView(null, "No problem, we're both new to it! Read the short version, ask anything, then teach me.");
   }
@@ -1619,8 +1703,8 @@ Reply with only JSON, like:
     view(kube(n === 5 ? "happy" : "smile", `<p class="kb-react">${n === 5 ? "You taught me Kubernetes! I really get it now. Thank you!" : n ? `Thanks! You taught me ${n} of the 5 ideas.` : "Thanks for trying! We can go again anytime."}</p>${gap >= 0 ? `<p class="kb-q">Want to teach me the rest?</p>` : ""}`)
       + `<ul class="tk-sum">${IDS.map((id) => `<li><span>${esc(MOD[id].title)}</span><em class="${idea(id).level}">${label[idea(id).level]}</em></li>`).join("")}</ul>`
       + `<div class="tk-row tk-acts">${gap >= 0 ? `<button class="tk-btn main" id="d-rest" type="button">Teach the rest ${ARR}</button>` : ""}<button class="tk-btn ${gap >= 0 ? "quiet" : ""}" id="d-over" type="button">Start over</button></div>`);
-    const rest = $("d-rest"); if (rest) rest.addEventListener("click", () => { S.done = false; S.i = gap; save(); askView(idea(IDS[gap]).follow); });
-    $("d-over").addEventListener("click", () => { S = { i: 0, ideas: {}, met: true, done: false, asked: [] }; save(); $("ask-log").innerHTML = ""; askView(); });
+    const rest = $("d-rest"); if (rest) rest.addEventListener("click", () => learnIdea(gap));
+    $("d-over").addEventListener("click", () => { S = fresh(); save(); $("ask-log").innerHTML = ""; introView(); });
   }
 
   // ---------- Ask anything ----------
@@ -1774,7 +1858,11 @@ Reply with only JSON, like: {"answer":"…","topic":"container"}`;
   // ---------- start ----------
   $("tk-mini").innerHTML = FACE("smile");
   paintConn(); setTimeout(paintConn, 1500);
-  if (S.done) doneView(); else askView(idea(IDS[S.i]).follow);
+  if (S.done) doneView();
+  else if (S.phase === "intro") introView();
+  else if (S.phase === "check") askView();
+  else if (S.phase === "gaps") gapsView();
+  else learnIdea(S.i);
 
 })();
 </script>
