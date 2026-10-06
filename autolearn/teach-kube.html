@@ -1111,6 +1111,21 @@ path.k-edge{fill:none}
 .next-idea.glow{box-shadow:0 0 0 0 var(--accent);animation:tk-glow 1.6s ease-out 3}
 @keyframes tk-glow{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}100%{box-shadow:0 0 0 16px transparent}}
 @media (max-width:700px){.tk-face{width:48px;height:48px}.tk-ask{gap:10px}.root .tk-bub .q{font-size:20px}.tk-hl li{font-size:16px}.tk-hl li{flex-wrap:wrap}.tk-hl li>span{flex:1 1 calc(100% - 30px)}.tk-hl li .tk-go{margin-left:26px}}
+.tk-micnote{margin:8px 0 0;color:var(--muted);font-size:14.5px;line-height:1.4}
+.tk-clar-h{font-family:var(--display);font-weight:600;font-size:17px;margin:14px 0 8px}
+.t-quote mark{background:var(--branch-soft);color:var(--ink);border-radius:4px;padding:0 3px;font-style:normal;font-weight:600;box-shadow:inset 0 -2px 0 var(--branch)}
+.tk-pin{font-family:var(--display);font-size:18px;line-height:1.35;margin:16px 0 0;font-weight:600}
+.tk-gap{margin-top:10px;border:2px solid var(--branch);border-radius:18px;padding:14px 16px 16px;background:color-mix(in srgb,var(--branch-soft) 45%,var(--surface))}
+.tk-gap-k{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--branch);font-weight:600}
+.tk-gap-ask{display:flex;gap:10px;align-items:flex-start;margin:8px 0 10px}
+.tk-gface{flex:none;width:42px;height:42px}
+.tk-gface svg{width:100%;height:100%}
+.tk-gap-ask p{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:19px;line-height:1.3}
+.tk-gap .tk-dk{margin-top:12px;background:var(--surface)}
+.tk-gap-seen{margin:8px 0 0;color:var(--muted);font-size:15px}
+.tk-gap-seen[hidden]{display:none}
+.tk-hl li.now>span{font-weight:600}
+.tk-hl li.now i{border-color:var(--branch);background:var(--branch-soft);box-shadow:0 0 0 3px var(--branch-soft)}
 @media (prefers-reduced-motion:reduce){.next-idea.glow{animation:none}}
 </style>
 
@@ -1199,7 +1214,7 @@ path.k-edge{fill:none}
     <ol class="syl-list" id="syl-list"></ol>
     <p class="syl-how">One idea at a time, teach me what you already know. I'll tell you what you got right, and you'll only explore the parts you missed.</p>
     <div class="syl-acts"><button class="start" id="syl-go" type="button">Start teaching Kube <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button><button class="words-prev" id="syl-read" type="button">Read the article instead</button></div>
-    <p class="syl-src">Based on GeeksforGeeks' “Introduction to Kubernetes (K8s)”. <span class="syl-ver">v39 · Teach Kube</span></p>
+    <p class="syl-src">Based on GeeksforGeeks' “Introduction to Kubernetes (K8s)”. <span class="syl-ver">v40 · Teach Kube</span></p>
   </div>
 </main>
 <!-- ============ v25: learn it in 5 minutes. A quick check of what you know, then Kubernetes at work ============ -->
@@ -1265,7 +1280,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v39 · Teach Kube</span>
+      <span>v40 · Teach Kube</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1380,7 +1395,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v39 · Teach Kube</div>
+    <div class="version-tag">v40 · Teach Kube</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -5076,7 +5091,7 @@ Reply with only JSON, like:
   // Each main idea opens with Kube's question, not the answer. You teach Kube what you already know (by talking or typing),
   // or say you don't know it yet. Kube says what landed and what didn't, and the side questions that fill those gaps light
   // up on the map. Explore them, then teach Kube again, or move on whenever you like.
-  const TK_GAPS = { why: [["container"], ["microservices", "byhand"], ["desired"]], cluster: [["cluster"], ["scheduling"], ["node"]],
+  const TK_GAPS = { why: [["container"], ["byhand", "microservices"], ["desired"]], cluster: [["cluster"], ["scheduling"], ["node"]],
     deploy: [["manifest"], ["pod"], ["selfheal", "scale"], ["manifest"]], services: [["address"], ["service", "spread"], ["ingress"]],
     config: [["configmap"], ["configmap"], ["secret"], ["pv"]] };
   MODULES.find((m) => m.id === "config").explain = ["Pods are temporary, so anything that must last lives outside them, and each new Pod plugs into it",
@@ -5120,12 +5135,12 @@ Reply with only JSON, like:
     return root;
   }
   // Kube's questions about the idea. After grading, each one shows whether you covered it, and the open ones can be explored.
-  function tkHints(m, cov, live) {
+  function tkHints(m, cov, live, now = -1) {
     const hs = BUDDY_HINTS[m.id] || [], gs = TK_GAPS[m.id] || [];
     return `<ul class="tk-hl">${hs.map(([q, pts], k) => {
       const n = cov ? pts.filter((p) => cov.has(p)).length : 0, st = !cov ? "" : n === pts.length ? "yes" : n ? "some" : "no";
       const topic = (gs[k] || []).find((t) => TOPICS[t]);
-      return `<li class="${st}"><i aria-hidden="true"></i><span>${esc(q)}</span>${live && st !== "yes" && topic ? `<button type="button" class="tk-go" data-topic="${topic}">Explore ${ARR}</button>` : ""}</li>`;
+      return `<li class="${st}${k === now ? " now" : ""}"><i aria-hidden="true"></i><span>${esc(q)}</span>${live && st !== "yes" && topic ? `<button type="button" class="tk-go" data-topic="${topic}">Explore ${ARR}</button>` : ""}</li>`;
     }).join("")}</ul>`;
   }
   function tkGapTopics(m, cov) {
@@ -5150,7 +5165,10 @@ Reply with only JSON, like:
         if (!narrow && rt) x = Math.sign(x) * Math.max(Math.abs(x), rt.el.offsetWidth / 2 + 44 + n.el.offsetWidth / 2);
         moveNode(n, x, y); n.home = [x, y];
       }
-      layoutPast(); drawEdges();
+      layoutPast();
+      // Phones stack new side questions above everything; keep that spot above the main card, which can get tall.
+      if (narrow && rt) farTop = Math.min(farTop, rt.y - rt.el.offsetHeight / 2 - 240);
+      drawEdges();
       if (then) then();
     });
   }
@@ -5169,40 +5187,90 @@ Reply with only JSON, like:
   }
   function tkUnlock(root) { root.tkLock = false; reveal(); }
 
+  // ---------- v40: say it out loud, Kube clarifies, then walks through each gap ----------
+  // You tell Kube your answer (the mic is the main way in). Kube first asks about anything it couldn't follow, then says
+  // exactly what it still doesn't get, asks you about each of those in turn, and opens that part of the map if you'd
+  // rather look first.
+  function tkPrompt(m, text, clar, noClar) {
+    const facts = [...topicsOf(m)].map((k) => `- ${TOPICS[k].q} ${plainTerms(TOPICS[k].a[1])}`).join("\n");
+    const hs = BUDDY_HINTS[m.id] || [];
+    return `You are Kube, a curious beginner who knows nothing about Kubernetes. A learner is teaching you, usually out loud, so expect speech-to-text slips; ignore typos, filler and run-on sentences.
+
+You asked: "${BUDDY_Q[m.id]}"
+They said: """${text}"""
+${clar.length ? `Then you asked them to clarify:\n${clar.map((c) => `You: "${c.ask}"\nThem: """${c.a}"""`).join("\n")}\n` : ""}
+A full answer covers these points:
+${m.explain.map((k, i) => `${i + 1}. ${k}`).join("\n")}
+
+Your own beginner questions about this idea, and the points each one covers:
+${hs.map(([q, pts], i) => `Q${i + 1}. "${q}" (points ${pts.join(", ")})`).join("\n")}
+
+Facts from the lesson, to check what they say against:
+${facts}
+
+Mark it honestly:
+- "covered": the numbers of the points they explained correctly in their own words, anywhere above. Naming a term is not explaining it.
+- "wrong": anything they said that is incorrect, as {"quote": a short exact phrase of theirs, "fix": a kind correction under 20 words}.
+- "level": "solid" if they explained the heart of it correctly (most points, nothing badly wrong), "partly" if some of it, "off" if little or mostly wrong.
+- "say": your reaction as the beginner, first person, warm and specific to what they said, under 20 words.
+- "unclear": ${clar.length || noClar ? "[]." : `up to 2 things they DID say that you couldn't follow as a beginner: a vague word like "it" or "the thing", jargon they used without explaining it, or a jump that skips a step. Each {"quote": a short exact phrase of theirs, "ask": your clarifying question, under 18 words, like "When you say 'it restarts', what restarts: my app or the server?"}. Not things they left out (those are gaps) and not mistakes (those are wrong). [] if it was all clear to you.`}
+- "gaps": for each of your questions Q1 to Q${hs.length} that they did NOT answer, {"q": its number, "ask": that question reworded to build on what they said, under 22 words}. [] if none.
+
+Reply with only JSON, like:
+{"covered":[1],"wrong":[],"level":"partly","say":"Oh, so a container is like a lunchbox for my app!","unclear":[{"quote":"it handles it","ask":"When you say 'it handles it', what does Kubernetes actually do?"}],"gaps":[{"q":3,"ask":"OK, but if my server dies at 3 a.m., what does Kubernetes do?"}]}`;
+  }
+  // An answer box: the mic first (where the browser allows it), typing always works.
+  function tkInput(ph, label) {
+    return `<div class="t-in">${SR ? `<button class="t-mic" type="button" aria-label="Talk">${MIC_I}</button>` : ""}<textarea class="t-ta" rows="2" aria-label="${label}" placeholder="${ph}"></textarea></div><p class="t-note" hidden></p>`;
+  }
+  function tkWire(box, min, onGo, st) {
+    const ta = box.querySelector(".t-ta"), go = box.querySelector(".t-go"), note = box.querySelector(".t-note"), mic = box.querySelector(".t-mic");
+    const sync = () => { go.disabled = ta.value.trim().split(/\s+/).filter(Boolean).length < min; };
+    ta.addEventListener("input", sync); sync();
+    if (mic) mic.addEventListener("click", () => { st.voice = true; toggleMic(mic, ta, note, sync); });
+    go.addEventListener("click", () => { stopMic(); onGo(ta.value.trim()); });
+    // Someone who talked their first answer gets the mic switched on for the follow-ups too.
+    return { ta, note, autoMic: () => { if (mic && st.voice && !listening) toggleMic(mic, ta, note, sync); else if (!narrow) ta.focus({ preventScroll: true }); } };
+  }
+  function tkMarkQuote(text, q) {
+    const i = q ? text.toLowerCase().indexOf(q.toLowerCase()) : -1;
+    return i < 0 ? esc(text) : esc(text.slice(0, i)) + `<mark>${esc(text.slice(i, i + q.length))}</mark>` + esc(text.slice(i + q.length));
+  }
+
   function tkAsk(root, follow) {
     const m = M, st = m.tk, body = root.el.querySelector(".tk-body");
     root.tkState = "ask";
-    if (follow) tkSay(root, "smile", "Kube asks", follow);
-    else tkSay(root, "smile", "Kube asks", BUDDY_Q[m.id]);
+    tkSay(root, "smile", "Kube asks", follow || BUDDY_Q[m.id]);
     const tried = st.tries > 0;
     body.innerHTML = `<div class="tk-sub">${tried ? "What you've taught Kube so far" : "Kube wonders"}</div>${tkHints(m, tried ? st.cov : null)}
       ${follow && st.text ? `<p class="t-quote">${esc(st.text)}</p>` : ""}
-      <div class="t-in">${SR ? `<button class="t-mic" type="button" aria-label="Talk">${MIC_I}</button>` : ""}<textarea class="t-ta" rows="3" aria-label="Your answer to Kube" placeholder="${follow ? "Add the missing part…" : SR ? "Tap the mic and talk, or type what you know…" : "Explain what you know, in your own words…"}"></textarea></div>
-      <p class="t-note" hidden></p><p class="t-conn" hidden></p>
+      ${tkInput(follow ? "Add the missing part…" : SR ? "Tap the mic and tell Kube, or type…" : "Explain what you know, in your own words…", "Your answer to Kube")}
+      ${SR ? `<p class="tk-micnote">Tap the mic and just talk, like you're explaining it to a friend. Tap it again when you're done.</p>` : ""}
+      <p class="t-conn" hidden></p>
       <div class="tk-row"><button class="start t-go" type="button" disabled>Teach Kube ${ARR}</button>${tried ? `<button class="words-prev tk-back" type="button">Back</button>` : ""}</div>
       <button class="tk-dk" type="button"><span class="tk-dk-ic" aria-hidden="true">?</span><span><b>${tried ? "I don't know this part yet" : "I don't know this yet"}</b><small>Show me the short version, then I'll explore</small></span></button>`;
-    const ta = body.querySelector(".t-ta"), go = body.querySelector(".t-go"), note = body.querySelector(".t-note"), mic = body.querySelector(".t-mic");
-    const sync = () => { go.disabled = ta.value.trim().split(/\s+/).filter(Boolean).length < (follow ? 2 : 3); };
-    ta.addEventListener("input", sync);
-    if (mic) mic.addEventListener("click", () => toggleMic(mic, ta, note, sync));
-    go.addEventListener("click", () => tkGrade(root, ta.value.trim(), !!follow));
+    const w = tkWire(body, follow ? 2 : 3, (t) => tkGrade(root, t, { add: !!follow }), st);
     body.querySelector(".tk-dk").addEventListener("click", () => tkDk(root));
     const back = body.querySelector(".tk-back"); if (back) back.addEventListener("click", () => { stopMic(); st.r ? tkResult(root) : tkDk(root); });
-    teachGrader().then((g) => { if (!g && body.contains(note)) connLine(body.querySelector(".t-conn")); });
-    tkRelayout(() => { tried || follow ? frame(root) : null; if (!narrow) ta.focus({ preventScroll: true }); });
+    teachGrader().then((g) => { if (!g && body.contains(w.note)) connLine(body.querySelector(".t-conn")); });
+    tkRelayout(() => { if (tried || follow) frame(root); if (!narrow) w.ta.focus({ preventScroll: true }); });
   }
 
-  async function tkGrade(root, text, add) {
+  // o.add: this adds to what they already said. o.clar: their clarifications, graded together with the first answer.
+  // o.gap: the answer to one of Kube's gap questions, which waits inside that question's card (o.spot).
+  async function tkGrade(root, text, o = {}) {
     stopMic();
     const m = M, st = m.tk, body = root.el.querySelector(".tk-body");
-    const full = add && st.text ? st.text + " " + text : text;
+    const full = o.clar ? st.text : o.add && st.text ? st.text + " " + text : text;
     root.tkState = "wait";
-    body.innerHTML = `<p class="t-quote">${esc(text)}</p><div class="t-wait">Kube is thinking about what you said…</div>`;
+    const waitHTML = `<div class="t-wait">${o.clar ? "Kube is putting it all together…" : "Kube is thinking about what you said…"}</div>`;
+    if (o.spot) o.spot.innerHTML = `<p class="t-quote">${esc(text)}</p>${waitHTML}`;
+    else body.innerHTML = (text ? `<p class="t-quote">${esc(text)}</p>` : "") + waitHTML;
     const ctl = root.tkCtl = new AbortController();
     let r = null, note = "";
     const g = await teachGrader();
     if (g) {
-      try { r = await g(teachPrompt(m, full), ctl.signal); }
+      try { r = await g(tkPrompt(m, full, o.clar || [], !!(o.add || o.gap != null)), ctl.signal); }
       catch (e) {
         const code = e && e.code;
         if (code === "cancelled") return;
@@ -5210,41 +5278,94 @@ Reply with only JSON, like:
         note = code === "rate_limited" ? "Claude is busy, so this was a quick word match." : code === "bad_key" ? "Your API key stopped working, so this was a quick word match." : "Claude couldn't read this one, so this was a quick word match.";
       }
     }
-    if (!r || !Array.isArray(r.covered)) { r = quickTeach(m, full); if (!note) note = "Quick word match, since Claude isn't connected here. It can only tell which ideas you mentioned."; }
+    if (!r || !Array.isArray(r.covered)) { r = quickTeach(m, full); r.unclear = []; r.gaps = []; if (!note) note = "Quick word match, since Claude isn't connected here. It can only tell which ideas you mentioned."; }
     if (nodes.get("root") !== root) return;
-    st.text = full; st.tries++;
+    st.text = o.clar ? st.text + " " + o.clar.map((c) => c.a).join(" ") : full;
+    st.tries++;
     r.covered.map(Number).filter((n) => n >= 1 && n <= m.explain.length).forEach((n) => st.cov.add(n));
     st.level = r.level === "solid" || st.cov.size === m.explain.length ? "solid" : r.level === "partly" || st.cov.size ? "partly" : "off";
-    if (st.level === "solid") r.wrong = (r.wrong || []);
     st.r = r; st.note = note;
-    tkResult(root);
+    // Their first answer: before saying what's missing, Kube asks about anything it couldn't follow.
+    const unclear = o.add || o.clar || o.gap != null ? [] : (r.unclear || []).filter((u) => u && u.ask).slice(0, 2);
+    if (unclear.length) { st.clarQ = unclear; st.clar = []; return tkClarify(root, 0); }
+    tkResult(root, { gap: o.gap, fresh: true });
   }
 
-  function tkResult(root) {
+  function tkClarify(root, k) {
+    const st = M.tk, u = st.clarQ[k], body = root.el.querySelector(".tk-body");
+    root.tkState = "clarify";
+    tkSay(root, "huh", st.clarQ.length > 1 ? `Kube asks · ${k + 1} of ${st.clarQ.length}` : "Kube asks", u.ask);
+    body.innerHTML = `<p class="tk-clar-h">${k ? "One more thing I didn't follow." : "Wait, I didn't follow one part."}</p><p class="t-quote">${tkMarkQuote(st.text, u.quote)}</p>
+      ${tkInput("Tell Kube what you meant…", "Your answer to Kube")}
+      <div class="tk-row"><button class="start t-go" type="button" disabled>Answer ${ARR}</button><button class="words-prev tk-cskip" type="button">Skip</button></div>`;
+    const w = tkWire(body, 2, (a) => { st.clar.push({ ask: u.ask, a }); tkClarNext(root, k); }, st);
+    body.querySelector(".tk-cskip").addEventListener("click", () => { stopMic(); tkClarNext(root, k); });
+    tkRelayout(() => { tkFrame(root); w.autoMic(); });
+  }
+  function tkClarNext(root, k) {
+    const st = M.tk;
+    if (k + 1 < st.clarQ.length) return tkClarify(root, k + 1);
+    if (!st.clar.length) return tkResult(root, { fresh: true });
+    tkGrade(root, "", { clar: st.clar });
+  }
+
+  function tkResult(root, o = {}) {
     const m = M, st = m.tk, r = st.r, lvl = st.level, body = root.el.querySelector(".tk-body");
     root.tkState = "res";
+    st.gapSkip = st.gapSkip || new Set(); st.gapSeen = st.gapSeen || new Set(); st.asks = st.asks || {};
+    const hs = BUDDY_HINTS[m.id] || [];
+    (r.gaps || []).forEach((g) => { const k = Number(g && g.q) - 1; if (k >= 0 && k < hs.length && g.ask) st.asks[k] = g.ask; });
+    const missing = hs.map((_, k) => k).filter((k) => !hs[k][1].every((p) => st.cov.has(p)));
+    const gk = lvl === "solid" ? -1 : (missing.find((k) => !st.gapSkip.has(k)) ?? -1);
+    const landed = o.gap != null && !missing.includes(o.gap);
+    st.follow = gk >= 0 ? st.asks[gk] || hs[gk][0] : null;
+    tkSay(root, lvl === "solid" || landed ? "happy" : lvl === "partly" ? "smile" : "huh", "Kube says",
+      (landed ? "Got it! " : "") + (r.say || (lvl === "solid" ? "I get it now. Thank you!" : lvl === "partly" ? "I think I get some of it." : "Hmm, I'm not sure I follow yet.")));
     const wrong = (r.wrong || []).filter((w) => w && w.fix);
     const gaps = lvl === "solid" ? [] : tkGapTopics(m, st.cov);
-    const hs = BUDDY_HINTS[m.id] || [];
-    const openHint = hs.find(([, pts]) => !pts.some((p) => st.cov.has(p))) || hs.find(([, pts]) => !pts.every((p) => st.cov.has(p)));
-    st.follow = lvl === "solid" ? null : r.ask || (openHint && openHint[0]) || null;
-    tkSay(root, lvl === "solid" ? "happy" : lvl === "partly" ? "smile" : "huh", "Kube says",
-      r.say || (lvl === "solid" ? "I get it now. Thank you!" : lvl === "partly" ? "I think I get some of it." : "Hmm, I'm not sure I follow yet."));
-    const lit = gaps.some((t) => nodes.has("ghost-" + t));
+    const topic = gk >= 0 ? ((TK_GAPS[m.id] || [])[gk] || []).find((t) => TOPICS[t]) : null, seen = st.gapSeen.has(gk);
+    const pin = missing.length === 1 ? "There's one part I still don't get." : `There are ${missing.length} parts I still don't get.`;
     body.innerHTML = `<p class="t-quote">${esc(st.text)}</p>
-      <div class="tk-sub">${lvl === "solid" ? "You covered all of it" : "What you taught Kube"}</div>${tkHints(m, st.cov, lvl !== "solid")}
+      <div class="tk-sub">${lvl === "solid" ? "You covered all of it" : "What you taught Kube"}</div>${tkHints(m, st.cov, gk < 0 && lvl !== "solid", gk)}
       ${wrong.length ? `<div class="tk-sub">Not quite right</div><ul class="t-list off">${wrong.map((w) => `<li><span>${w.quote ? `<b>“${esc(w.quote)}”</b> ` : ""}${esc(w.fix)}</span></li>`).join("")}</ul>` : ""}
       ${st.note ? `<p class="t-note">${esc(st.note)}</p>` : ""}
       ${lvl === "solid" ? `<p class="tk-win">Kube gets it! Explore the map if you're curious, or go on to the next idea.</p>`
-        : `<p class="tk-explore">${lit ? "The questions Kube still wonders about are lit up on the map. Explore them, then teach Kube again." : "Explore the questions on the map, then teach Kube again."}</p>
-        <div class="tk-row"><button class="start tk-again" type="button">Teach Kube again ${ARR}</button>${root.el.querySelector(".root-teach").hidden ? `<button class="words-prev tk-short" type="button">Show me the short version</button>` : ""}</div>`}`;
+        : gk >= 0 ? `<p class="tk-pin">${pin} ${missing.length > 1 ? "Let's go through them." : "Can you help?"}</p>
+        <div class="tk-gap">
+          <div class="tk-gap-k">Kube's question · ${missing.length === 1 ? "last one" : missing.length + " to go"}</div>
+          <div class="tk-gap-ask"><span class="tk-gface">${FACE("huh")}</span><p>${esc(st.follow)}</p></div>
+          <div class="tk-gap-in">${tkInput("Tell Kube…", "Your answer to Kube's question")}
+          <div class="tk-row"><button class="start t-go" type="button" disabled>Answer ${ARR}</button><button class="words-prev tk-gskip" type="button">Skip this one</button></div></div>
+          ${topic ? `<button class="tk-dk tk-gshow" type="button"><span class="tk-dk-ic" aria-hidden="true">?</span><span><b>${seen ? "Show it again" : "I don't know, show me"}</b><small>Opens “${esc(TOPICS[topic].q)}” on the map</small></span></button>` : ""}
+          <p class="tk-gap-seen"${seen ? "" : " hidden"}>Have a look, then come back and tell Kube in your own words.</p>
+        </div>`
+        : `<p class="tk-explore">The parts Kube still wonders about are lit up on the map. Explore them whenever you like.</p>
+        <div class="tk-row"><button class="start tk-regap" type="button">Go through Kube's questions again ${ARR}</button></div>`}
+      ${lvl !== "solid" && root.el.querySelector(".root-teach").hidden ? `<div class="tk-row"><button class="words-prev tk-short" type="button">Show me the short version</button></div>` : ""}`;
     body.querySelectorAll(".tk-go").forEach((b) => b.addEventListener("click", () => openTopic(b.dataset.topic, "root")));
-    const again = body.querySelector(".tk-again"); if (again) again.addEventListener("click", () => tkAsk(root, st.follow));
+    const card = body.querySelector(".tk-gap");
+    let w = null;
+    if (card) {
+      w = tkWire(card, 2, (a) => tkGrade(root, a, { add: true, gap: gk, spot: card.querySelector(".tk-gap-in") }), st);
+      card.querySelector(".tk-gskip").addEventListener("click", () => { stopMic(); st.gapSkip.add(gk); tkResult(root); });
+      const sh = card.querySelector(".tk-gshow");
+      // Bring up that part of the map; the question stays open for when they come back.
+      if (sh) sh.addEventListener("click", () => {
+        stopMic(); st.gapSeen.add(gk); openTopic(topic, "root");
+        sh.querySelector("b").textContent = "Show it again"; card.querySelector(".tk-gap-seen").hidden = false;
+      });
+    }
+    const re = body.querySelector(".tk-regap"); if (re) re.addEventListener("click", () => { st.gapSkip.clear(); tkResult(root); });
     const sh = body.querySelector(".tk-short"); if (sh) sh.addEventListener("click", () => tkShort(root));
     if (lvl === "solid" && !isLearned("root-" + m.id)) { addLearned("root-" + m.id, "root", root.el.querySelector(".q")); root.el.classList.add("answered"); $("next-idea").classList.add("glow"); }
     tkMark(gaps);
     tkUnlock(root);
-    tkRelayout(() => tkFrame(root));
+    tkRelayout(() => {
+      tkFrame(root);
+      // After answering one of Kube's questions, keep the next one in view.
+      if (card && (o.gap != null || st.gapSkip.size)) showTop(card);
+      if (w && o.fresh) w.autoMic();
+    });
   }
 
   // "I don't know this yet" is a fine answer: Kube shows the short version, and the questions around it open up.
@@ -5256,7 +5377,7 @@ Reply with only JSON, like:
     tkSay(root, "smile", "Kube says", st.tries ? "OK, let's look at it together. Here's the short version, and the questions around it are open to explore." : "No problem! Here's the short version. The questions around it are open to explore too.");
     root.el.querySelector(".tk-body").innerHTML = `<p class="tk-explore">When it makes sense, come back and teach me.</p>
       <div class="tk-row"><button class="start tk-ready" type="button">I'm ready to teach Kube ${ARR}</button></div>`;
-    root.el.querySelector(".tk-ready").addEventListener("click", () => tkAsk(root, st.tries ? st.follow : null));
+    root.el.querySelector(".tk-ready").addEventListener("click", () => st.r ? tkResult(root) : tkAsk(root));
     tkMark(tkGapTopics(m, st.tries ? st.cov : null));
     tkUnlock(root);
     tkShort(root);
