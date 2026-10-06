@@ -1,0 +1,1780 @@
+<title>Teach Kube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#EDF0EC;
+  --dot:#C9D0C9;
+  --surface:#FFFFFF;
+  --surface-2:#F5F7F4;
+  --ink:#18201C;
+  --muted:#5B6660;
+  --line:#D6DCD6;
+  --ghost:#9AA59E;
+  --accent:#1E6B50;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#DCEBE3;
+  --branch:#B7800F;
+  --branch-soft:#F5E7C6;
+  --wrong:#B4442F;
+  --wrong-soft:#F6DDD6;
+  --mark:#F3DC8C;
+  --shadow:0 1px 2px rgba(24,32,28,.06),0 12px 32px -12px rgba(24,32,28,.22);
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#121714;--dot:#26302A;--surface:#1A211D;--surface-2:#202823;
+    --ink:#E6ECE8;--muted:#98A59E;--line:#2E3832;--ghost:#5E6B64;
+    --accent:#5FBF95;--accent-ink:#0E1A14;--accent-soft:#1F3A2E;--branch:#E0A93A;--branch-soft:#3A2F17;
+    --wrong:#E5826C;--wrong-soft:#3B221C;--mark:#5A4A16;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 16px 40px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#121714;--dot:#26302A;--surface:#1A211D;--surface-2:#202823;
+  --ink:#E6ECE8;--muted:#98A59E;--line:#2E3832;--ghost:#5E6B64;
+  --accent:#5FBF95;--accent-ink:#0E1A14;--accent-soft:#1F3A2E;--branch:#E0A93A;--branch-soft:#3A2F17;
+  --wrong:#E5826C;--wrong-soft:#3B221C;--mark:#5A4A16;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 16px 40px -14px rgba(0,0,0,.6);
+}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+::selection{background:var(--mark)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.visual{margin-top:12px;background:var(--surface-2);border-radius:12px;padding:10px 8px 6px}
+.visual svg{display:block;width:100%;height:auto}
+.visual text{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+.visual .ink{stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.visual .card{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.visual .acc{stroke:var(--accent);fill:none;stroke-width:2.5;stroke-linecap:round}
+.visual .accf{fill:var(--accent)}
+.visual .br{stroke:var(--branch);fill:none;stroke-width:2.5;stroke-linecap:round}
+.visual .brf{fill:var(--branch)}
+.visual .bad{stroke:var(--wrong);fill:none;stroke-width:2;stroke-linecap:round}
+.visual .hole{fill:var(--surface);stroke-width:2.5}
+.visual .step{opacity:0;animation:appear .35s ease forwards}
+@keyframes appear{to{opacity:1}}
+.visual .cap{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;margin-top:2px}
+.k8s-logo{width:22px;height:22px;flex:none;vertical-align:-6px;margin-right:8px}
+.visual .step.drawing .dr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .8s ease forwards;animation-delay:inherit}
+.bf-head{fill:var(--branch-soft);stroke:var(--branch);stroke-width:2.2}
+.bf-hair{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.bf-eye{fill:var(--ink)}
+.bf-eyes{transform-box:fill-box;transform-origin:center;animation:buddy-blink 5s infinite}
+.bf-line{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.bf-cheek{fill:var(--wrong);opacity:.22}
+.bf-happy,.bf-huh{display:none}
+.face-happy .bf-eyes,.face-happy .bf-smile{display:none}.face-happy .bf-happy{display:inline}
+.face-huh .bf-smile{display:none}.face-huh .bf-huh{display:inline}
+@keyframes buddy-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+/* ---------- v37 Teach Kube ---------- */
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.tk-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:calc(10px + env(safe-area-inset-top,0px)) 20px 10px;background:color-mix(in srgb,var(--ground) 90%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.tk-brand{display:flex;align-items:center;gap:8px;flex:none}
+.tk-brand b{font-family:var(--display);font-size:18px;font-weight:700}
+.tk-sub{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tk-mini{width:30px;height:30px;display:block}
+.tk-mini svg{width:100%;height:100%;display:block}
+.tk-ideas{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.tk-idea{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:4px 11px 4px 7px;font:600 13px var(--display);cursor:pointer}
+.tk-idea i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:9px;line-height:1}
+.tk-idea.now{border-color:var(--accent);color:var(--ink)}
+.tk-idea.partly i{background:var(--branch-soft);border-color:var(--branch)}
+.tk-idea.solid i{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tk-idea.solid i::before{content:"✓"}
+.tk-conn{border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:99px;padding:5px 12px;font:600 13px var(--display);cursor:pointer;flex:none}
+.tk-conn.on{border-color:var(--line);color:var(--muted)}
+.tk-main{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:28px 20px 24px;display:grid;grid-template-columns:minmax(0,720px);justify-content:center;gap:28px;align-items:start}
+.tk-main.asking{grid-template-columns:minmax(0,1fr) minmax(320px,420px)}
+.tk-foot{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:center;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px))}
+.tk-ver{margin-left:8px;opacity:.75}
+
+/* Kube and its speech */
+.kb-row{display:flex;align-items:flex-start;gap:16px}
+.kb-face{flex:none;width:84px;height:84px;border-radius:50%;background:var(--surface);border:2px solid var(--line);padding:5px;box-shadow:var(--shadow);animation:buddy-bob 4s ease-in-out infinite}
+.kb-face svg{width:100%;height:100%;display:block}
+.kb-say{position:relative;flex:1;min-width:0;background:var(--surface);border:1.5px solid var(--line);border-radius:6px 22px 22px 22px;padding:16px 20px;box-shadow:var(--shadow)}
+.kb-hi{font-family:var(--display);font-size:16px;color:var(--muted);margin:0 0 6px}
+.kb-q{font-family:var(--display);font-weight:700;font-size:clamp(23px,3vw,30px);line-height:1.2;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.kb-react{font-family:var(--display);font-weight:600;font-size:clamp(19px,2.3vw,22px);line-height:1.35;margin:0}
+.kb-react + .kb-q{margin-top:10px}
+.kb-tag{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+
+/* What Kube wants to understand */
+.kb-hints{margin:16px 0 0 100px;padding:0;list-style:none;display:grid;gap:5px}
+.kb-hints li{display:flex;align-items:flex-start;gap:9px;font-size:16px;color:var(--muted);line-height:1.35}
+.kb-hints li i{flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700}
+.kb-hints li.yes{color:var(--ink)}.kb-hints li.yes i{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}.kb-hints li.yes i::before{content:"✓"}
+.kb-hints li.some i{background:var(--branch-soft);border-color:var(--branch)}
+.kb-hints-t{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 0 100px}
+
+/* Your answer */
+.tk-answer{margin-top:22px;margin-left:100px}
+.tk-in{display:flex;gap:12px;align-items:flex-start}
+.tk-ta{flex:1;min-width:0;min-height:130px;resize:vertical;border:1.5px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink);font:inherit;font-size:18px;line-height:1.5;padding:14px 16px}
+.tk-ta:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tk-mic{flex:none;width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);padding:0}
+.tk-mic svg{width:24px;height:24px}
+.tk-mic.on{background:var(--wrong);animation:t-rec 1.3s ease-in-out infinite}
+@keyframes t-rec{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--wrong) 45%,transparent)}60%{box-shadow:0 0 0 12px transparent}}
+.tk-note{font-size:15px;color:var(--muted);margin:10px 0 0;line-height:1.4}
+.tk-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
+.tk-btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:9px 16px;font:600 15px var(--display);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tk-btn:hover{border-color:var(--accent)}
+.tk-btn.main{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);padding:11px 20px;font-size:16px}
+.tk-btn.main:disabled{opacity:.45;cursor:default}
+.tk-btn svg{width:17px;height:17px}
+.tk-btn.quiet{border-color:transparent;background:transparent;color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding-left:4px;padding-right:4px}
+.tk-row .push{margin-left:auto}
+
+/* After you teach */
+.tk-quote{margin:18px 0 0 100px;font-style:italic;color:var(--muted);font-size:16px;line-height:1.45;border-left:3px solid var(--line);padding-left:12px;max-height:7.5em;overflow:auto}
+.tk-list{margin:12px 0 0 100px;padding:0;list-style:none;display:grid;gap:6px}
+.tk-list li{display:flex;gap:10px;font-size:16.5px;line-height:1.4}
+.tk-list li::before{content:"!";flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--wrong-soft);color:var(--wrong);margin-top:1px}
+.tk-list b{color:var(--wrong);font-weight:600}
+.tk-sub2{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 0 100px}
+.tk-wait{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:17px;margin:20px 0 0 100px}
+.tk-wait::before{content:"";width:16px;height:16px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--accent);animation:t-spin .8s linear infinite}
+@keyframes t-spin{to{transform:rotate(360deg)}}
+.tk-acts{margin-left:100px}
+
+/* The summary */
+.tk-sum{list-style:none;padding:0;margin:20px 0 0 100px;display:grid;gap:8px}
+.tk-sum li{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 14px;font-size:17px}
+.tk-sum li span{flex:1;min-width:0}
+.tk-sum li em{font-style:normal;font-family:var(--mono);font-size:12px;border-radius:99px;padding:3px 10px;white-space:nowrap}
+.tk-sum em.solid{background:var(--accent-soft);color:var(--accent)}
+.tk-sum em.partly{background:var(--branch-soft);color:var(--branch)}
+.tk-sum em.none{background:var(--surface-2);color:var(--muted)}
+
+/* Ask anything */
+.tk-ask{position:sticky;top:76px;display:flex;flex-direction:column;max-height:calc(100vh - 110px);background:var(--surface);border:1.5px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;animation:ask-in .3s ease both}
+@keyframes ask-in{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.ask-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.ask-head b{font-family:var(--display);font-size:18px}
+.ask-back{border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:6px 13px;font:600 14px var(--display);cursor:pointer}
+.ask-log{position:relative;flex:1;overflow:auto;padding:14px 16px;display:grid;gap:14px;align-content:start}
+.ask-empty{color:var(--muted);font-size:16px;margin:0}
+.qa{display:grid;gap:8px}
+.qa-q{justify-self:end;max-width:90%;background:var(--accent-soft);color:var(--ink);border-radius:16px 16px 4px 16px;padding:8px 13px;font:600 15.5px var(--display)}
+.qa-a{background:var(--surface-2);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:11px 14px;font-size:17px;line-height:1.5}
+.qa-a p{margin:0}
+.qa-t{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.qa-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.qa-acts button{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:4px 11px;font:600 13px var(--display);cursor:pointer}
+.qa-acts button:hover{color:var(--ink);border-color:var(--accent)}
+.qa-a .visual{margin-top:10px}
+.qa.wait .qa-a{color:var(--muted)}
+.term{text-decoration:underline dotted var(--branch);text-underline-offset:4px;cursor:help}
+.term-def{display:block;font-size:14.5px;color:var(--muted);background:var(--branch-soft);border-radius:10px;padding:6px 10px;margin:6px 0}
+.ask-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.ask-chips button{border:1.5px dashed var(--line);background:transparent;color:var(--ink);border-radius:99px;padding:5px 12px;font:500 14px var(--display);cursor:pointer;text-align:left}
+.ask-chips button:hover{border-color:var(--accent);border-style:solid}
+.ask-form{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--line)}
+.ask-form input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:99px;background:var(--ground);color:var(--ink);font:16px var(--serif);padding:10px 14px}
+.ask-form input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.ask-form button{border:0;background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:0 16px;font:600 15px var(--display);cursor:pointer}
+
+/* Connect dialog */
+.tk-modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ground) 70%,transparent);backdrop-filter:blur(3px)}
+.tk-card{width:min(460px,100%);background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:22px}
+.tk-card h2{font-family:var(--display);margin:0 0 8px;font-size:22px}
+.tk-card p{margin:0 0 12px;font-size:16px;line-height:1.45;color:var(--muted)}
+.tk-card input{width:100%;font:15px var(--mono);padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--ground);color:var(--ink)}
+.tk-err{color:var(--wrong)!important;margin-top:8px!important}
+
+@keyframes buddy-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+@media (max-width:900px){
+  .tk-main.asking{grid-template-columns:minmax(0,720px)}
+  .tk-ask{position:fixed;inset:0;z-index:40;top:0;max-height:none;border-radius:0;border:0;padding-top:env(safe-area-inset-top,0px)}
+  .tk-ideas{margin-left:0}
+  .tk-top{flex-wrap:wrap;gap:8px 12px}
+  .tk-conn{margin-left:auto}
+}
+@media (max-width:640px){
+  .tk-top{padding-left:16px;padding-right:16px}
+  .tk-ideas{order:3;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .tk-idea{flex:none}
+  .tk-main{padding:20px 16px 16px}
+  .kb-face{width:58px;height:58px;padding:3px}
+  .kb-row{gap:10px}
+  .kb-say{padding:13px 15px}
+  .kb-hints,.kb-hints-t,.tk-answer,.tk-quote,.tk-list,.tk-sub2,.tk-wait,.tk-acts,.tk-sum{margin-left:0}
+  .tk-ta{min-height:120px;font-size:17px}
+  .tk-mic{width:50px;height:50px}
+}
+@media (prefers-reduced-motion:reduce){.kb-face,.tk-mic.on,.tk-ask{animation:none}}
+
+</style>
+<header class="tk-top">
+  <div class="tk-brand"><span class="tk-mini" id="tk-mini"></span><b>Teach Kube</b><span class="tk-sub">Kubernetes</span></div>
+  <nav class="tk-ideas" id="tk-ideas" aria-label="The 5 ideas you'll teach"></nav>
+  <button class="tk-conn" id="tk-conn" type="button" hidden>Connect Claude</button>
+</header>
+<main class="tk-main" id="tk-main">
+  <section class="tk-teach" id="tk-teach" aria-live="polite"></section>
+  <aside class="tk-ask" id="tk-ask" hidden aria-label="Ask anything">
+    <div class="ask-head"><b>Ask anything</b><button class="ask-back" id="ask-back" type="button">Back to Kube</button></div>
+    <div class="ask-log" id="ask-log"></div>
+    <div class="ask-chips" id="ask-chips"></div>
+    <form class="ask-form" id="ask-form" autocomplete="off"><input id="ask-in" type="text" placeholder="Ask anything about Kubernetes…" aria-label="Your question"><button type="submit" aria-label="Ask">Ask</button></form>
+  </aside>
+</main>
+<footer class="tk-foot">Based on GeeksforGeeks' Introduction to Kubernetes (K8s). Learning format by Aneesh Nagalkar. <span class="tk-ver">v37 · Teach Kube</span></footer>
+<div class="tk-modal" id="tk-key" hidden role="dialog" aria-modal="true" aria-labelledby="tk-key-h">
+  <div class="tk-card">
+    <h2 id="tk-key-h">Connect Claude</h2>
+    <p>Kube needs Claude to understand your explanations. Paste your own Anthropic API key. It stays in this browser and is only sent to Anthropic.</p>
+    <input id="tk-key-in" type="password" placeholder="sk-ant-…" autocomplete="off" aria-label="Anthropic API key">
+    <p class="tk-err" id="tk-key-err" hidden></p>
+    <div class="tk-row"><button class="tk-btn main" id="tk-key-save" type="button">Connect</button><button class="tk-btn" id="tk-key-remove" type="button" hidden>Remove key</button><button class="tk-btn" id="tk-key-cancel" type="button">Not now</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const ICONS = {
+    container: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--branch)" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20.5 7.4v9.2L12 21.2 3.5 16.6V7.4z"/><path d="M3.5 7.4 12 12l8.5-4.6M12 12v9.2"/></svg>`,
+    cluster: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2.5" width="8" height="5" rx="1.5"/><rect x="2.5" y="15.5" width="6" height="6" rx="1.5"/><rect x="9" y="15.5" width="6" height="6" rx="1.5"/><rect x="15.5" y="15.5" width="6" height="6" rx="1.5"/><path d="M12 7.5v4M5.5 15.5v-4h13v4M12 11.5v4" stroke-linecap="round"/></svg>`,
+    pod: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--branch)" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="6"/><circle cx="8.5" cy="12" r="2.4"/><circle cx="15.5" cy="12" r="2.4"/></svg>`,
+    desired: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/><path d="M9 12l2 2 4-4"/></svg>`
+  };
+
+  // ---------- visual explanations (drawn inline so they work offline and in both themes) ----------
+  const st = (i) => `class="step" style="animation-delay:${i * 0.45}s"`;
+  const box = (x, y, w = 34, h = 26, label = "app") => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/><text x="${x + w / 2}" y="${y + h / 2 + 3.5}" text-anchor="middle" style="fill:var(--ink)">${label}</text>`;
+  const X = (x, y) => `<path class="bad" d="M${x - 9} ${y - 9} l18 18 M${x + 9} ${y - 9} l-18 18" style="stroke-width:3"/>`;
+  const VISUALS = {
+    container: () => `<svg viewBox="0 0 300 124" role="img" aria-label="A container holding the app, its runtime and libraries, running the same on a laptop, a server and the cloud.">
+      <g ${st(0)}><rect x="12" y="14" width="100" height="92" rx="8" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2.5"/>
+        <rect class="card" x="24" y="26" width="76" height="20" rx="3"/><text x="62" y="40" text-anchor="middle" style="fill:var(--ink)">your app</text>
+        <rect class="card" x="24" y="52" width="76" height="20" rx="3"/><text x="62" y="66" text-anchor="middle">runtime</text>
+        <rect class="card" x="24" y="78" width="76" height="20" rx="3"/><text x="62" y="92" text-anchor="middle">libraries</text></g>
+      ${[["laptop", 26], ["server", 62], ["cloud", 98]].map(([l, y], i) => `<g ${st(i + 1)}><path class="br" d="M118 60 C 150 60, 150 ${y}, 176 ${y}" stroke-dasharray="3 4"/><rect class="card" x="180" y="${y - 13}" width="62" height="26" rx="4"/><rect x="186" y="${y - 7}" width="14" height="14" rx="2" fill="var(--branch)"/><text x="206" y="${y + 3.5}">${l}</text></g>`).join("")}
+      <g ${st(4)}><text x="292" y="64" text-anchor="end" style="fill:var(--accent)">same</text><text x="292" y="76" text-anchor="end" style="fill:var(--accent)">result</text></g>
+    </svg>`,
+    cluster: () => `<svg viewBox="0 0 300 132" role="img" aria-label="A control plane above three nodes. One node fails, and its container moves to a healthy node.">
+      <g ${st(0)}><rect x="100" y="6" width="100" height="28" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="150" y="24" text-anchor="middle" style="fill:var(--accent)">control plane</text>
+        <path d="M150 34 v10 M50 44 h200 M50 44 v10 M150 44 v10 M250 44 v10" stroke="var(--accent)" stroke-width="1.5" fill="none"/></g>
+      ${[50, 150, 250].map((x, i) => `<g ${st(i * 0.5 + 0.5)}><rect class="card" x="${x - 42}" y="56" width="84" height="54" rx="6"/><text x="${x}" y="124" text-anchor="middle">node ${i + 1}</text>${box(x - 36, 70, 32, 24)}${i === 1 ? "" : ""}</g>`).join("")}
+      <g ${st(2.5)}>${X(150, 82)}<rect x="108" y="56" width="84" height="54" rx="6" fill="var(--wrong-soft)" opacity=".55"/></g>
+      <g ${st(3.5)}><path class="br" d="M150 100 C 180 118, 230 118, 250 100"/><path class="br" d="M244 96 l7 4 l-3 7"/>${box(254, 70, 32, 24)}<text x="200" y="128" text-anchor="middle" style="fill:var(--branch)">moved</text></g>
+    </svg>`,
+    pod: () => `<svg viewBox="0 0 300 118" role="img" aria-label="A Pod wrapping a container, with its own IP address. When it dies, a new Pod with a new IP replaces it.">
+      <g ${st(0)}><rect x="14" y="24" width="112" height="60" rx="30" fill="none" stroke="var(--branch)" stroke-width="2.5"/>${box(52, 41, 36, 26)}<text x="70" y="102" text-anchor="middle">IP 10.1.2.7</text><text x="70" y="16" text-anchor="middle" style="fill:var(--branch)">Pod</text></g>
+      <g ${st(1.5)}>${X(70, 54)}</g>
+      <g ${st(2.3)}><path class="acc" d="M134 54 h28"/><path class="acc" d="M156 48 l7 6 l-7 6"/><text x="148" y="44" text-anchor="middle" style="fill:var(--accent)">replace</text></g>
+      <g ${st(3)}><rect x="172" y="24" width="112" height="60" rx="30" fill="none" stroke="var(--accent)" stroke-width="2.5"/>${box(210, 41, 36, 26)}<text x="228" y="102" text-anchor="middle">IP 10.1.4.3</text><text x="228" y="16" text-anchor="middle" style="fill:var(--accent)">new Pod</text></g>
+    </svg>`,
+    desired: () => `<svg viewBox="0 0 300 128" role="img" aria-label="A loop: compare what you asked for, three copies, with what is running, two copies, then start one more.">
+      <g ${st(0)}><rect class="card" x="8" y="14" width="96" height="44" rx="6"/><text x="56" y="31" text-anchor="middle">you asked for</text><text x="56" y="48" text-anchor="middle" style="fill:var(--ink);font-size:12px">3 copies</text></g>
+      <g ${st(1)}><rect class="card" x="8" y="72" width="96" height="44" rx="6"/><text x="56" y="89" text-anchor="middle">running now</text><text x="56" y="106" text-anchor="middle" style="fill:var(--wrong);font-size:12px">2 copies</text></g>
+      <g ${st(2)}><circle cx="170" cy="65" r="34" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="170 44"/><path class="acc" d="M196 38 l6 -8 l2 10"/><text x="170" y="62" text-anchor="middle" style="fill:var(--accent)">compare</text><text x="170" y="75" text-anchor="middle" style="fill:var(--accent)">& fix</text>
+        <path class="ink" d="M104 36 C 120 36, 124 50, 136 56 M104 94 C 120 94, 124 80, 136 74" style="stroke:var(--muted);stroke-width:1.5"/></g>
+      <g ${st(3)}><path class="br" d="M204 65 h20"/><path class="br" d="M218 59 l7 6 l-7 6"/>${box(232, 52, 58, 26, "+1 copy")}<text x="261" y="94" text-anchor="middle">on a healthy</text><text x="261" y="106" text-anchor="middle">node</text></g>
+    </svg>`
+  };
+
+  // ---------- content (hardcoded for the mockup) ----------
+  const LEVELS = ["Technical", "Less jargon", "No jargon", "Like I'm five"];
+  const DEFAULT_LEVEL = 1;
+  // How deep the learner wants to go: 0 just the gist, 1 hold a conversation, 2 teach it to someone.
+  // It sets how answers are worded at first, how many side questions each main question offers, and whether follow-ups appear.
+  let DEPTH = 1;
+  try { const d = localStorage.getItem("autolearn-depth"); if (d === "0" || d === "1" || d === "2") DEPTH = +d; } catch (e) {}
+  let JARGON = null;   // v29: set from the quick check; the time you pick sets DEPTH (how much gets covered)
+  const depthLevel = () => JARGON != null ? JARGON : [2, 1, 0][DEPTH];
+  const shownGhosts = (m) => DEPTH === 0 ? m.ghosts.slice(0, 2) : m.ghosts;
+
+  // Answers mark terms as [[term]] or [[shown text|glossary key]]. Every marked term can be tapped for a one-line definition,
+  // so no word is left unexplained. The default level avoids new terms wherever it can.
+  // Each topic's check asks the learner to apply the idea; its review is a different question used later for spaced practice.
+  // "no" gives a reason for each wrong option.
+  const TOPICS = {
+    container: {
+      q: "What's a container?", match: /\bcontainers?\b/i,
+      visual: ["container", "container", "container", "container"],
+      a: [
+        "A process fenced off with [[namespaces and cgroups|namespaces]], started from an [[image]] (usually built with [[Docker]]) that bundles the app and everything it needs. It shares the machine's kernel, so it's far lighter than a [[VM]].",
+        "Your app packed with everything it needs, so it runs the same on any machine. Tools like [[Docker]] build them.",
+        "A sealed box with your program inside. It works the same on any computer.",
+        "A lunchbox. Everything's packed, so any table works."
+      ],
+      check: { q: "Your app works on your laptop but breaks on the server. How does a container help?",
+        opts: ["It packs the app with what it needs, so it runs the same on both", "It makes the server faster", "It backs up the app's data"], right: 0,
+        no: [null, "Speed isn't the point. Running the same everywhere is.", "Containers don't save your data for you."],
+        why: "Same box, any machine. That's what lets Kubernetes move your app around." },
+      review: { q: "Why can Kubernetes start your app on any machine?",
+        opts: ["Every machine already has your code installed", "Your app is in a container, which runs the same anywhere", "Kubernetes rewrites the app for each machine"], right: 1,
+        no: ["Nothing is installed ahead of time. The container carries it all.", null, "It never touches your code."],
+        why: "The container carries everything the app needs." }
+    },
+    cluster: {
+      q: "Can't another server take over?", match: /\b(servers?|machines?|nodes?|clusters?)\b/i,
+      visual: ["cluster", "cluster", "cluster", "cluster"],
+      a: [
+        "Yes, if the servers form a [[cluster]]: [[nodes|node]] that each run a [[kubelet]], managed by a [[control plane]]. When a node fails, the [[scheduler]] places its [[Pods|Pod]] on other nodes.",
+        "Yes, if they're in a [[cluster]]: a group of machines Kubernetes runs as one. When one dies, its work moves to the others.",
+        "Yes. Kubernetes links several computers into a team. If one dies, the others pick up its work.",
+        "Friends carrying a couch. If one gets tired, the others take the weight."
+      ],
+      check: { q: "Your cluster has 4 servers and one dies. What happens to your app?",
+        opts: ["It's down until that server comes back", "It moves to one of the other 3", "All 4 servers restart"], right: 1,
+        no: ["Not in a cluster. The other servers take over.", null, "Only the dead one is affected. The rest keep going."],
+        why: "That's the point of a cluster: no single server matters." },
+      review: { q: "Why run your app on a cluster instead of one big server?",
+        opts: ["Clusters are always cheaper", "If one server dies, the others take over", "One server can't run containers"], right: 1,
+        no: ["Not always. The win is surviving a dead server.", null, "One server can. It just can't survive dying."],
+        why: "No single machine can take your app down." }
+    },
+    pod: {
+      q: "What counts as a copy?", match: /\b(pods?|cop(y|ies))\b/i,
+      visual: ["pod", "pod", "pod", "pod"],
+      a: [
+        "Each copy is a [[Pod]]: the smallest thing Kubernetes runs, one or more containers sharing a machine, an [[IP]] and [[volumes]]. Pods are replaced, never repaired.",
+        "Each copy is called a [[Pod]]: your container in a thin wrapper with its own address. A broken Pod isn't fixed. It's replaced with a new one.",
+        "Each copy is called a Pod, a little package holding your app. If one breaks, it's thrown away and a fresh one is made.",
+        "Each copy is a pea pod, and your app is the pea inside."
+      ],
+      check: { q: "You ask Kubernetes for 3 copies of your app. How many Pods run?",
+        opts: ["1, holding all 3 copies", "3", "It depends on how many servers you have"], right: 1,
+        no: ["Each copy is its own Pod.", null, "The server count doesn't matter. You asked for 3."],
+        why: "One copy, one Pod." },
+      review: { q: "A Pod breaks. What does Kubernetes do?",
+        opts: ["Repairs that Pod", "Throws it away and makes a new one", "Waits for you to fix it"], right: 1,
+        no: ["Pods are never repaired, only replaced.", null, "You don't have to do anything."],
+        why: "Pods are replaced, never repaired." }
+    },
+    desired: {
+      q: "Who notices it died?", match: /\b(dies|died|die|dead|notices?|happens|3 ?a\.?m)\b/i,
+      visual: ["desired", "desired", "desired", "desired"],
+      a: [
+        "The [[control plane]]. Each node's [[kubelet]] sends [[heartbeats|heartbeat]]. When they stop, the node is marked [[NotReady]] and [[controllers]] recreate its Pods elsewhere to match the [[desired state]].",
+        "Kubernetes does, not you. You told it to run 3 copies, and every machine checks in every few seconds. When one goes quiet, Kubernetes sees copies missing and starts new ones on a healthy machine.",
+        "Kubernetes does. Each computer says \"still here\" every few seconds. When one goes quiet, Kubernetes starts your app on another one.",
+        "A lifeguard counting swimmers. One goes under? The lifeguard notices and jumps in."
+      ],
+      check: { q: "It's 3 a.m. and a server dies. Who gets your app running again?",
+        opts: ["You, once the alert wakes you up", "Kubernetes, on its own", "The dead server, once it reboots"], right: 1,
+        no: ["You don't have to. Kubernetes is already watching.", null, "Kubernetes doesn't wait for it. It uses a healthy machine."],
+        why: "Kubernetes compares what's running with what you asked for, and fixes the gap." },
+      review: { q: "How does Kubernetes decide something is wrong?",
+        opts: ["It compares what's running with what you asked for", "It compares today's traffic with yesterday's", "It waits for a user to complain"], right: 0,
+        no: [null, "Traffic isn't the signal. Missing copies are.", "It notices long before any user does."],
+        why: "What you asked for vs. what's running. Any gap gets fixed." }
+    },
+    manifest: {
+      q: "What does that look like?", match: /\b(hand|actually|file|yaml|manifest|deployment)\b/i,
+      visual: ["manifest", "manifest", "manifest", "manifest"],
+      a: [
+        "A [[Deployment]] manifest: [[YAML]] with a spec holding [[replicas]], a [[label selector]] and a [[Pod template]]. You send it with [[kubectl]] apply -f.",
+        "A short file called a [[Deployment]]. It says which version of your app to run and how many copies. One command sends it to Kubernetes.",
+        "A short note to Kubernetes: which version of your app, and how many copies.",
+        "A shopping list: three copies of my app, version one, please."
+      ],
+      check: { q: "You want 5 copies of version 2. What goes in the Deployment file?",
+        opts: ["replicas: 5 and image: shop:v2", "The names of 5 servers", "A script that starts 5 copies"], right: 0,
+        no: [null, "You never pick servers. Kubernetes does.", "No steps needed. You describe the result."],
+        why: "Describe the result. Kubernetes works out the steps." },
+      review: { q: "What two things does a Deployment file say?",
+        opts: ["Which version and how many copies", "Server names and passwords", "When to start and when to stop"], right: 0,
+        no: [null, "Servers are Kubernetes' job, not yours.", "It runs forever. There's no stop time."],
+        why: "Version and count. That's the whole ask." }
+    },
+    selfheal: {
+      q: "What if a copy crashes?", match: /\b(forever|always|crash(es|ed)?)\b/i,
+      visual: ["selfheal", "selfheal", "selfheal", "selfheal"],
+      a: [
+        "The [[Deployment]] owns a [[ReplicaSet]], whose [[controller|controllers]] watches Pods matching its [[label selector]] and creates or deletes Pods until the count equals [[replicas]].",
+        "Kubernetes keeps counting your copies. If one crashes, it restarts it. If its whole machine is gone, it starts a new copy on another machine.",
+        "Something keeps counting your copies. If one is missing, it makes a new one.",
+        "A teacher counting kids after recess. One missing? Go find another."
+      ],
+      check: { q: "A copy crashes at 3 a.m. What do you need to do?",
+        opts: ["Wake up and restart it", "Nothing. A replacement starts on its own", "Edit the Deployment file"], right: 1,
+        no: ["No need. Kubernetes already started a new one.", null, "The file is still right. Kubernetes just matches it again."],
+        why: "Kubernetes sees the count is short and fixes it." },
+      review: { q: "You asked for 3 copies and only 2 are running. What happens next?",
+        opts: ["Kubernetes starts one more", "Nothing until you notice", "Kubernetes lowers the goal to 2"], right: 0,
+        no: [null, "Kubernetes is always counting.", "Your number wins. It never changes your goal."],
+        why: "Short by one, so one more starts." }
+    },
+    scale: {
+      q: "What if I need 10 copies, not 3?", match: /\b(3|three|10|ten|scal\w*|more)\b/i,
+      visual: ["scale", "scale", "scale", "scale"],
+      a: [
+        "Change spec.[[replicas]] (or run [[kubectl]] scale) and the [[ReplicaSet]] adds Pods to match. An [[autoscaler]] can change replicas for you based on load.",
+        "Change one number in the file, [[replicas]]: 3 to replicas: 10, and Kubernetes starts seven more. It can even do this for you when traffic rises.",
+        "Change the number. Kubernetes adds or removes copies to match.",
+        "Tell the coach you want ten players, and more kids join the team."
+      ],
+      check: { q: "A big sale is coming and 3 copies won't keep up. What do you change?",
+        opts: ["Copy the Deployment file 7 times", "Buy a bigger server", "replicas: 3 to replicas: 20"], right: 2,
+        no: ["That makes separate apps. One file, one number.", "No need. More copies share the load.", null],
+        why: "One number, and Kubernetes does the rest." },
+      review: { q: "Traffic drops at night. How do you run fewer copies?",
+        opts: ["Lower the replicas number", "Turn servers off by hand", "Delete a few Pods"], right: 0,
+        no: [null, "Kubernetes would just move the copies elsewhere.", "Kubernetes would replace them right away!"],
+        why: "Same number, turned down." }
+    },
+    rollout: {
+      q: "What happens when the version changes?", match: /\b(versions?|update\w*|v2|release)\b/i,
+      visual: ["rollout", "rollout", "rollout", "rollout"],
+      a: [
+        "Changing the [[Pod template]] triggers a [[rolling update]]: a new [[ReplicaSet]] scales up while the old one scales down, within [[maxSurge]] and maxUnavailable, and only as fast as new Pods pass their [[readiness probes|health check]].",
+        "Kubernetes swaps old copies for new ones a few at a time, so your app stays up the whole time.",
+        "Old copies are swapped for new ones bit by bit, so nothing goes down.",
+        "Swapping players one at a time, so there's always a full team on the field."
+      ],
+      check: { q: "You ship version 2 at noon, during peak traffic. What do users see?",
+        opts: ["A short outage while everything restarts", "Nothing changes until someone restarts the servers", "The app stays up while copies swap"], right: 2,
+        no: ["No outage. Copies swap a few at a time.", "Changing the file is enough. The swap starts on its own.", null],
+        why: "A few at a time, so some copies are always serving." },
+      review: { q: "Why is there no downtime when you update?",
+        opts: ["All copies restart at once, very fast", "Old copies are swapped for new ones a few at a time", "Updates only happen at night"], right: 1,
+        no: ["All at once would mean an outage.", null, "You can update any time."],
+        why: "There are always some copies running." }
+    },
+    rollback: {
+      q: "What if the new one is broken?", match: /\b(broken|bad|fail\w*|undo|rollback)\b/i,
+      visual: ["rollback", "rollback", "rollback", "rollback"],
+      a: [
+        "Failing [[readiness probes|health check]] keep broken Pods out of traffic and stall the rollout. [[kubectl]] rollout undo goes back to the previous [[revision]].",
+        "Each new copy has to pass a quick [[health check]] first. If new copies fail it, the swap stops, and one undo command goes back to the last version.",
+        "Kubernetes stops the swap if the new copies look sick, and you can undo back to the old version.",
+        "If the new player keeps falling over, the coach sends the old player back in."
+      ],
+      check: { q: "Version 2 is throwing errors. What's the quickest fix?",
+        opts: ["Undo the update", "Delete the whole Deployment", "Rebuild the servers"], right: 0,
+        no: [null, "That takes your whole app down.", "The servers are fine. The new version is the problem."],
+        why: "One undo command takes you straight back." },
+      review: { q: "New copies fail their health check halfway through an update. What happens?",
+        opts: ["The update keeps going anyway", "Every copy is deleted", "The swap stops, and the old copies keep serving"], right: 2,
+        no: ["It stops. Broken copies never take over.", "Old copies stay. Your app stays up.", null],
+        why: "The health check protects you before you even notice." }
+    }
+  };
+
+  // One-line definitions for every term an answer can mention.
+  const GLOSSARY = {
+    namespaces: "Linux features that fence a program off, so it can't see or disturb others.",
+    image: "The packed-up app a container is started from.",
+    VM: "A whole pretend computer running inside a real one. Much heavier than a container.",
+    cluster: "A group of machines Kubernetes runs as if they were one.",
+    node: "One machine in the cluster.",
+    kubelet: "A small helper on every machine. It starts containers and reports back.",
+    "control plane": "The brain of Kubernetes. It decides what runs where.",
+    scheduler: "The part of the control plane that picks a machine for each copy.",
+    Pod: "One running copy of your app.",
+    IP: "An address other programs use to reach it.",
+    volumes: "Storage attached to a Pod.",
+    heartbeat: "A regular \"still here\" message each machine sends.",
+    NotReady: "Kubernetes' label for a machine it can't hear from.",
+    controllers: "Loops inside Kubernetes that keep fixing any gap between what you asked for and what's running.",
+    "desired state": "What you told Kubernetes should be running.",
+    Deployment: "The file where you say which version of your app to run and how many copies.",
+    YAML: "A simple text format for settings files.",
+    replicas: "The number of copies you asked for.",
+    "label selector": "How Kubernetes tells which Pods belong to which app.",
+    "Pod template": "The part of a Deployment that describes each copy, like which image to run.",
+    kubectl: "The command-line tool you use to talk to Kubernetes.",
+    ReplicaSet: "The part behind a Deployment that keeps counting copies and fixes the count.",
+    autoscaler: "Something that raises or lowers the number of copies for you as traffic changes.",
+    "rolling update": "Swapping old copies for new ones a few at a time.",
+    maxSurge: "Limits on how many extra or missing copies are allowed during an update.",
+    "health check": "A quick test each copy must pass before it gets real traffic.",
+    revision: "A saved earlier version of your Deployment.",
+    container: "Your app packed with everything it needs, so it runs the same on any machine.",
+    server: "A computer that runs your app so people can use it over the internet.",
+    cloud: "Computers you rent from a company like Amazon, Google or Microsoft instead of owning them.",
+    traffic: "How many people are using your app right now.",
+    version: "One release of your app. Version 2 replaces version 1.",
+    downtime: "Time when your app is down and nobody can use it.",
+    "on call": "Being the person who gets woken up when something breaks.",
+    "operating system": "The software that runs a computer and its programs, like Windows or macOS.",
+    request: "One ask from a user to your app, like loading a page.",
+    address: "Where to reach something on a network, like a phone number.",
+    command: "A line you type into a terminal to tell a program what to do.",
+    kernel: "The core of an operating system that talks to the hardware.",
+    process: "A running program.",
+    CPU: "The chip that does a computer's work. A busy CPU means a busy app.",
+    portable: "Can move somewhere else and still work the same.",
+    "vendor-neutral": "Not owned or controlled by any one company.",
+    Kubernetes: "Free software that runs your containers across many machines and keeps them healthy."
+  };
+
+
+  // ---------- module 2: Pods and Deployments ----------
+  Object.assign(ICONS, {
+    manifest: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 2.5h8l4.5 4.5v14.5H6z"/><path d="M14 2.5V7h4.5M9 12h6.5M9 15.5h6.5M9 19h4" stroke-linecap="round"/></svg>`,
+    selfheal: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="5" height="10" rx="1.5"/><rect x="9.5" y="7" width="5" height="10" rx="1.5" stroke-dasharray="2 2"/><rect x="16" y="7" width="5" height="10" rx="1.5"/><path d="M12 10.5v3M10.5 12h3"/></svg>`,
+    scale: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--branch)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="14" width="5" height="7" rx="1.2"/><rect x="9.5" y="10" width="5" height="11" rx="1.2"/><rect x="16" y="5" width="5" height="16" rx="1.2"/><path d="M4 9l4-4 2 2"/></svg>`,
+    rollout: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--branch)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>`,
+    rollback: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(--wrong)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>`
+  });
+  const pod = (x, y, label, tone = "branch") => `<rect x="${x}" y="${y}" width="34" height="26" rx="13" fill="var(--${tone}-soft)" stroke="var(--${tone})" stroke-width="2"/><text x="${x + 17}" y="${y + 16.5}" text-anchor="middle" style="fill:var(--ink)">${label}</text>`;
+  Object.assign(VISUALS, {
+    manifest: () => `<svg viewBox="0 0 300 124" role="img" aria-label="A Deployment file that says kind Deployment, replicas 3, image shop version 1, which becomes three running copies.">
+      <g ${st(0)}><rect class="card" x="10" y="10" width="176" height="104" rx="6"/><text x="22" y="30" style="fill:var(--muted)">deployment.yaml</text>
+        <text x="22" y="56" style="fill:var(--ink);font-size:11.5px">kind: Deployment</text></g>
+      <g ${st(1)}><rect x="18" y="64" width="112" height="18" rx="3" fill="var(--branch-soft)"/><text x="22" y="77" style="fill:var(--ink);font-size:11.5px">replicas: 3</text></g>
+      <g ${st(2)}><rect x="18" y="88" width="126" height="18" rx="3" fill="var(--accent-soft)"/><text x="22" y="101" style="fill:var(--ink);font-size:11.5px">image: shop:v1</text></g>
+      <g ${st(3)}><path class="br" d="M192 62 h20"/><path class="br" d="M206 56 l7 6 l-7 6"/>${pod(222, 20, "v1")}${pod(222, 50, "v1")}${pod(222, 80, "v1")}<text x="262" y="112" text-anchor="middle">running</text></g>
+    </svg>`,
+    selfheal: () => `<svg viewBox="0 0 300 120" role="img" aria-label="Three copies are wanted. One crashes, and a new copy replaces it.">
+      <g ${st(0)}><text x="150" y="16" text-anchor="middle" style="fill:var(--accent)">wanted: 3 copies</text>
+        ${pod(58, 32, "1")}${pod(133, 32, "2")}${pod(208, 32, "3")}</g>
+      <g ${st(1)}>${X(150, 45)}<text x="150" y="80" text-anchor="middle" style="fill:var(--wrong)">crashed</text></g>
+      <g ${st(2)}><path class="acc" d="M150 86 v10"/><path class="acc" d="M144 91 l6 6 l6 -6"/></g>
+      <g ${st(2.6)}>${pod(133, 90, "new", "accent")}<text x="216" y="107" style="fill:var(--accent)">back to 3</text></g>
+    </svg>`,
+    scale: () => `<svg viewBox="0 0 300 120" role="img" aria-label="Changing replicas from 3 to 10 turns three copies into ten.">
+      <g ${st(0)}><rect x="8" y="10" width="92" height="22" rx="4" fill="var(--branch-soft)"/><text x="16" y="25" style="fill:var(--ink);font-size:11.5px">replicas: 3</text>
+        ${[0, 1, 2].map((i) => pod(10 + i * 30, 50, "")).join("")}</g>
+      <g ${st(1)}><path class="br" d="M108 60 h22"/><path class="br" d="M124 54 l7 6 l-7 6"/></g>
+      <g ${st(1.6)}><rect x="140" y="10" width="100" height="22" rx="4" fill="var(--accent-soft)"/><text x="148" y="25" style="fill:var(--ink);font-size:11.5px">replicas: 10</text></g>
+      ${Array.from({ length: 10 }, (_, i) => `<g ${st(2 + i * 0.12)}>${pod(140 + (i % 5) * 30, 44 + Math.floor(i / 5) * 32, "", i < 3 ? "branch" : "accent")}</g>`).join("")}
+    </svg>`,
+    rollout: () => `<svg viewBox="0 0 300 126" role="img" aria-label="Copies switch from version 1 to version 2 one at a time, so some are always running.">
+      ${[["v1", "v1", "v1"], ["v2", "v1", "v1"], ["v2", "v2", "v1"], ["v2", "v2", "v2"]].map((row, r) => `<g ${st(r)}>${row.map((v, i) => pod(14 + r * 72, 12 + i * 34, v, v === "v2" ? "accent" : "branch")).join("")}${r < 3 ? `<path class="ink" d="M${54 + r * 72} 55 h12" style="stroke:var(--muted);stroke-width:1.5"/>` : ""}</g>`).join("")}
+      <g ${st(4)}><text x="150" y="122" text-anchor="middle" style="fill:var(--accent)">always 3 running</text></g>
+    </svg>`,
+    rollback: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Version 2 copies fail their health check, so the rollout stops and is undone back to version 1.">
+      <g ${st(0)}>${pod(30, 20, "v1")}${pod(30, 52, "v1")}${pod(30, 84, "v1")}<text x="47" y="122" text-anchor="middle">before</text></g>
+      <g ${st(1)}><path class="br" d="M76 64 h36"/><path class="br" d="M106 58 l7 6 l-7 6"/></g>
+      <g ${st(1.6)}>${pod(128, 20, "v2", "accent")}${pod(128, 52, "v2", "accent")}${X(145, 33)}${X(145, 65)}<text x="145" y="102" text-anchor="middle" style="fill:var(--wrong)">sick</text></g>
+      <g ${st(2.6)}><path class="acc" d="M176 40 C 250 10, 270 90, 206 96"/><path class="acc" d="M212 90 l-7 6 l8 4"/><text x="258" y="34" style="fill:var(--accent)">undo</text></g>
+      <g ${st(3.2)}>${pod(222, 84, "v1")}</g>
+    </svg>`
+  });
+
+  // ---------- earlier syllabus additions: by hand, Docker, autoscaling, Services (benefits, bigco and learn are no longer on the path) ----------
+  const ic = (stroke, d) => `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="var(${stroke})" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  Object.assign(ICONS, {
+    byhand: ic("--wrong", `<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>`),
+    docker: ic("--branch", `<rect x="3" y="9" width="7" height="6" rx="1"/><path d="M10 12h4"/><rect x="14" y="4" width="7" height="6" rx="1"/><rect x="14" y="14" width="7" height="6" rx="1"/><path d="M14 7h-2v10h2"/>`),
+    autoscale: ic("--accent", `<path d="M3 17c3 0 4-9 9-9s6 9 9 9"/><path d="M12 3v3M9 5l3-3 3 3"/>`),
+    service: ic("--accent", `<rect x="4" y="3" width="11" height="18" rx="1.5"/><circle cx="12" cy="12" r="1"/><path d="M15 12h6M18 9l3 3-3 3"/>`),
+    address: ic("--branch", `<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>`),
+    moved: ic("--branch", `<rect x="2.5" y="6" width="7" height="12" rx="1.5"/><rect x="14.5" y="6" width="7" height="12" rx="1.5"/><path d="M8 12h8M13 9l3 3-3 3"/>`),
+    spread: ic("--accent", `<circle cx="4.5" cy="12" r="2"/><path d="M6.5 12h4M10.5 12l8-6M10.5 12h8M10.5 12l8 6"/>`),
+    whatis: ic("--accent", `<rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/>`),
+    benefits: ic("--accent", `<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6-4.5-4.2 6.1-.7z"/>`),
+    bigco: ic("--branch", `<circle cx="7" cy="8" r="2.5"/><circle cx="17" cy="6" r="3"/><path d="M3 20c0-3 2-5 4-5s4 2 4 5M12 20c0-4 2.2-7 5-7s5 3 5 7"/>`),
+    learn: ic("--accent", `<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>`)
+  });
+  const tile = (x, y, w, h, label, tone = "accent") => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="var(--${tone}-soft)" stroke="var(--${tone})" stroke-width="2"/><text x="${x + w / 2}" y="${y + h / 2 + 4}" text-anchor="middle" style="fill:var(--ink)">${label}</text>`;
+  const arrow = (x1, y, x2, cls = "br") => `<path class="${cls}" d="M${x1} ${y} H${x2}"/><path class="${cls}" d="M${x2 - 6} ${y - 6} l6 6 l-6 6"/>`;
+  const mini = (x, y, tone = "branch") => `<rect x="${x}" y="${y}" width="18" height="13" rx="6.5" fill="var(--${tone}-soft)" stroke="var(--${tone})" stroke-width="1.8"/>`;
+  Object.assign(VISUALS, {
+    byhand: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Before Kubernetes: crashes stayed down till morning, busy days meant adding servers by hand, updates meant downtime, and every server acted differently. Kubernetes automates all four.">
+      <text x="10" y="12" style="fill:var(--muted)">before</text><text x="256" y="12" text-anchor="middle" style="fill:var(--accent)">after</text>
+      ${[["crash", "down till morning"], ["busy day", "add servers by hand"], ["update", "downtime"], ["each server", "acts differently"]].map(([a, b], i) => `<g ${st(i * 0.55)}><text x="10" y="${36 + i * 25}" style="fill:var(--ink)">${a}</text><path d="M90 ${32 + i * 25} h10" stroke="var(--muted)" stroke-width="1.5"/><text x="104" y="${36 + i * 25}" style="fill:var(--wrong)">${b}</text></g>`).join("")}
+      <g ${st(2.6)}><path d="M234 20 v96" stroke="var(--line)" stroke-width="1.5"/>${[0, 1, 2, 3].map((i) => `<path class="acc" d="M248 ${31 + i * 25} l5 5 l10 -10"/>`).join("")}</g>
+    </svg>`,
+    docker: () => `<svg viewBox="0 0 300 126" role="img" aria-label="Docker builds a container and runs it on one machine. Kubernetes takes containers and runs many of them across many machines.">
+      <g ${st(0)}><rect class="card" x="8" y="22" width="92" height="76" rx="6"/><text x="54" y="14" text-anchor="middle" style="fill:var(--branch)">Docker</text>${box(33, 47, 42, 26)}<text x="54" y="116" text-anchor="middle">builds one box</text></g>
+      <g ${st(1)}>${arrow(106, 60, 132)}</g>
+      <g ${st(1.6)}><text x="216" y="14" text-anchor="middle" style="fill:var(--accent)">Kubernetes</text>
+        ${[140, 192, 244].map((x, i) => `<rect class="card" x="${x}" y="22" width="46" height="76" rx="6"/>${box(x + 6, 30 + (i % 2) * 8, 34, 22)}${i !== 1 ? box(x + 6, 62, 34, 22) : ""}`).join("")}
+        <text x="216" y="116" text-anchor="middle">runs many, on many machines</text></g>
+    </svg>`,
+    autoscale: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Traffic rises during the day and falls at night. Kubernetes runs 2 copies at night, 6 at the busy peak, and 2 again at night.">
+      <g ${st(0)}><path d="M12 104 H288" stroke="var(--line)" stroke-width="1.5"/><text x="30" y="118" text-anchor="middle">night</text><text x="150" y="118" text-anchor="middle">busy</text><text x="270" y="118" text-anchor="middle">night</text></g>
+      <g ${st(0.8)}><path d="M12 98 C 80 98, 105 58, 150 58 S 220 98, 288 98" fill="none" stroke="var(--branch)" stroke-width="2.5"/><text x="150" y="52" text-anchor="middle" style="fill:var(--branch)">traffic</text></g>
+      <g ${st(1.8)}>${mini(12, 12)}${mini(34, 12)}<text x="33" y="42" text-anchor="middle">2 copies</text></g>
+      <g ${st(2.4)}>${[0, 1, 2].map((i) => mini(117 + i * 22, 6, "accent") + mini(117 + i * 22, 22, "accent")).join("")}<text x="150" y="46" text-anchor="middle" style="fill:var(--accent)"></text></g>
+      <g ${st(3)}>${mini(250, 12)}${mini(272, 12)}<text x="270" y="42" text-anchor="middle">2 copies</text></g>
+    </svg>`,
+    service: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Users all go to one Service address. The Service passes requests to the copies behind it. One copy is replaced, and users never notice.">
+      <g ${st(0)}>${[34, 62, 90].map((y) => `<circle cx="22" cy="${y}" r="8" fill="none" stroke="var(--muted)" stroke-width="1.8"/>`).join("")}<text x="22" y="116" text-anchor="middle">users</text></g>
+      <g ${st(0.8)}>${[34, 62, 90].map((y) => `<path d="M32 ${y} C 60 ${y}, 60 62, 88 62" fill="none" stroke="var(--muted)" stroke-width="1.5"/>`).join("")}${tile(90, 44, 76, 36, "Service")}<text x="128" y="96" text-anchor="middle" style="fill:var(--accent)">one address</text></g>
+      <g ${st(1.6)}>${[20, 50, 80].map((y) => `<path class="acc" d="M166 62 C 190 62, 190 ${y + 13}, 212 ${y + 13}"/>${pod(214, y, "")}`).join("")}</g>
+      <g ${st(2.6)}>${X(231, 63)}</g>
+      <g ${st(3.2)}>${pod(258, 50, "new", "accent")}<path class="acc" d="M248 63 h8"/><text x="214" y="120" text-anchor="middle" style="fill:var(--accent)">same address for users</text></g>
+    </svg>`,
+    moved: () => `<svg viewBox="0 0 300 124" role="img" aria-label="A copy moves from a dead machine to a healthy one. The Service follows it, and the user's address stays the same.">
+      <g ${st(0)}>${tile(112, 6, 76, 28, "Service")}</g>
+      <g ${st(0.6)}><rect class="card" x="20" y="56" width="104" height="52" rx="6"/><text x="72" y="120" text-anchor="middle">machine 1</text><rect class="card" x="176" y="56" width="104" height="52" rx="6"/><text x="228" y="120" text-anchor="middle">machine 2</text>${pod(55, 69, "")}</g>
+      <g ${st(1.4)}><path d="M150 34 C 150 50, 72 46, 72 66" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 4"/>${X(72, 82)}<rect x="20" y="56" width="104" height="52" rx="6" fill="var(--wrong-soft)" opacity=".5"/></g>
+      <g ${st(2.3)}><path class="br" d="M100 82 C 140 100, 170 100, 206 84"/>${pod(211, 69, "", "accent")}</g>
+      <g ${st(3)}><path class="acc" d="M150 34 C 150 50, 228 46, 228 66"/><text x="252" y="26" style="fill:var(--accent)">follows</text></g>
+    </svg>`,
+    spread: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Requests arrive at the Service, which spreads them across the healthy copies. A sick copy gets none.">
+      <g ${st(0)}>${[30, 50, 70, 90].map((y) => `<rect x="8" y="${y - 5}" width="22" height="10" rx="3" fill="var(--surface-2)" stroke="var(--muted)" stroke-width="1.5"/>`).join("")}<text x="4" y="114">requests</text>${arrow(36, 60, 70, "ink")}</g>
+      <g ${st(0.8)}>${tile(76, 42, 76, 36, "Service")}</g>
+      <g ${st(1.6)}><path class="acc" d="M152 60 C 178 60, 178 27, 196 27"/><path class="acc" d="M152 60 C 178 60, 178 93, 196 93"/>${pod(198, 14, "")}${pod(198, 80, "")}<text x="240" y="31" style="fill:var(--accent)">gets some</text><text x="240" y="97" style="fill:var(--accent)">gets some</text></g>
+      <g ${st(2.4)}>${pod(198, 47, "")}${X(215, 60)}<text x="240" y="64" style="fill:var(--wrong)">sick: none</text></g>
+    </svg>`,
+    whatis: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Kubernetes has four jobs: decide where apps run, keep them healthy, scale them up and down, and update them without downtime.">
+      <g ${st(0)}><text x="150" y="14" text-anchor="middle" style="fill:var(--accent)">Kubernetes' four jobs</text></g>
+      ${[["decide", "where"], ["keep it", "healthy"], ["scale", "up/down"], ["update", "live"]].map(([a, b], i) => `<g ${st(0.6 + i * 0.5)}><rect x="${6 + i * 73}" y="26" width="66" height="72" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="${39 + i * 73}" y="56" text-anchor="middle" style="fill:var(--ink)">${a}</text><text x="${39 + i * 73}" y="72" text-anchor="middle" style="fill:var(--ink)">${b}</text></g>`).join("")}
+      <g ${st(2.8)}><text x="150" y="118" text-anchor="middle">all day, with no one watching</text></g>
+    </svg>`,
+    benefits: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Four reasons teams choose Kubernetes: reliable, portable, scalable and vendor-neutral.">
+      ${[["reliable", "", "self-heals"], ["portable", "", "any cloud"], ["scalable", "", "any size"], ["vendor-", "neutral", "no lock-in"]].map(([a, a2, b], i) => `<g ${st(i * 0.55)}><circle cx="${39 + i * 74}" cy="48" r="32" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="${39 + i * 74}" y="${a2 ? 45 : 52}" text-anchor="middle" style="fill:var(--ink)">${a}</text>${a2 ? `<text x="${39 + i * 74}" y="58" text-anchor="middle" style="fill:var(--ink)">${a2}</text>` : ""}<text x="${39 + i * 74}" y="102" text-anchor="middle">${b}</text></g>`).join("")}
+    </svg>`,
+    bigco: () => `<svg viewBox="0 0 300 124" role="img" aria-label="A startup, a small app and a solo developer all use Kubernetes, because the cloud provider runs the hard parts.">
+      <g ${st(0)}>${tile(20, 6, 260, 28, "your cloud runs the hard parts")}</g>
+      ${[["startup", 60], ["small app", 150], ["solo dev", 240]].map(([l, x], i) => `<g ${st(0.8 + i * 0.5)}><path d="M${x} 34 v14" stroke="var(--accent)" stroke-width="2"/><circle cx="${x}" cy="62" r="9" fill="none" stroke="var(--branch)" stroke-width="2"/><path d="M${x - 14} 96 c0 -12 6 -20 14 -20 s14 8 14 20" fill="none" stroke="var(--branch)" stroke-width="2"/><text x="${x}" y="114" text-anchor="middle">${l}</text></g>`).join("")}
+    </svg>`,
+    learn: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Start with four basics, containers, Pods, Services and desired state. The rest comes with practice.">
+      ${[["containers"], ["Pods"], ["Services"], ["desired", "state"]].map(([l, l2], i) => `<g ${st(i * 0.5)}><circle cx="${34 + i * 70}" cy="42" r="13" fill="var(--accent)"/><path d="M${28 + i * 70} 42 l4 4 l8 -8" fill="none" stroke="var(--accent-ink)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>${i < 3 ? `<path d="M${47 + i * 70} 42 h44" stroke="var(--accent)" stroke-width="2.5"/>` : ""}<text x="${34 + i * 70}" y="76" text-anchor="middle" style="fill:var(--ink)">${l}</text>${l2 ? `<text x="${34 + i * 70}" y="90" text-anchor="middle" style="fill:var(--ink)">${l2}</text>` : ""}</g>`).join("")}
+      <g ${st(2.4)}><path d="M${34 + 3 * 70 + 17} 42 h34" stroke="var(--muted)" stroke-width="2" stroke-dasharray="3 5"/><text x="150" y="116" text-anchor="middle">the rest comes with practice</text></g>
+    </svg>`
+  });
+  // "address" reuses the Pod picture, where the replacement Pod gets a new IP.
+  VISUALS.address = VISUALS.pod;
+
+  Object.assign(TOPICS, {
+    byhand: {
+      q: "Can't I just fix it myself?", match: /\b(fix|myself|hand|night)\b/i,
+      visual: ["byhand", "byhand", "byhand", "byhand"],
+      a: [
+        "You can, and before Kubernetes most teams did: crashed processes stayed down until someone was paged, capacity was added by hand, releases needed maintenance windows, and servers drifted into different setups. Kubernetes automates all four.",
+        "You could, but you'd be on call forever. Before Kubernetes, crashed apps stayed down until someone woke up, busy days meant adding servers by hand, updates meant downtime, and every server acted a bit differently. Kubernetes automates all of it.",
+        "You could, but you'd never sleep. Crashes, busy days and updates all needed a person. Kubernetes does those jobs for you.",
+        "Like getting up every night to refill the dog's bowl, when you could buy an automatic feeder."
+      ],
+      check: { q: "Launch day brings 10× the usual visitors. Without Kubernetes, what happens?",
+        opts: ["Someone adds servers by hand and hopes it's fast enough", "The site adds servers by itself", "Nothing. Sites don't slow down"], right: 0,
+        no: [null, "Not without something like Kubernetes doing it.", "Too many visitors can take a site down."],
+        why: "Scaling by hand was one of the jobs Kubernetes took over." },
+      review: { q: "Which job did teams do by hand before Kubernetes?",
+        opts: ["Writing the app's code", "Restarting crashed apps", "Picking the app's colors"], right: 1,
+        no: ["That's still a person's job.", null, "Kubernetes doesn't touch design."],
+        why: "Restarts, scaling and updates used to need a person." }
+    },
+    docker: {
+      q: "Isn't that just Docker?", match: /\bdocker\b/i,
+      visual: ["docker", "docker", "docker", "docker"],
+      a: [
+        "No. [[Docker]] builds [[images|image]] and runs containers on one host. Kubernetes is an [[orchestrator]]: it runs containers from Docker or similar tools across many hosts, handling placement, restarts, scaling and networking.",
+        "No. [[Docker]] packs your app into a container and runs it on one machine. Kubernetes doesn't replace Docker. It runs those containers across many machines and keeps them going.",
+        "Docker makes the box. Kubernetes decides where lots of boxes go and keeps an eye on them.",
+        "Docker packs the lunchboxes. Kubernetes hands them out to every table and makes sure nobody goes hungry."
+      ],
+      check: { q: "Your team already uses Docker. When do you also need Kubernetes?",
+        opts: ["Never. Kubernetes replaces Docker", "When you run many containers on many machines", "Never. They do the same thing"], right: 1,
+        no: ["It doesn't replace Docker. It runs what Docker builds.", null, "Docker runs one box on one machine. Kubernetes runs many, across machines."],
+        why: "Docker builds the containers. Kubernetes runs them at scale." },
+      review: { q: "What's the difference between Docker and Kubernetes?",
+        opts: ["Kubernetes is the new name for Docker", "Docker is for the cloud, Kubernetes is for laptops", "Docker builds containers, Kubernetes runs many of them across machines"], right: 2,
+        no: ["They're different tools that work together.", "Both run anywhere.", null],
+        why: "Build with Docker, run at scale with Kubernetes." }
+    },
+    autoscale: {
+      q: "Can it do that by itself?", match: /\b(itself|automatic\w*|traffic|rises)\b/i,
+      visual: ["autoscale", "autoscale", "autoscale", "autoscale"],
+      a: [
+        "Yes. An [[autoscaler]] watches load, like CPU use, and moves [[replicas]] between a minimum and maximum you set. Scaling in removes idle Pods, which cuts cost.",
+        "Yes. Kubernetes can add copies when traffic rises and remove them when it drops. You pay less, stay fast at peak times, and nobody makes scaling mistakes at 2 a.m.",
+        "Yes. More visitors, more copies. Fewer visitors, fewer copies. All on its own.",
+        "Like a shop opening more checkout lanes when the line gets long, and closing them when it's quiet."
+      ],
+      check: { q: "Traffic drops to almost nothing overnight. What does autoscaling do?",
+        opts: ["Keeps every copy running, just in case", "Shuts the app down until morning", "Removes the extra copies, so you pay less"], right: 2,
+        no: ["It scales down too. Idle copies cost money.", "It keeps enough running for whoever's still there.", null],
+        why: "Up when it's busy, down when it's quiet." },
+      review: { q: "Why scale down when traffic drops?",
+        opts: ["To stop paying for idle copies", "Because copies wear out", "To make updates faster"], right: 0,
+        no: [null, "Copies don't wear out. They just cost money.", "Updates don't depend on it."],
+        why: "Fewer idle copies, smaller bill." }
+    },
+    service: {
+      q: "So what do users connect to?", match: /\b(find|users?|connect\w*|services?)\b/i,
+      visual: ["service", "service", "service", "service"],
+      a: [
+        "A [[Service]]: a stable virtual [[IP]] and [[DNS name]] that spreads traffic across every ready Pod matching its [[label selector]]. Its [[endpoints]] update as Pods come and go.",
+        "A [[Service]]: one address that never changes, sitting in front of all your copies. Users go to the Service, and it hands each request to a copy that's alive.",
+        "One front door that never moves. Behind it, copies come and go, and the door always leads to one that's working.",
+        "A restaurant's phone number. The staff changes, but you always call the same number."
+      ],
+      check: { q: "A copy is replaced and gets a new address. What do users need to change?",
+        opts: ["They switch to the new copy's address", "Nothing. They keep using the Service's address", "They wait until the copy is back"], right: 1,
+        no: ["They never see copy addresses. That's the Service's job.", null, "The other copies keep serving right away."],
+        why: "The Service's address never changes." },
+      review: { q: "What does a Service give your app?",
+        opts: ["Extra copies when it's busy", "A backup of its data", "One stable address in front of all its copies"], right: 2,
+        no: ["That's scaling, not a Service.", "Services don't store anything.", null],
+        why: "One address, whatever happens behind it." }
+    },
+    address: {
+      q: "Why does the address change?", match: /\b(address\w*|ip|new one)\b/i,
+      visual: ["address", "address", "address", "address"],
+      a: [
+        "Every [[Pod]] gets its own [[IP]] when it's scheduled. Pods are never repaired, only replaced, so a replacement is a new Pod with a new IP.",
+        "Every copy ([[Pod]]) gets its own address when it starts. A broken copy isn't fixed, it's replaced, and the replacement is brand new, so it gets a new address.",
+        "Each new copy gets a fresh address, like a new phone number. Broken copies are swapped for new ones, so the number keeps changing.",
+        "Every new kid in class gets a new seat number."
+      ],
+      check: { q: "A Pod at address 10.1.2.7 crashes. What address does its replacement get?",
+        opts: ["10.1.2.7, the same one", "No address until you set one", "A new address"], right: 2,
+        no: ["The replacement is a new Pod, so it gets a new address.", "Kubernetes gives every Pod an address on its own.", null],
+        why: "New Pod, new address. That's why you need a Service." },
+      review: { q: "Why can't users just remember a Pod's address?",
+        opts: ["Pods get replaced, and each new one has a new address", "Pod addresses are secret", "Pods don't have addresses"], right: 0,
+        no: [null, "They aren't secret. They just don't last.", "They do, but only until the Pod is replaced."],
+        why: "Pods come and go, so their addresses do too." }
+    },
+    moved: {
+      q: "What if a copy moves?", match: /\b(moves?|machines?|replaced|behind)\b/i,
+      visual: ["moved", "moved", "moved", "moved"],
+      a: [
+        "The Service's [[endpoints]] update automatically when Pods are rescheduled onto another [[node]]. Clients keep using the same address and never see the change.",
+        "Users never notice. The Service always knows where every copy is right now, so it just sends requests to the new spot.",
+        "Nobody notices. The front door always knows where every copy is.",
+        "You still call the same pizza place, even if a different driver brings the pizza."
+      ],
+      check: { q: "A machine dies and two copies move to other machines. What do users see?",
+        opts: ["An error until they refresh the address", "The app is down until the machine is back", "Nothing. The Service sends them to the copies' new spots"], right: 2,
+        no: ["There's nothing to refresh. The address never changed.", "The copies already moved. The app stays up.", null],
+        why: "Users never need to know what changed behind the scenes." },
+      review: { q: "Copies move around all day. Why don't users notice?",
+        opts: ["Copies never actually move", "The Service always knows where each copy is", "Users' browsers track the copies"], right: 1,
+        no: ["They do, whenever a machine dies or gets busy.", null, "Browsers only know the Service's address."],
+        why: "The Service keeps track, so users don't have to." }
+    },
+    spread: {
+      q: "Which copy gets my request?", match: /\b(which|spread|busy|load|copies)\b/i,
+      visual: ["spread", "spread", "spread", "spread"],
+      a: [
+        "The Service load-balances across all ready [[endpoints]], so traffic spreads out, and Pods failing their [[readiness probes|health check]] get none.",
+        "Any healthy one. The Service spreads requests across all your copies, so no single copy gets swamped, and copies failing their [[health check]] get none.",
+        "Any working copy. The Service shares the work out evenly.",
+        "Like a teacher handing out worksheets so every kid gets a few."
+      ],
+      check: { q: "One of your 3 copies is failing its health check. Where do requests go?",
+        opts: ["Only to the 2 healthy copies", "Evenly to all 3", "Only to the newest copy"], right: 0,
+        no: [null, "Sick copies get no traffic.", "Age doesn't matter. Health does."],
+        why: "The Service only sends requests to healthy copies." },
+      review: { q: "How does a Service decide where a request goes?",
+        opts: ["Always the first copy", "Any healthy copy, spread evenly", "Whichever copy the user picks"], right: 1,
+        no: ["That copy would be swamped.", null, "Users never see individual copies."],
+        why: "Spread out, healthy copies only." }
+    },
+    whatis: {
+      q: "So what is Kubernetes, really?", match: /\bkubernetes\b/i,
+      visual: ["whatis", "whatis", "whatis", "whatis"],
+      a: [
+        "An [[open-source]] container [[orchestrator]]: a [[control plane]] that places, restarts, scales and updates containers across a [[cluster]], driven by the [[desired state]] you declare.",
+        "An operating system for your servers. Your laptop's system decides where programs run and restarts ones that crash. Kubernetes does that for containers across a whole group of machines, and it's free and [[open-source]].",
+        "A manager for lots of computers. It decides what runs where, and fixes things when they break.",
+        "The conductor of an orchestra. It doesn't play, but it keeps everyone playing together."
+      ],
+      check: { q: "Which is the best one-line description of Kubernetes?",
+        opts: ["A tool that builds containers", "A cloud provider", "An operating system for your servers that runs, heals and scales your containers"], right: 2,
+        no: ["That's Docker's job.", "It runs on any cloud, but it isn't one.", null],
+        why: "It runs, manages and scales containerized apps across many machines." },
+      review: { q: "What are Kubernetes' four jobs?",
+        opts: ["Place apps, keep them healthy, scale them, update without downtime", "Write code, test code, ship code, sell code", "Build containers, store files, send email, bill customers"], right: 0,
+        no: [null, "That's your team's job.", "None of those are Kubernetes' job."],
+        why: "Where, healthy, scale, update. All automatic." }
+    },
+    benefits: {
+      q: "What do teams actually get?", match: /\b(teams?|get|so many)\b/i,
+      visual: ["benefits", "benefits", "benefits", "benefits"],
+      a: [
+        "Reliability through self-healing [[controllers]], portability through a vendor-neutral API that runs on any cloud or your own hardware, and scale from one [[node]] to thousands.",
+        "Four things. Reliable: apps recover by themselves. Portable: it runs on any cloud or your own servers. Scalable: it fits a tiny app or a giant one. Vendor-neutral: no single company owns it.",
+        "Apps that fix themselves, run anywhere, grow as big as needed, and don't tie you to one company.",
+        "A bike that fixes its own flats, rides on any road, grows with you, and isn't sold by only one shop."
+      ],
+      check: { q: "Your company wants to leave its cloud provider next year. How does Kubernetes help?",
+        opts: ["It doesn't. You'd rebuild everything", "It only works on one cloud anyway", "The same setup runs on the new cloud, since Kubernetes runs anywhere"], right: 2,
+        no: ["Most of it moves as is. That's portability.", "It runs on every major cloud and on your own servers.", null],
+        why: "Portable and vendor-neutral: you're not locked in." },
+      review: { q: "Which four words sum up why teams pick Kubernetes?",
+        opts: ["Cheap, simple, small, new", "Reliable, portable, scalable, vendor-neutral", "Fast, secret, local, paid"], right: 1,
+        no: ["It's none of those, really.", null, "Not those."],
+        why: "Reliable, portable, scalable, vendor-neutral." }
+    },
+    bigco: {
+      q: "Isn't it just for big companies?", match: /\b(big|small|companies|everyone|switch)\b/i,
+      visual: ["bigco", "bigco", "bigco", "bigco"],
+      a: [
+        "Not anymore. [[Managed Kubernetes|managed]] services run the control plane for you, so startups and solo developers can use it without a dedicated operations team.",
+        "Not anymore. Startups, small apps and even solo developers use it, because cloud providers now run the hard parts for you. That's called [[managed Kubernetes|managed]].",
+        "No. Small teams use it too, because cloud companies now handle the hard parts.",
+        "Only big kitchens used to have fancy ovens. Now anyone can rent one."
+      ],
+      check: { q: "A two-person startup wants Kubernetes but has no one to run servers. What makes it possible?",
+        opts: ["Hiring an operations team first", "A managed Kubernetes service from their cloud provider", "Waiting until they're bigger"], right: 1,
+        no: ["Not needed. The cloud provider runs the hard parts.", null, "Small teams use it today."],
+        why: "Managed services made Kubernetes open to everyone." },
+      review: { q: "Why can small teams use Kubernetes now?",
+        opts: ["Cloud providers run the hard parts for them", "It got smaller", "Big companies stopped using it"], right: 0,
+        no: [null, "It's the same Kubernetes.", "They still use it too."],
+        why: "Managed Kubernetes." }
+    },
+    learn: {
+      q: "Should I learn it?", match: /\b(learn|should|use it)\b/i,
+      visual: ["learn", "learn", "learn", "learn"],
+      a: [
+        "If you ship containers to the cloud, yes. It's the standard platform for cloud-native apps. Get containers, Pods, Services and desired state solid, and the rest comes with practice.",
+        "If you use Docker or put apps in the cloud, yes. It's become the standard, so it's a skill that lasts. Start with the basics you just learned: containers, Pods, Services and desired state.",
+        "If you build apps for the internet, yes. You already know the main ideas.",
+        "If you want to cook in big kitchens, learn how the kitchen works."
+      ],
+      check: { q: "You're new to Kubernetes. What should you get solid first?",
+        opts: ["Every feature at once", "How to build your own cluster from scratch", "Containers, Pods, Services and desired state"], right: 2,
+        no: ["No one learns it all on day one.", "That's for later, if ever.", null],
+        why: "Understanding the basics already puts you ahead." },
+      review: { q: "What are the four basics to get solid first?",
+        opts: ["Containers, Pods, Services, desired state", "Servers, cables, routers, fans", "Docker, Linux, Git, Python"], right: 0,
+        no: [null, "That's hardware, not Kubernetes.", "Useful, but not Kubernetes' basics."],
+        why: "Containers, Pods, Services, desired state." }
+    }
+  });
+  Object.assign(GLOSSARY, {
+    Docker: "The most popular tool for building containers and running one on a machine.",
+    orchestrator: "Something that coordinates many containers across many machines.",
+    Service: "One stable address in front of all copies of your app.",
+    "DNS name": "A human-friendly name that points to an address.",
+    endpoints: "The live list of copy addresses behind a Service.",
+    "open-source": "Free, with code anyone can read and improve.",
+    managed: "Kubernetes run for you by a cloud provider, like Amazon, Google or Microsoft."
+  });
+
+  // ---------- syllabus v13 (GeeksforGeeks, "Introduction to Kubernetes (K8s)"): microservices, history, cluster parts, Ingress, config and storage ----------
+  Object.assign(ICONS, {
+    microservices: ic("--branch", `<rect x="2.5" y="4" width="8" height="16" rx="1.5"/><rect x="13.5" y="4" width="8" height="4.5" rx="1"/><rect x="13.5" y="9.75" width="8" height="4.5" rx="1"/><rect x="13.5" y="15.5" width="8" height="4.5" rx="1"/>`),
+    history: ic("--branch", `<circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6M5.6 5.6l4.3 4.3M14.1 14.1l4.3 4.3M18.4 5.6l-4.3 4.3M9.9 14.1l-4.3 4.3"/>`),
+    node: ic("--branch", `<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><rect x="6" y="12" width="4" height="5" rx="1"/><rect x="14" y="12" width="4" height="5" rx="1"/>`),
+    kubelet: ic("--accent", `<rect x="8" y="2.5" width="8" height="5" rx="1.5"/><path d="M12 7.5v5"/><rect x="4" y="12.5" width="16" height="9" rx="2"/><path d="M9 17l2 2 4-4"/>`),
+    kubeproxy: ic("--accent", `<path d="M3 12h7"/><path d="M10 12l4-6h7M10 12l4 6h7"/><path d="M18 3l3 3-3 3M18 15l3 3-3 3"/>`),
+    scheduling: ic("--accent", `<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M6.5 13v4.5H11M9 15l2 2.5L9 20"/>`),
+    ingress: ic("--accent", `<path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-7h6v7"/>`),
+    configmap: ic("--branch", `<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--surface)"/><circle cx="15" cy="12" r="2" fill="var(--surface)"/><circle cx="7" cy="18" r="2" fill="var(--surface)"/>`),
+    secret: ic("--branch", `<rect x="4" y="10.5" width="16" height="10.5" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/><circle cx="12" cy="15.5" r="1.3"/>`),
+    pv: ic("--branch", `<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>`)
+  });
+  const drum = (cx, y, rx = 40, h = 24) => `<path d="M${cx - rx} ${y} v${h} a${rx} 8 0 0 0 ${rx * 2} 0 v${-h}" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/><ellipse cx="${cx}" cy="${y}" rx="${rx}" ry="8" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/>`;
+  Object.assign(VISUALS, {
+    byhand: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Without Kubernetes, four jobs fall on people: scaling by hand, setting up each cloud separately, securing containers one at a time, and updates that cause downtime. Kubernetes automates all four.">
+      <text x="10" y="12" style="fill:var(--muted)">by hand</text><text x="256" y="12" text-anchor="middle" style="fill:var(--accent)">automated</text>
+      ${[["scaling", "all night, by hand"], ["many clouds", "each set up apart"], ["security", "one box at a time"], ["updates", "mean downtime"]].map(([a, b], i) => `<g ${st(i * 0.55)}><text x="10" y="${36 + i * 25}" style="fill:var(--ink)">${a}</text><path d="M84 ${32 + i * 25} h12" stroke="var(--muted)" stroke-width="1.5"/><text x="102" y="${36 + i * 25}" style="fill:var(--wrong)">${b}</text></g>`).join("")}
+      <g ${st(2.6)}><path d="M226 20 v96" stroke="var(--line)" stroke-width="1.5"/>${[0, 1, 2, 3].map((i) => `<path class="acc" d="M248 ${31 + i * 25} l5 5 l10 -10"/>`).join("")}</g>
+    </svg>`,
+    microservices: () => `<svg viewBox="0 0 300 124" role="img" aria-label="A monolith is one big program, so one crash takes everything down. Microservices split the app into small pieces in separate containers, so a crash only stops that piece.">
+      <g ${st(0)}><text x="66" y="12" text-anchor="middle" style="fill:var(--ink)">monolith</text>
+        <rect x="16" y="20" width="100" height="72" rx="6" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/>
+        ${["cart", "pay", "search"].map((l, i) => `<text x="66" y="${40 + i * 20}" text-anchor="middle" style="fill:var(--ink)">${l}</text>`).join("")}</g>
+      <g ${st(1)}><rect x="16" y="20" width="100" height="72" rx="6" fill="var(--wrong-soft)" fill-opacity=".75" stroke="var(--wrong)" stroke-width="2"/><text x="66" y="110" text-anchor="middle" style="fill:var(--wrong)">one crash: all down</text></g>
+      <g ${st(1.8)}><text x="225" y="12" text-anchor="middle" style="fill:var(--ink)">microservices</text>${["cart", "pay", "search"].map((l, i) => box(160 + i * 45, 40, 40, 28, l)).join("")}</g>
+      <g ${st(2.6)}><rect x="250" y="40" width="40" height="28" rx="4" fill="var(--wrong-soft)" fill-opacity=".75" stroke="var(--wrong)" stroke-width="2"/><text x="270" y="82" text-anchor="middle" style="fill:var(--wrong)">down</text><text x="225" y="98" text-anchor="middle" style="fill:var(--accent)">the rest keep going</text><text x="225" y="114" text-anchor="middle">many containers to run</text></g>
+    </svg>`,
+    whatis: () => `<svg viewBox="0 0 300 124" role="img" aria-label="You write the sheet music: the setup you want, like three copies of version 2. Kubernetes conducts, and every container plays its part.">
+      <g ${st(0)}><text x="54" y="14" text-anchor="middle" style="fill:var(--branch)">you write</text><rect class="card" x="8" y="22" width="92" height="78" rx="6"/>
+        ${[40, 48, 56].map((y) => `<path d="M16 ${y} h76" stroke="var(--line)" stroke-width="1"/>`).join("")}
+        <text x="54" y="76" text-anchor="middle" style="fill:var(--ink)">3 × shop</text><text x="54" y="92" text-anchor="middle" style="fill:var(--ink)">version 2</text>
+        <text x="54" y="116" text-anchor="middle">sheet music</text></g>
+      <g ${st(1)}>${arrow(104, 61, 128)}</g>
+      <g ${st(1.6)}>${tile(132, 43, 72, 36, "Kubernetes")}<text x="168" y="35" text-anchor="middle" style="fill:var(--accent)">conducts</text></g>
+      <g ${st(2.4)}>${[18, 48, 78].map((y) => `<path class="acc" d="M204 61 C 222 61, 222 ${y + 13}, 240 ${y + 13}"/>${pod(242, y, "v2", "accent")}`).join("")}<text x="259" y="118" text-anchor="middle">playing</text></g>
+    </svg>`,
+    history: () => `<svg viewBox="0 0 300 124" role="img" aria-label="Google ran its apps on in-house systems called Borg and Omega, released Kubernetes free in 2014, and gave it to the CNCF in 2015. The name is Greek for helmsman.">
+      <g ${st(0)}><path d="M16 70 H284" stroke="var(--line)" stroke-width="2"/></g>
+      ${[[50, "Borg, Omega", "inside Google"], [150, "2014", "released free"], [250, "2015", "given to CNCF"]].map(([x, a, b], i) => `<g ${st(0.5 + i * 0.8)}><circle cx="${x}" cy="70" r="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="${x}" y="52" text-anchor="middle" style="fill:var(--ink)">${a}</text><text x="${x}" y="94" text-anchor="middle">${b}</text></g>`).join("")}
+      <g ${st(3)}><text x="150" y="20" text-anchor="middle" style="fill:var(--accent)">name: Greek for helmsman · K8s</text></g>
+    </svg>`,
+    node: () => `<svg viewBox="0 0 300 126" role="img" aria-label="One node, which is one machine, runs three helpers: a container runtime that runs containers, a kubelet that takes orders, and kube-proxy that routes traffic. Your Pods run beside them.">
+      <g ${st(0)}><rect class="card" x="10" y="8" width="280" height="102" rx="8"/><text x="150" y="122" text-anchor="middle">one node (a machine)</text></g>
+      ${[[22, "runtime", "runs boxes", "branch"], [112, "kubelet", "takes orders", "accent"], [202, "kube-proxy", "routes traffic", "accent"]].map(([x, l, s, t], i) => `<g ${st(0.6 + i * 0.5)}>${tile(x, 18, 76, 28, l, t)}<text x="${x + 38}" y="60" text-anchor="middle">${s}</text></g>`).join("")}
+      <g ${st(2.4)}>${pod(24, 74, "")}${pod(62, 74, "")}${pod(100, 74, "")}<text x="144" y="91" style="fill:var(--branch)">your Pods</text></g>
+    </svg>`,
+    kubelet: () => `<svg viewBox="0 0 300 126" role="img" aria-label="The control plane tells the kubelet on a node to run two Pods. The kubelet starts them and reports back that they are healthy.">
+      <g ${st(0)}>${tile(100, 6, 100, 28, "control plane")}</g>
+      <g ${st(0.8)}><path class="acc" d="M150 34 v18"/><path class="acc" d="M144 46 l6 6 l6 -6"/><text x="160" y="48" style="fill:var(--accent)">run 2 Pods</text></g>
+      <g ${st(1.3)}><rect class="card" x="40" y="58" width="220" height="52" rx="6"/><text x="150" y="122" text-anchor="middle">a node</text>${tile(52, 69, 72, 30, "kubelet")}</g>
+      <g ${st(2)}>${arrow(128, 84, 152)}${pod(160, 71, "")}${pod(202, 71, "")}</g>
+      <g ${st(2.8)}><path d="M88 69 C 88 44, 90 28, 100 22" fill="none" stroke="var(--branch)" stroke-width="2" stroke-dasharray="4 4"/><text x="6" y="44" style="fill:var(--branch)">"all good"</text></g>
+    </svg>`,
+    kubeproxy: () => `<svg viewBox="0 0 300 126" role="img" aria-label="A request reaches node 1, but the app runs on node 3. kube-proxy on node 1 forwards the request to node 3.">
+      <g ${st(0)}><rect x="4" y="54" width="40" height="18" rx="4" fill="var(--surface-2)" stroke="var(--muted)" stroke-width="1.5"/><text x="24" y="46" text-anchor="middle">request</text>${arrow(46, 63, 66, "ink")}</g>
+      <g ${st(0.6)}><rect class="card" x="70" y="24" width="96" height="80" rx="6"/><text x="118" y="118" text-anchor="middle">node 1</text>${tile(78, 49, 80, 28, "kube-proxy")}</g>
+      <g ${st(1)}><rect class="card" x="196" y="24" width="96" height="80" rx="6"/><text x="244" y="118" text-anchor="middle">node 3</text>${pod(227, 50, "app")}</g>
+      <g ${st(1.8)}><path class="acc" d="M158 63 H222"/><path class="acc" d="M216 57 l6 6 l-6 6"/><text x="181" y="14" text-anchor="middle" style="fill:var(--accent)">forwarded</text></g>
+    </svg>`,
+    scheduling: () => `<svg viewBox="0 0 300 126" role="img" aria-label="A new Pod needs a machine. The scheduler checks how busy each node is and places it on node B, which has the most room.">
+      <g ${st(0)}><text x="31" y="40" text-anchor="middle" style="fill:var(--accent)">new Pod</text>${pod(14, 49, "", "accent")}${arrow(50, 62, 66, "ink")}</g>
+      <g ${st(0.6)}>${tile(70, 44, 84, 36, "scheduler")}</g>
+      ${[["node A", 0.9, "wrong"], ["node B", 0.2, "accent"], ["node C", 0.6, "branch"]].map(([l, f, t], i) => `<g ${st(1.2 + i * 0.3)}><rect class="card" x="176" y="${10 + i * 38}" width="114" height="28" rx="5"/><text x="184" y="${28 + i * 38}" style="fill:var(--ink)">${l}</text><rect x="234" y="${18 + i * 38}" width="48" height="12" rx="3" fill="none" stroke="var(--line)" stroke-width="1.5"/><rect x="234" y="${18 + i * 38}" width="${48 * f}" height="12" rx="3" fill="var(--${t})" opacity=".7"/></g>`).join("")}
+      <g ${st(2.6)}><path class="acc" d="M154 62 H172"/><path class="acc" d="M166 56 l6 6 l-6 6"/><text x="150" y="122" text-anchor="middle" style="fill:var(--accent)">picks the node with room</text></g>
+    </svg>`,
+    ingress: () => `<svg viewBox="0 0 300 126" role="img" aria-label="Visitors from the internet arrive at the Ingress, which sends /cart to the cart Service and /blog to the blog Service.">
+      <g ${st(0)}><circle cx="24" cy="62" r="10" fill="none" stroke="var(--muted)" stroke-width="1.8"/><text x="24" y="92" text-anchor="middle">internet</text>${arrow(38, 62, 62, "ink")}</g>
+      <g ${st(0.6)}>${tile(66, 42, 72, 40, "Ingress")}</g>
+      <g ${st(1.4)}><path class="br" d="M138 62 C 166 62, 166 28, 194 28"/><path class="br" d="M138 62 C 166 62, 166 96, 194 96"/><text x="160" y="24" text-anchor="middle" style="fill:var(--branch)">/cart</text><text x="160" y="112" text-anchor="middle" style="fill:var(--branch)">/blog</text>
+        ${tile(196, 14, 94, 28, "cart Service")}${tile(196, 82, 94, 28, "blog Service")}</g>
+      <g ${st(2.3)}><text x="243" y="66" text-anchor="middle" style="fill:var(--accent)">one front gate</text></g>
+    </svg>`,
+    outside: () => `<svg viewBox="0 0 300 126" role="img" aria-label="A Pod in the middle, plugged into a ConfigMap for settings, a Secret for passwords and a Persistent Volume for data, all kept outside it.">
+      <g ${st(0)}>${pod(122, 46, "app")}<text x="150" y="98" text-anchor="middle">Pod</text></g>
+      <g ${st(1)}><rect class="card" x="8" y="10" width="86" height="38" rx="6"/><text x="51" y="26" text-anchor="middle" style="fill:var(--branch)">ConfigMap</text><text x="51" y="40" text-anchor="middle" style="fill:var(--ink)">settings</text><path class="br" d="M94 34 C 108 34, 108 56, 120 58"/></g>
+      <g ${st(2)}><rect class="card" x="206" y="10" width="86" height="38" rx="6"/><text x="249" y="26" text-anchor="middle" style="fill:var(--accent)">Secret</text><text x="249" y="40" text-anchor="middle" style="fill:var(--ink)">passwords</text><path class="acc" d="M206 34 C 192 34, 192 56, 180 58"/></g>
+      <g ${st(3)}><ellipse cx="250" cy="86" rx="34" ry="7" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><path d="M216 86 v22 a34 7 0 0 0 68 0 v-22" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><text x="250" y="104" text-anchor="middle" style="fill:var(--ink)">data</text><path class="br" d="M216 96 C 200 96, 192 74, 180 72"/></g>
+      <g ${st(4)}><text x="60" y="104" text-anchor="middle" style="fill:var(--accent)">kept outside,</text><text x="60" y="117" text-anchor="middle" style="fill:var(--accent)">plugged in</text></g>
+    </svg>`,
+    configmap: () => `<svg viewBox="0 0 300 126" role="img" aria-label="A ConfigMap holds settings like which database to use. Each Pod reads it when it starts, so the same app runs with different settings.">
+      <g ${st(0)}><text x="64" y="14" text-anchor="middle" style="fill:var(--branch)">ConfigMap</text><rect class="card" x="8" y="22" width="112" height="68" rx="6"/>
+        <text x="20" y="48" style="fill:var(--ink)">DB=test-db</text><text x="20" y="70" style="fill:var(--ink)">SALE=on</text></g>
+      <g ${st(1)}><path class="br" d="M120 56 C 156 56, 156 34, 190 34"/><path class="br" d="M120 56 C 156 56, 156 84, 190 84"/>${pod(192, 21, "app")}${pod(192, 71, "app")}<text x="236" y="38" style="fill:var(--branch)">reads it</text><text x="236" y="88" style="fill:var(--branch)">reads it</text></g>
+      <g ${st(2)}><text x="150" y="118" text-anchor="middle" style="fill:var(--accent)">same app, settings kept outside</text></g>
+    </svg>`,
+    secret: () => `<svg viewBox="0 0 300 126" role="img" aria-label="A Secret holds a password, kept apart and locked. Only the Pod that needs it gets it.">
+      <g ${st(0)}><text x="64" y="14" text-anchor="middle" style="fill:var(--branch)">Secret</text><rect class="card" x="8" y="22" width="112" height="68" rx="6"/>
+        <text x="20" y="44" style="fill:var(--ink)">DB_PASS=••••</text>
+        <rect x="54" y="62" width="20" height="16" rx="3" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="1.8"/><path d="M58 62v-4a6 6 0 0 1 12 0v4" fill="none" stroke="var(--branch)" stroke-width="1.8"/></g>
+      <g ${st(1)}><path class="acc" d="M120 50 C 156 50, 160 34, 194 34"/>${pod(196, 21, "app", "accent")}<text x="238" y="38" style="fill:var(--accent)">gets it</text></g>
+      <g ${st(1.8)}>${pod(196, 71, "web")}<text x="238" y="88">no access</text></g>
+      <g ${st(2.4)}><text x="150" y="118" text-anchor="middle">only for the Pods that need it</text></g>
+    </svg>`,
+    pv: () => `<svg viewBox="0 0 300 126" role="img" aria-label="A Pod saves data to a Persistent Volume. The Pod crashes and is gone, but the data stays. The new Pod plugs into the same volume.">
+      <g ${st(0)}><text x="37" y="14" text-anchor="middle">Pod</text>${pod(20, 20, "")}<path d="M40 48 C 60 80, 90 88, 112 90" fill="none" stroke="var(--branch)" stroke-width="2" stroke-dasharray="4 4"/>${drum(150, 82)}<text x="150" y="122" text-anchor="middle" style="fill:var(--branch)">Persistent Volume</text></g>
+      <g ${st(1)}>${X(37, 33)}<text x="60" y="37" style="fill:var(--wrong)">gone</text></g>
+      <g ${st(2)}><text x="263" y="14" text-anchor="middle" style="fill:var(--accent)">new Pod</text>${pod(246, 20, "", "accent")}<path class="acc" d="M258 48 C 240 80, 210 88, 190 90"/></g>
+      <g ${st(2.8)}><text x="150" y="46" text-anchor="middle" style="fill:var(--accent)">data still there</text></g>
+    </svg>`
+  });
+  // The cluster topic now answers "how are the machines organized?", and the old cluster picture shows exactly that.
+
+  Object.assign(TOPICS, {
+    byhand: {
+      q: "Can't I just fix it myself?", match: /\b(fix|myself|hand|night)\b/i,
+      visual: ["byhand", "byhand", "byhand", "byhand"],
+      a: [
+        "For one container, maybe. Across hundreds, four problems appear: scaling them up and down manually, running them across several [[cloud]] providers or your own servers, managing security and resources like [[CPU]] and memory per container, and rolling out updates with zero [[downtime]]. Kubernetes automates all four.",
+        "For one container, maybe. With hundreds, four jobs get too big for people: adding and removing copies as traffic changes, running on different clouds, keeping every container secure with enough [[CPU]] and memory, and updating without [[downtime]]. Kubernetes automates all four.",
+        "Maybe for one. For hundreds you'd never keep up: adding copies, juggling different clouds, keeping them safe, and updating without breaking things. Kubernetes does those jobs.",
+        "Feeding one goldfish is easy. Running a whole zoo needs a zookeeper."
+      ],
+      check: { q: "Launch day brings 10× the usual visitors. Without Kubernetes, what happens?",
+        opts: ["Someone adds copies by hand and hopes it's fast enough", "The site adds copies by itself", "Nothing. Sites don't slow down"], right: 0,
+        no: [null, "Not without something like Kubernetes doing it.", "Too many visitors can take a site down."],
+        why: "Scaling by hand was one of the jobs Kubernetes took over." },
+      review: { q: "Which of these did Kubernetes take off people's hands?",
+        opts: ["Writing the app's code", "Picking the app's colors", "Scaling, updates and running across clouds"], right: 2,
+        no: ["That's still a person's job.", "Kubernetes doesn't touch design.", null],
+        why: "Scaling, clouds, security and updates used to need a person." }
+    },
+    microservices: {
+      q: "Is my app just one container?", match: /\b(app|microservices?|monolith\w*|pieces|split)\b/i,
+      visual: ["microservices", "microservices", "microservices", "microservices"],
+      a: [
+        "Often not. A [[monolith]] ships every feature as one unit, so one fault or one busy feature affects the whole app. [[Microservices|microservices]] split it into small services that are deployed separately, each in its own container. That multiplies the containers you have to run, scale and connect.",
+        "Often not. An old-style app is one big program, a [[monolith]]: if one part breaks, everything goes down. Most teams now split the app into small pieces called [[microservices]], like cart, payments and search, each in its own container. That's a lot of containers to look after, which is why teams need Kubernetes.",
+        "Usually not. Big apps are split into small parts, each in its own box. If one part breaks, the rest keeps going. But now there are lots of boxes to look after.",
+        "One giant sandwich vs. a lunchbox of snacks. Drop one snack and you still have lunch."
+      ],
+      check: { q: "Your shop is built as microservices, and the search piece crashes. What happens to checkout?",
+        opts: ["Checkout goes down too", "Checkout keeps working, since it's a separate piece", "The whole shop restarts"], right: 1,
+        no: ["That's a monolith. Here each piece runs on its own.", null, "Only the broken piece is affected."],
+        why: "Separate pieces fail separately. The catch: many more containers to manage." },
+      review: { q: "Why did microservices make Kubernetes so useful?",
+        opts: ["They turned one program into many containers to run", "They made apps slower", "They need a special language"], right: 0,
+        no: [null, "Speed isn't the issue. The number of containers is.", "Any language works."],
+        why: "Many small pieces means many containers, too many to run by hand." }
+    },
+    whatis: {
+      q: "So what is Kubernetes, really?", match: /\bkubernetes\b/i,
+      visual: ["whatis", "whatis", "whatis", "whatis"],
+      a: [
+        "An [[open-source]] container [[orchestrator]] that automates deploying, scaling and managing containerized apps. You declare a [[desired state]] (the sheet music), and the [[control plane]] (the conductor) keeps every container in line with it.",
+        "Free, [[open-source]] software that automates running containers: starting them, scaling them and keeping them healthy across many machines. Think of an orchestra's conductor. You write the sheet music, the setup you want, and Kubernetes makes sure every container plays its part.",
+        "A free program that runs lots of containers for you. You say how things should be, and it keeps them that way.",
+        "The conductor of an orchestra. It doesn't play, but it keeps everyone playing together."
+      ],
+      check: { q: "In the orchestra picture, what's the sheet music?",
+        opts: ["The containers", "The setup you asked for, like 3 copies of version 2", "The machines"], right: 1,
+        no: ["The containers are the players.", null, "The machines are more like the stage."],
+        why: "You write what should happen. Kubernetes conducts." },
+      review: { q: "What does Kubernetes automate?",
+        opts: ["Writing and testing your code", "Building your laptop", "Deploying, scaling and managing containers"], right: 2,
+        no: ["That's still your team's job.", "It runs on machines. It doesn't build them.", null],
+        why: "Deploy, scale, manage. All automatic." }
+    },
+    history: {
+      q: "Where did it come from?", match: /\b(come from|google|borg|history|name|cncf)\b/i,
+      visual: ["history", "history", "history", "history"],
+      a: [
+        "Google built it from lessons learned running [[Borg]] and Omega, its internal systems for running apps across huge clusters. It was released as [[open-source]] in 2014 and donated to the [[CNCF]] in 2015. The name is Greek for helmsman or pilot, and K8s counts the 8 letters between K and s.",
+        "From Google. Google ran its own apps on in-house systems called [[Borg]] and Omega, and built Kubernetes from those lessons. It was released free in 2014, and in 2015 Google gave it to the [[CNCF]], so no single company owns it. The name is Greek for helmsman, the person who steers a ship. People shorten it to K8s: K, 8 letters, s.",
+        "Google made it, based on tools it used for its own apps, and gave it away free in 2014. The name means the person who steers a ship.",
+        "Google built a ship's wheel for its own apps, then gave it to everyone."
+      ],
+      check: { q: "A friend says Kubernetes is Google's paid product. What's right?",
+        opts: ["Yes, you pay Google to use it", "Amazon made it", "Google made it, but it's free, and the CNCF looks after it"], right: 2,
+        no: ["It's free and open-source.", "Google made it.", null],
+        why: "Google built it, then handed it to a neutral group in 2015." },
+      review: { q: "What does the name Kubernetes mean?",
+        opts: ["Helmsman, the person who steers a ship", "Container", "Cloud computer"], right: 0,
+        no: [null, "Not quite. It's Greek, and it's about steering.", "Not quite. It's Greek, and it's about steering."],
+        why: "Helmsman. It steers your containers." }
+    },
+    cluster: {
+      q: "How are the machines organized?", match: /\b(machines?|bunch|clusters?|setup)\b/i,
+      visual: ["cluster", "cluster", "cluster", "cluster"],
+      a: [
+        "As a [[cluster]]: a [[control plane]] (sometimes called the master) that stores the [[desired state]] and makes every decision, plus [[worker nodes|node]] that run your [[Pods|Pod]]. When a node fails, the control plane moves its Pods onto healthy nodes.",
+        "As a [[cluster]]. One part, the [[control plane]], is the brain: it decides what runs where and watches everything. The rest are [[worker nodes|node]], the machines that actually run your containers. If a worker dies, the control plane moves its work to the others.",
+        "As a team: one boss that decides, and workers that do the work. If a worker drops out, the boss hands its work to the others.",
+        "A coach and players. The coach calls the plays, the players run them."
+      ],
+      check: { q: "Your containers need to run somewhere. Which part of the cluster actually runs them?",
+        opts: ["The control plane", "The worker nodes", "Your laptop"], right: 1,
+        no: ["It decides where things run. The workers do the running.", null, "Your laptop only sends instructions."],
+        why: "The control plane decides. The worker nodes run." },
+      review: { q: "A worker node dies. What does the control plane do?",
+        opts: ["Shuts down the cluster", "Waits for the node to come back", "Moves its work to the other workers"], right: 2,
+        no: ["The rest of the cluster keeps going.", "It doesn't wait. It moves the work.", null],
+        why: "No single worker matters." }
+    },
+    node: {
+      q: "What's on each machine?", match: /\b(each machine|nodes?|workers?|runtime)\b/i,
+      visual: ["node", "node", "node", "node"],
+      a: [
+        "Each [[node]] runs a [[container runtime]] that runs containers, the [[kubelet]], an agent that makes sure the Pods assigned to it are running and healthy, and [[kube-proxy]], which keeps the node's network rules up to date so traffic reaches the right Pods.",
+        "Three helpers, plus your containers. A [[container runtime]] actually runs the containers. The [[kubelet]] takes orders from the control plane and checks the containers are healthy. [[kube-proxy]] handles networking, so requests reach the right container.",
+        "A runner that starts the boxes, a helper that takes orders from the boss, and a helper that delivers requests to the right box.",
+        "Each kitchen has a stove, a cook who reads the orders, and a waiter who brings food to the right table."
+      ],
+      check: { q: "Kubernetes wants a container started on node 3. What actually starts it?",
+        opts: ["kube-proxy", "You, logging into node 3", "The kubelet on node 3, using the container runtime"], right: 2,
+        no: ["kube-proxy handles networking, not starting containers.", "You never log in. The kubelet does it.", null],
+        why: "The kubelet takes the order. The runtime runs the container." },
+      review: { q: "Which helper on each node handles networking?",
+        opts: ["The kubelet", "kube-proxy", "The container runtime"], right: 1,
+        no: ["The kubelet runs Pods and reports back.", null, "The runtime only runs containers."],
+        why: "kube-proxy routes the traffic." }
+    },
+    kubelet: {
+      q: "How does the brain talk to each machine?", match: /\b(kubelet|talk|orders?|reports?)\b/i,
+      visual: ["kubelet", "kubelet", "kubelet", "kubelet"],
+      a: [
+        "Through the [[kubelet]]. It watches the control plane for [[Pods|Pod]] assigned to its [[node]], asks the [[container runtime]] to start them, runs their [[health checks|health check]], restarts failed containers, and reports Pod and node status back to the [[control plane]].",
+        "Through the [[kubelet]], a small helper on every node. The control plane tells it which Pods to run. It starts them, keeps checking they're healthy, and reports back. If a container crashes, it restarts it.",
+        "Each machine has a helper that listens for orders, starts the boxes, and says \"all good\" or \"something broke\".",
+        "A team captain on each bus, taking the coach's instructions and counting heads."
+      ],
+      check: { q: "A container on node 2 keeps crashing. What notices first and restarts it?",
+        opts: ["The kubelet on node 2", "kube-proxy", "A Service"], right: 0,
+        no: [null, "kube-proxy only handles networking.", "A Service only sends traffic."],
+        why: "The kubelet watches its own node's containers." },
+      review: { q: "What does the kubelet report back to the control plane?",
+        opts: ["Users' passwords", "Whether its Pods and node are healthy", "Web traffic"], right: 1,
+        no: ["Passwords live in Secrets.", null, "Traffic goes through kube-proxy."],
+        why: "Healthy or not. That's how the control plane knows." }
+    },
+    kubeproxy: {
+      q: "How do requests reach the right container?", match: /\b(kube-proxy|requests?|network\w*)\b/i,
+      visual: ["kubeproxy", "kubeproxy", "kubeproxy", "kubeproxy"],
+      a: [
+        "[[kube-proxy]] runs on every node and keeps its network rules up to date, so traffic sent to a [[Service]]'s address is forwarded to one of its [[Pods|Pod]], on any node.",
+        "Through [[kube-proxy]], another helper on every node. It keeps the node's network rules up to date, so a request for your app is passed to one of its containers, even when that container is on a different machine.",
+        "A helper on each machine passes each request to the right box, wherever it is.",
+        "A mail sorter in every building who knows which room each letter goes to."
+      ],
+      check: { q: "A request arrives at node 1, but your app's only copy is on node 3. What happens?",
+        opts: ["The request fails", "The copy moves to node 1", "kube-proxy forwards it to node 3"], right: 2,
+        no: ["kube-proxy knows where every copy is.", "Copies don't move for one request.", null],
+        why: "Any node can pass a request to the right one." },
+      review: { q: "What's kube-proxy's job?",
+        opts: ["Forwarding requests to the right container", "Starting containers", "Storing passwords"], right: 0,
+        no: [null, "That's the kubelet and runtime.", "That's a Secret."],
+        why: "It routes traffic on every node." }
+    },
+    scheduling: {
+      q: "Who picks the machine?", match: /\b(picks?|which machine|schedul\w*|where)\b/i,
+      visual: ["scheduling", "scheduling", "scheduling", "scheduling"],
+      a: [
+        "The [[scheduler]] in the control plane. For each new Pod it filters out nodes without enough [[CPU]] or memory, scores the rest (for example, to spread load) and assigns the Pod to the best one. That's how Kubernetes packs work efficiently across the cluster.",
+        "The [[scheduler]], part of the control plane. For each new Pod, it checks how much [[CPU]] and memory every node has free and picks one with room. That spreads the work out, so no machine is overloaded and none sits idle.",
+        "Part of the boss. It checks which machines have room and puts each new box on one that isn't busy.",
+        "Like seating guests at the table with free chairs."
+      ],
+      check: { q: "Node A is 90% busy and node B is 20% busy. Where does the scheduler put a new Pod?",
+        opts: ["Node A", "Node B", "It waits until A is free"], right: 1,
+        no: ["A is nearly full. That would overload it.", null, "No need to wait. B has room."],
+        why: "Room first, so no machine is overloaded." },
+      review: { q: "Why does the scheduler check free CPU and memory?",
+        opts: ["To bill you", "To pick the machine with the nicest name", "So no machine is overloaded and none sits idle"], right: 2,
+        no: ["It doesn't do billing.", "Names don't matter. Room does.", null],
+        why: "It keeps the work spread out." }
+    },
+    ingress: {
+      q: "How do users on the internet get in?", match: /\b(internet|outside|ingress|get in|website)\b/i,
+      visual: ["ingress", "ingress", "ingress", "ingress"],
+      a: [
+        "An [[Ingress]] defines [[HTTP]] and HTTPS routing rules, by host name and path, from outside the cluster to internal [[Services|Service]]. An Ingress controller, a [[reverse proxy]] such as NGINX, carries them out.",
+        "Through an [[Ingress]], the front gate for web traffic. It's a set of rules like \"shop.com/cart goes to the cart Service, shop.com/blog goes to the blog Service\". It acts as a [[reverse proxy]]: it takes every request from outside and passes it to the right Service inside.",
+        "Through a front gate for the website. It looks at which page you asked for and sends you to the right part of the app.",
+        "A receptionist who sends each visitor to the right room."
+      ],
+      check: { q: "shop.com/cart and shop.com/blog run as two different Services. What sends each visitor to the right one?",
+        opts: ["The kubelet", "An Ingress with a rule for each path", "Two separate clusters"], right: 1,
+        no: ["The kubelet runs Pods. It doesn't route visitors.", null, "One cluster is enough. The Ingress splits the traffic."],
+        why: "One front gate, a rule per path." },
+      review: { q: "What's the difference between a Service and an Ingress?",
+        opts: ["A Service is one address inside the cluster. An Ingress routes outside web traffic to Services", "They're the same thing", "An Ingress stores data"], right: 0,
+        no: [null, "They work together, but do different jobs.", "Storage is a Persistent Volume."],
+        why: "Service inside, Ingress at the front gate." }
+    },
+    configmap: {
+      q: "Where do settings go?", match: /\b(settings?|config\w*)\b/i,
+      visual: ["configmap", "configmap", "configmap", "configmap"],
+      a: [
+        "In a [[ConfigMap]], which stores non-secret settings as key-value pairs, separate from the [[image]]. Pods read them as [[environment variables]] or files, so the same image runs with different settings for testing and live use.",
+        "In a [[ConfigMap]]: a list of settings, like which database to use or whether a sale is on, kept outside your container. Kubernetes hands it to your Pods when they start. You change a setting without rebuilding your app, and every new Pod gets it.",
+        "In a separate list of settings. Every new copy of your app reads it when it starts.",
+        "A note on the fridge that everyone reads, instead of a note inside every lunchbox."
+      ],
+      check: { q: "Testing and live use run the same app with different databases. Where does the database address go?",
+        opts: ["Built into the container", "In a ConfigMap, one for each setup", "Typed in by hand after every restart"], right: 1,
+        no: ["Then you'd need a different container for each setup.", null, "Pods are replaced all the time. You'd never keep up."],
+        why: "Same app, different ConfigMap." },
+      review: { q: "Why keep settings in a ConfigMap instead of inside the container?",
+        opts: ["It makes the app faster", "Containers can't hold text", "You can change them without rebuilding the app"], right: 2,
+        no: ["Speed isn't the point.", "They can. It's just harder to change.", null],
+        why: "Settings change more often than code." }
+    },
+    secret: {
+      q: "What about passwords?", match: /\b(passwords?|secrets?|keys?)\b/i,
+      visual: ["secret", "secret", "secret", "secret"],
+      a: [
+        "In a [[Secret]], which holds sensitive data like passwords and keys separately from config, with its own access rules. By default it's only encoded, not truly encrypted, so teams turn on extra protection. Pods read it as files or [[environment variables]].",
+        "In a [[Secret]]. It works like a ConfigMap, but for private things like passwords and keys. It's kept apart, who can read it can be locked down, and it's only handed to the Pods that need it. Never put passwords inside the container.",
+        "In a locked drawer called a Secret. Only the copies that need the password get it.",
+        "A key kept in the office safe, not taped to the front door."
+      ],
+      check: { q: "Your app needs a database password. Where should it go?",
+        opts: ["In a Secret", "In the ConfigMap with the other settings", "Written into the app's code"], right: 0,
+        no: [null, "ConfigMaps aren't meant for private things.", "Anyone who sees the code would see it."],
+        why: "Private things go in a Secret." },
+      review: { q: "What's the difference between a ConfigMap and a Secret?",
+        opts: ["ConfigMaps are faster", "Secrets are for private things like passwords", "There's no difference"], right: 1,
+        no: ["Speed isn't the difference.", null, "Secrets get extra protection."],
+        why: "Settings in a ConfigMap, passwords in a Secret." }
+    },
+    pv: {
+      q: "What about the data?", match: /\b(data|storage|disk|volume)\b/i,
+      visual: ["pv", "pv", "pv", "pv"],
+      a: [
+        "On a [[Persistent Volume]]: cluster storage whose life doesn't depend on any [[Pod]]. Pods request it through a claim, so data survives restarts and moves to other nodes.",
+        "On a [[Persistent Volume]]: storage that lives outside any Pod. When a Pod is thrown away, its own files go with it, but the Persistent Volume stays. The replacement Pod plugs into the same storage and finds everything where it was.",
+        "On a separate drive that stays when copies are replaced. The new copy uses the same drive.",
+        "Your toys go in the toy box, not your pocket. Change clothes and they're still there."
+      ],
+      check: { q: "A database Pod crashes and is replaced. How does the new one still have yesterday's orders?",
+        opts: ["They were copied from the old Pod", "They're gone", "They're on a Persistent Volume it plugs into"], right: 2,
+        no: ["The old Pod is gone, along with its files.", "Not if they were on a Persistent Volume.", null],
+        why: "Data lives outside the Pod, so it outlasts it." },
+      review: { q: "Why don't you keep important data inside a Pod?",
+        opts: ["Pods are thrown away and replaced, taking their files with them", "Pods are too small", "Pods can't save files"], right: 0,
+        no: [null, "Size isn't the problem.", "They can, but the files vanish with the Pod."],
+        why: "Pods are temporary. Data shouldn't be." }
+    }
+  });
+  // Declarative and ReplicaSet are named where the syllabus names them.
+  TOPICS.manifest.a[0] = "A [[Deployment]] manifest: [[YAML]] with a spec holding [[replicas]], a [[label selector]] and a [[Pod template]]. It's [[declarative]]: you state the end result, not the steps. You send it with [[kubectl]] apply -f.";
+  TOPICS.manifest.a[1] = "A short file called a [[Deployment]]. It says which version of your app to run and how many copies, not the steps to get there. That's called [[declarative]]: you describe the result, and Kubernetes works out how. One command sends it.";
+  TOPICS.selfheal.a[1] = "Behind every Deployment is a [[ReplicaSet]], whose one job is counting your copies. If one crashes, it's replaced. If its whole machine is gone, a new copy starts on another machine.";
+  TOPICS.selfheal.a[2] = "A part called a ReplicaSet keeps counting your copies. If one is missing, it makes a new one.";
+  TOPICS.selfheal.review = { q: "What's a ReplicaSet's job?",
+    opts: ["Routing web traffic", "Keeping the number of copies right", "Storing settings"], right: 1,
+    no: ["That's a Service or an Ingress.", null, "That's a ConfigMap."],
+    why: "It counts copies and fixes the count." };
+  Object.assign(GLOSSARY, {
+    microservices: "An app split into small, separate pieces, each in its own container.",
+    monolith: "An app built as one big program, where every part runs together.",
+    Borg: "Google's in-house system for running its own apps on huge numbers of machines.",
+    CNCF: "The Cloud Native Computing Foundation, a neutral group that looks after Kubernetes so no single company owns it.",
+    "kube-proxy": "A helper on every node that passes network traffic to the right container.",
+    "container runtime": "The program on each machine that actually runs containers.",
+    Ingress: "Rules that send web traffic from outside the cluster to the right Service.",
+    "reverse proxy": "A go-between that takes requests from outside and passes them to the right place inside.",
+    HTTP: "The language browsers and websites use to talk. HTTPS is the secure version.",
+    ConfigMap: "A list of settings kept outside your container, handed to Pods when they start.",
+    Secret: "Like a ConfigMap, but for private things like passwords and keys.",
+    "Persistent Volume": "Storage that lives outside any Pod, so data survives when Pods are replaced.",
+    "environment variables": "Settings a program reads when it starts.",
+    declarative: "Describing the result you want, not the steps to get there.",
+    node: "One machine in the cluster. Worker nodes run your containers.",
+    "control plane": "The brain of a cluster. It decides what runs where and fixes problems. Sometimes called the master."
+  });
+
+  const LEARNED_TOPIC = {
+    byhand: "Scaling, clouds and updates were too much by hand",
+    microservices: "Apps are split into many containers",
+    docker: "Docker builds containers, Kubernetes runs them",
+    autoscale: "It scales up and down with traffic",
+    service: "A Service is one stable address",
+    address: "Replaced copies get new addresses",
+    moved: "Users never see copies move",
+    spread: "Requests go to healthy copies",
+    whatis: "Kubernetes conducts your containers",
+    history: "Google built it, the CNCF looks after it",
+    benefits: "Reliable, portable, scalable, vendor-neutral",
+    bigco: "Small teams use it too",
+    learn: "Start with the basics you now know",
+    container: "Containers run the same anywhere",
+    cluster: "The control plane decides, workers run",
+    node: "Each node: runtime, kubelet, kube-proxy",
+    kubelet: "The kubelet runs each node's Pods",
+    kubeproxy: "kube-proxy routes requests",
+    scheduling: "The scheduler picks a node with room",
+    desired: "Kubernetes notices, not you",
+    pod: "Each copy is a Pod",
+    manifest: "A Deployment declares what to run",
+    selfheal: "A ReplicaSet keeps the count right",
+    scale: "Scaling is changing one number",
+    rollout: "Updates roll out with no downtime",
+    rollback: "A bad version can be undone",
+    ingress: "An Ingress is the front gate",
+    configmap: "Settings live in a ConfigMap",
+    secret: "Passwords live in a Secret",
+    pv: "Data lives on a Persistent Volume"
+  };
+
+  // The five modules follow the GeeksforGeeks article, section by section.
+  const MODULES = [
+    {
+      id: "why", title: "Why Kubernetes exists", sweep: "container",
+      q: "Your app runs in a container on one server. What happens when that server dies at 3 a.m.?",
+      ghosts: [["desired", 0], ["container", 1], ["byhand", 2], ["microservices", 3]],
+      child: { desired: ["whatis"], whatis: ["history"], container: ["docker"] },
+      words: ["container", "app", "dies", "3 a.m."],
+      learned: "Your app moves when a server dies",
+      said: "You say what should run. Kubernetes keeps it that way.",
+      check: { q: "", opts: [
+        "It backs up the server so you can restore it in the morning.",
+        "You say what should run. It keeps checking and moves containers to healthy machines.",
+        "It stops servers from ever crashing."], right: 1,
+        no: ["Nothing waits for morning. Your app moves right away.", null, "Servers still crash. Kubernetes just works around it."],
+        why: "You say what should run, and Kubernetes keeps it that way." },
+      explainQ: "What happens when your server dies at 3 a.m., and why do teams need Kubernetes?",
+      explain: ["Containers pack your app so it runs the same anywhere, and Docker builds them", "Apps are split into many containers (microservices)", "Scaling, updates and running across clouds got too hard by hand", "Kubernetes automates running containers, like a conductor", "When a machine dies, Kubernetes notices and starts your app on another one"]
+    },
+    {
+      id: "cluster", title: "Clusters and nodes", sweep: "machines",
+      q: "Kubernetes runs your app on a bunch of machines. What does that setup look like?",
+      ghosts: [["cluster", 0], ["node", 1], ["scheduling", 2]],
+      child: { node: ["kubelet"], kubelet: ["kubeproxy"] },
+      words: ["machines", "setup", "bunch"],
+      learned: "A cluster is a control plane plus workers",
+      said: "A control plane directing worker nodes.",
+      check: { q: "", opts: [
+        "One giant computer that does everything.",
+        "A separate copy of Kubernetes on every machine, each working alone.",
+        "A control plane that decides, and worker nodes that run your containers."], right: 2,
+        no: ["It's many machines working as one, so no single machine matters.", "They work as one team, directed by the control plane.", null],
+        why: "The control plane decides. The worker nodes run." },
+      explainQ: "What does a Kubernetes cluster look like, and what runs on each machine?",
+      explain: ["A cluster is a group of machines run as one", "The control plane is the brain: it decides what runs where", "Worker nodes run your containers", "Each node has a container runtime, a kubelet and kube-proxy", "The scheduler puts each Pod on a node with room"]
+    },
+    {
+      id: "deploy", title: "Pods and Deployments", sweep: "hand",
+      q: "So what do you actually hand Kubernetes to keep 3 copies of your app running forever?",
+      ghosts: [["manifest", 0], ["pod", 1], ["selfheal", 2], ["scale", 3]],
+      child: { manifest: ["rollout"], rollout: ["rollback"], scale: ["autoscale"] },
+      words: ["hand", "copies", "forever", "3"],
+      learned: "Deployments keep your copies running",
+      check: { q: "", opts: [
+        "A script that starts 3 copies on 3 servers.",
+        "A file (a Deployment) saying which version and how many copies.",
+        "A list of servers to keep an eye on."], right: 1,
+        no: ["Kubernetes doesn't want steps. It wants the result.", null, "You never pick servers. Kubernetes does."],
+        why: "You describe the result. Kubernetes keeps it true, even through crashes and updates." },
+      said: "A Deployment file: which version, how many copies.",
+      explainQ: "What do you hand Kubernetes, and what does it do with it?",
+      explain: ["You hand Kubernetes a Deployment file, which is declarative", "It says which version to run and how many copies", "Each copy is a Pod", "A ReplicaSet keeps that many running and replaces any that crash", "It can scale copies up and down with traffic", "Updates roll out a few at a time, and a bad one can be rolled back"]
+    },
+    {
+      id: "services", title: "Services and Ingress", sweep: "address",
+      q: "Your copies keep getting replaced, and every new one gets a new address. How do users still find your app?",
+      ghosts: [["service", 0], ["address", 1], ["spread", 2], ["ingress", 3]],
+      child: { service: ["moved"] },
+      words: ["address", "users", "replaced", "copies"],
+      learned: "Users find your app through a Service",
+      said: "A Service inside, an Ingress at the front gate.",
+      check: { q: "", opts: [
+        "The newest copy's address.",
+        "One stable address (a Service) in front of all the copies.",
+        "The server's address."], right: 1,
+        no: ["It'll change the next time that copy is replaced.", null, "Copies move between servers, so that breaks too."],
+        why: "A Service: one address that never changes." },
+      explainQ: "How do users keep finding your app when its copies keep changing?",
+      explain: ["Each copy gets a new address whenever it's replaced", "A Service gives your app one address that never changes", "The Service spreads requests across healthy copies, wherever they are", "An Ingress routes web traffic from outside to the right Service"]
+    },
+    {
+      id: "config", title: "Config, Secrets and storage", sweep: "settings",
+      q: "Pods get thrown away and replaced all the time. So where do your app's settings, passwords and data live?",
+      ghosts: [["configmap", 0], ["secret", 1], ["pv", 2]],
+      child: {},
+      words: ["settings", "passwords", "data"],
+      learned: "Settings, passwords and data live outside Pods",
+      said: "Outside the Pod: ConfigMaps, Secrets, Persistent Volumes.",
+      check: { q: "", opts: [
+        "Inside each Pod, copied over when it's replaced.",
+        "Outside the Pods: in ConfigMaps, Secrets and Persistent Volumes.",
+        "On your laptop, uploaded each time."], right: 1,
+        no: ["Replaced Pods start fresh. Nothing is copied over.", null, "Kubernetes keeps them in the cluster, not on your laptop."],
+        why: "Pods are temporary, so anything that must last lives outside them." },
+      explainTitle: "Last one: the whole article, from memory",
+      explainQ: "What is Kubernetes, why does it exist, and what are its main parts?",
+      explainPlaceholder: "What Kubernetes is, why it exists, and its main parts…",
+      explain: [
+        "Kubernetes is open-source software that automates deploying, scaling and managing containers",
+        "Google built it from Borg and Omega, released it in 2014 and gave it to the CNCF in 2015",
+        "Containers (built with Docker) and microservices meant too many containers to manage by hand",
+        "A cluster is a control plane plus worker nodes",
+        "Each node runs a container runtime, a kubelet and kube-proxy",
+        "A Pod is one running copy of your app",
+        "A Deployment declares what should run, and a ReplicaSet keeps the count right",
+        "It heals itself, scales, and rolls updates out or back",
+        "A Service is one stable address, and an Ingress routes web traffic in",
+        "ConfigMaps hold settings, Secrets hold passwords, Persistent Volumes hold data"],
+      end: "That's the whole GeeksforGeeks introduction, from your own head."
+    }
+  ];
+
+  // ---------- layout ----------
+  // Where ghost questions sit around the main question (desktop), and their phone equivalents.
+  const SLOTS = [[460, -150], [-460, -150], [460, 250], [-460, 250]];
+  const NARROW_GHOSTS = [[18, -290], [-18, -205], [-18, 250], [18, 335]];
+  // Side-question spots. On phones they sit above and below the main question, which is now taller since it carries its answer.
+  function slotPos(s) {
+    if (!narrow) return SLOTS[s];
+    const r = nodes.get("root"); if (!r) return NARROW_GHOSTS[s];
+    const top = r.y - r.el.offsetHeight / 2, bot = r.y + r.el.offsetHeight / 2;
+    return [[18, top - 150], [-18, top - 62], [-18, bot + 160], [18, bot + 245]][s];
+  }
+  let M = MODULES[0];
+  // Topics that belong to the current module: its ghosts and everything that branches off them.
+  function topicsOf(m) {
+    const set = new Set(m.ghosts.map(([t]) => t));
+    Object.entries(m.child).forEach(([k, v]) => { set.add(k); v.forEach((t) => set.add(t)); });
+    return set;
+  }
+  const moduleTopics = () => topicsOf(M);
+  // Teach first, check second: each main idea shows its answer up front with a picture; a light check comes after, if you want it.
+  const TEACH = {
+    why: { visual: "desired", teach: ["You tell Kubernetes what should run, and it keeps watching. If a server dies, it moves your app to another one by itself.", "Kubernetes runs your containers for you. You tell it what should be running, and it keeps checking. When a server dies at 3 a.m., it notices and starts your app on a healthy machine, so nobody has to wake up."], quick: {"q": "Which job does Kubernetes take off your team's hands?", "opts": ["Watching that your app is running, and fixing it when it isn't.", "Writing your app's code.", "Buying and repairing servers."], "right": 0, "no": [null, "It never touches your code. It runs what you built.", "It doesn't fix machines. It moves your app to healthy ones."], "why": "You say what should run. Kubernetes keeps checking, and fixes it when it's off."} },
+    cluster: { visual: "cluster", teach: ["A group of machines works as one team. A brain, the control plane, decides what runs where. The other machines, the nodes, do the work.", "The machines form a cluster. The control plane is the brain: it decides what runs where. Worker nodes run your containers, and if one fails, the control plane moves its work to the others."], quick: {"q": "A worker node breaks. Which part decides where its work goes next?", "opts": ["The control plane", "The broken node itself", "You, by hand"], "right": 0, "no": [null, "A broken node can't decide anything. The brain does.", "Kubernetes decides for you."], "why": "The control plane is the brain. Nodes just run the work."} },
+    deploy: { visual: "manifest", teach: ["You give Kubernetes a short note: run this app, 3 copies. It keeps 3 running and replaces any copy that crashes.", "You hand Kubernetes a Deployment: a short file saying which version to run and how many copies. Each running copy is a Pod, and a ReplicaSet keeps exactly that many running, replacing any that crash."], quick: {"q": "Your Deployment says 3 copies, and one Pod crashes. What happens?", "opts": ["Kubernetes starts a new Pod, so 3 are running again", "Your app runs on 2 copies until you fix it", "The whole Deployment stops"], "right": 0, "no": [null, "Nobody has to fix it. Kubernetes fills the gap.", "Only one copy crashed. It gets replaced, and the rest keep going."], "why": "The ReplicaSet keeps the count you asked for."} },
+    services: { visual: "service", teach: ["Users go to one address that never changes. It passes them to whichever copy is healthy right now.", "You put a Service in front of your copies: one address that never changes, which passes each request to a healthy copy wherever it is. For users on the internet, an Ingress is the front gate that routes them to the right Service."], quick: {"q": "Your shop app runs as 3 copies. A shopper opens the site. Which copy do they get?", "opts": ["Whichever healthy copy the Service sends them to.", "Always the first copy.", "The shopper picks one."], "right": 0, "no": [null, "The Service spreads shoppers across all the healthy copies.", "Shoppers only ever see one address: the Service's."], "why": "Shoppers go to the Service. It passes each one to a healthy copy."} },
+    config: { visual: "outside", teach: ["Not inside the Pods, since those get thrown away. Settings, passwords and data are kept separately, and each new Pod plugs into them.", "Outside the Pods. Settings go in a ConfigMap, passwords and keys go in a Secret, and data that must survive goes on a Persistent Volume. Every new Pod plugs into them when it starts."], quick: {"q": "All 5 copies of your app need the same database password. Where do you put it?", "opts": ["In one Secret that every copy plugs into", "Inside each Pod, typed in 5 times", "Right in the app's code"], "right": 0, "no": [null, "Pods get thrown away, and the password would go with them.", "Then anyone who can see the code can see the password."], "why": "One Secret, outside the Pods. Every copy, old or new, plugs into it."} }
+  };
+  MODULES.forEach((m) => Object.assign(m, TEACH[m.id]));
+  function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+  function topicsOf(m) {
+    const set = new Set(m.ghosts.map(([t]) => t));
+    Object.entries(m.child).forEach(([k, v]) => { set.add(k); v.forEach((t) => set.add(t)); });
+    return set;
+  }
+  const HIDE_CODES = new Set(["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"]);
+  let samplePromise = null;
+  function getSample() {
+    if (!samplePromise) samplePromise = window.claude && typeof window.claude.use === "function"
+      ? Promise.resolve(window.claude.use("sample")).catch(() => null) : Promise.resolve(null);
+    return samplePromise;
+  }
+  const plainTerms = (s) => s.replace(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g, "$1");
+  const FACE = (mood) => `<svg class="face-${mood}" viewBox="0 0 64 64" aria-hidden="true"><circle class="bf-head" pathLength="1" cx="32" cy="35" r="24"/><path class="bf-hair" pathLength="1" d="M17 24c3-9 13-14 22-10 3-5 10-5 12-1-5-.5-8 2-9 5"/><g class="bf-eyes"><ellipse class="bf-eye" cx="24" cy="34" rx="3" ry="3.7"/><ellipse class="bf-eye" cx="40" cy="34" rx="3" ry="3.7"/></g><path class="bf-line bf-happy" d="M20.5 35q3.5-5 7 0M36.5 35q3.5-5 7 0"/><path class="bf-line bf-smile" pathLength="1" d="M25 43.5c4 4 10 4 14 0"/><path class="bf-line bf-huh" d="M26 45q3-2.5 6 0t6 0M36 26.5l8-2.5"/><circle class="bf-cheek" cx="17.5" cy="42" r="3.2"/><circle class="bf-cheek" cx="46.5" cy="42" r="3.2"/></svg>`;
+  const BUDDY_Q = {
+    why: "I've never heard of Kubernetes. Why do teams even need it?",
+    cluster: "What does a Kubernetes cluster look like? What runs on each machine?",
+    deploy: "What do I hand Kubernetes, and what does it do with it?",
+    services: "If my app's copies keep changing, how do people still find it?",
+    config: "OK, the big one: what is Kubernetes, and what are its main parts?"
+  };
+  const BUDDY_HINTS = {
+    why: [["What's a container, and why use one?", [1, 2]], ["What got too hard to do by hand?", [3]], ["So what does Kubernetes do about it?", [4, 5]]],
+    cluster: [["What's a cluster made of?", [1, 3]], ["What's the brain, and what does it decide?", [2, 5]], ["What runs on each machine?", [4]]],
+    deploy: [["What's in the file I hand it?", [1, 2]], ["What's a Pod?", [3]], ["What if one crashes, or traffic grows?", [4, 5]], ["How do updates work?", [6]]],
+    services: [["Why can't people just use one copy's address?", [1]], ["So how do they find my app?", [2, 3]], ["How does traffic from the internet get in?", [4]]],
+    config: [["What is it, and where did it come from?", [1, 2]], ["Why did teams need it?", [3]], ["What's in a cluster, and on each node?", [4, 5]], ["How do I tell it what to run?", [6, 7, 8]], ["How do people reach my app?", [9]], ["Where do settings, passwords and data go?", [10]]]
+  };
+  const APIKEY = "autolearn-api-key";
+  const apiKey = () => { try { return localStorage.getItem(APIKEY) || ""; } catch (e) { return ""; } };
+  async function apiJson(text, signal, key = apiKey()) {
+    let res;
+    try {
+      res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", signal,
+        headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-beta": "server-side-fallback-2026-07-01", "anthropic-dangerous-direct-browser-access": "true" },
+        body: JSON.stringify({ model: "claude-opus-5-5", max_tokens: 1500, output_config: { effort: "medium" }, fallbacks: "default", messages: [{ role: "user", content: text }] })
+      });
+    } catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "network" }; }
+    if (!res.ok) throw { code: res.status === 401 || res.status === 403 ? "bad_key" : res.status === 429 || res.status === 529 ? "rate_limited" : "api" };
+    const j = await res.json();
+    if (j.stop_reason === "refusal") throw { code: "refusal" };
+    const out = (j.content || []).filter((b) => b.type === "text").map((b) => b.text).join(""), m = out.match(/\{[\s\S]*\}/);
+    if (!m) throw { code: "parse" };
+    return JSON.parse(m[0]);
+  }
+  function teachPrompt(m, text) {
+    const facts = [...topicsOf(m)].map((k) => `- ${TOPICS[k].q} ${plainTerms(TOPICS[k].a[1])}`).join("\n");
+    return `You are playing a curious beginner who knows nothing about Kubernetes. A learner is teaching you, often by voice, so expect speech-to-text slips; ignore typos and filler.
+
+You asked: "${BUDDY_Q[m.id] || plainTerms(m.explainQ)}"
+They said: """${text}"""
+
+A full answer covers these points:
+${m.explain.map((k, i) => `${i + 1}. ${k}`).join("\n")}
+
+Facts from the lesson, to check what they say against:
+${facts}
+
+Mark it honestly:
+- "covered": the numbers of the points they actually explained correctly in their own words. Naming a term is not explaining it.
+- "wrong": anything they said that is incorrect, as {"quote": a short exact phrase of theirs, "fix": a kind correction under 20 words}.
+- "level": "solid" if they explained the heart of the question correctly (most points, nothing badly wrong), "partly" if some of it, "off" if little or mostly wrong.
+- "say": your reaction as the beginner, first person, warm and specific, under 20 words.
+- "ask": if something important is still missing, one short follow-up question you'd ask as the beginner; otherwise null.
+
+Reply with only JSON, like:
+{"covered":[1,3],"wrong":[],"level":"partly","say":"Oh, so it restarts my app on another machine. Neat!","ask":"But how does it know a machine died?"}`;
+  }
+  const STOPW = new Set("about after their there these those which where while would could should every other being with from into your that this them they what when have will just like than then also because".split(" "));
+  function quickTeach(m, text) {
+    const t = text.toLowerCase(), words = t.split(/\s+/).filter(Boolean).length, covered = [];
+    if (words >= 8) m.explain.forEach((pt, i) => {
+      const kws = [...new Set(pt.toLowerCase().match(/[a-z]{5,}/g) || [])].filter((w) => !STOPW.has(w));
+      const hit = kws.filter((w) => t.includes(w.slice(0, Math.max(5, w.length - 2)))).length;
+      if (kws.length && hit >= Math.min(2, kws.length)) covered.push(i + 1);
+    });
+    return { covered, wrong: [], level: covered.length ? "partly" : "off", say: covered.length ? "I think I get some of it." : "Hmm, I'm not sure I follow yet.", ask: null, quick: true };
+  }
+  // ===================== v37: Teach Kube =====================
+  // Teaching is the whole app. Kube asks about each of the 5 ideas, high level first; you explain in your own words
+  // (talk or type), and Claude checks what you got right. Stuck? Ask anything on the side, then go back to Kube.
+  // Pictures only show when you ask for one, or when you've said an idea is new to you.
+  const $ = (id) => document.getElementById(id);
+  const IDS = ["why", "cluster", "deploy", "services", "config"];
+  const MOD = Object.fromEntries(MODULES.map((m) => [m.id, m]));
+  const SHORT = { why: "Why it exists", cluster: "Clusters", deploy: "Deployments", services: "Services", config: "The big picture" };
+  const ARR = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>`;
+  const MIC = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
+  const STOP = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>`;
+  // Max liked knowing where words come from, so the name is something you can ask about.
+  TOPICS.k8sname = { q: "Why is it called Kubernetes, or K8s?", visual: [], a: [
+    "Kubernetes is Greek for helmsman or pilot, the person who steers a ship, which is why the logo is a ship's wheel. K8s is a numeronym: K, then the 8 letters “ubernete”, then s.",
+    "It's Greek for helmsman, the person who steers a ship. That's why the logo is a ship's wheel. K8s is just shorthand: K, then 8 letters, then s.",
+    "It's Greek for the person who steers a ship. K8s is short for it: K, 8 letters, s.",
+    "It means ship captain in Greek! K8s is a short way to write it."] };
+
+  // ---------- saved progress ----------
+  const KEY = "autolearn-kube-1";
+  let S = { i: 0, ideas: {}, met: false, done: false, asked: [] };
+  try { const v = JSON.parse(localStorage.getItem(KEY) || "null"); if (v && v.ideas) S = Object.assign(S, v); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const idea = (id) => S.ideas[id] || (S.ideas[id] = { level: "none", cov: [], dk: false, text: "", draft: "", follow: null });
+  const RANK = { none: 0, partly: 1, solid: 2 };
+  const cur = () => MOD[IDS[S.i]];
+
+  // [[term]] marks become tappable words with a one-line definition.
+  const fmt = (t) => esc(t).replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, shown, key) => {
+    const d = GLOSSARY[key || shown] || GLOSSARY[shown.toLowerCase()];
+    return d ? `<span class="term" role="button" tabindex="0" data-def="${esc(d)}">${shown}</span>` : shown;
+  });
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest(".term"); if (!t) return;
+    const nx = t.nextElementSibling;
+    if (nx && nx.classList.contains("term-def")) return nx.remove();
+    t.insertAdjacentHTML("afterend", `<span class="term-def">${esc(t.dataset.def)}</span>`);
+  });
+  document.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.closest && e.target.closest(".term")) { e.preventDefault(); e.target.click(); } });
+
+  // ---------- the 5 ideas, as small chips up top ----------
+  function renderIdeas() {
+    $("tk-ideas").innerHTML = IDS.map((id, n) => `<button type="button" class="tk-idea ${idea(id).level}${n === S.i && !S.done ? " now" : ""}" data-i="${n}" title="${esc(MOD[id].title)}"><i></i>${SHORT[id]}</button>`).join("");
+  }
+  $("tk-ideas").addEventListener("click", (e) => {
+    const b = e.target.closest(".tk-idea"); if (!b) return;
+    stopAll(); S.i = +b.dataset.i; S.done = false; save(); askView(idea(IDS[S.i]).follow);
+  });
+
+  const kube = (mood, inner) => `<div class="kb-row"><div class="kb-face">${FACE(mood)}</div><div class="kb-say">${inner}</div></div>`;
+  const tag = (m) => `<p class="kb-tag">Idea ${IDS.indexOf(m.id) + 1} of 5 · ${esc(m.title)}</p>`;
+  function hintsList(m, cov) {
+    const h = BUDDY_HINTS[m.id] || []; if (!h.length) return "";
+    const c = new Set(cov);
+    return `<p class="kb-hints-t">${cov.length ? "What you've taught me so far" : "What I'd like to understand"}</p><ul class="kb-hints">${h.map(([q, pts]) => {
+      const n = pts.filter((p) => c.has(p)).length;
+      return `<li class="${n === pts.length ? "yes" : n ? "some" : ""}"><i></i><span>${esc(q)}</span></li>`; }).join("")}</ul>`;
+  }
+  let token = 0, ctl = null;
+  function stopAll() { token++; if (ctl) { ctl.abort(); ctl = null; } stopMic(); }
+  function view(html) {
+    $("tk-teach").innerHTML = html; renderIdeas(); setAskChips();
+    if (scrollY > 80) scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+
+  // ---------- Kube asks ----------
+  function askView(follow, hi) {
+    token++;
+    const m = cur(), s = idea(m.id), first = !S.met && S.i === 0 && !follow;
+    const lead = hi ? `<p class="kb-hi">${esc(hi)}</p>` : first ? `<p class="kb-hi">Hi, I'm Kube! I've never heard of Kubernetes. Can you teach me?</p>` : follow ? `<p class="kb-hi">One more thing I'm wondering:</p>` : "";
+    view(tag(m) + kube(hi ? "huh" : "smile", `${lead}<p class="kb-q">${esc(follow || BUDDY_Q[m.id])}</p>`) + hintsList(m, s.cov)
+      + `<div class="tk-answer"><div class="tk-in"><textarea class="tk-ta" id="tk-ta" placeholder="Explain it in your own words, like you're telling a friend…" aria-label="Your explanation"></textarea>${SR ? `<button class="tk-mic" id="tk-mic" type="button" aria-label="Talk">${MIC}</button>` : ""}</div>
+        <p class="tk-note" id="tk-note" hidden></p>
+        <div class="tk-row"><button class="tk-btn main" id="tk-go" type="button" disabled>Teach Kube ${ARR}</button><button class="tk-btn" id="tk-stuck" type="button">I'm stuck. Let me ask something</button><button class="tk-btn quiet push" id="tk-dk" type="button">I don't know this yet</button></div></div>`);
+    const ta = $("tk-ta"), go = $("tk-go"), sync = () => { go.disabled = !ta.value.trim(); s.draft = ta.value; save(); };
+    ta.value = s.draft || ""; sync();
+    ta.addEventListener("input", sync);
+    ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && ta.value.trim()) go.click(); });
+    go.addEventListener("click", () => teach(ta.value.trim(), follow));
+    $("tk-stuck").addEventListener("click", () => openAsk(true));
+    $("tk-dk").addEventListener("click", () => dontKnow(m));
+    const mic = $("tk-mic"); if (mic) mic.addEventListener("click", () => toggleMic(mic, ta, $("tk-note"), sync));
+    if (!matchMedia("(max-width:640px)").matches) ta.focus({ preventScroll: true });
+  }
+
+  // ---------- Kube listens ----------
+  async function teach(text, follow) {
+    const m = cur(), s = idea(m.id), my = ++token;
+    stopMic(); S.met = true; s.draft = ""; save();
+    const full = follow && s.text ? `${s.text}\n${text}` : text;
+    view(tag(m) + kube("smile", `<p class="kb-q">${esc(follow || BUDDY_Q[m.id])}</p>`) + `<p class="tk-quote">${esc(text)}</p><div class="tk-wait">Kube is thinking about what you said…</div><div class="tk-row tk-acts"><button class="tk-btn quiet" id="tk-cancel" type="button">Stop</button></div>`);
+    ctl = new AbortController();
+    $("tk-cancel").addEventListener("click", () => { s.draft = text; stopAll(); askView(follow); });
+    let r = null, note = "";
+    const g = await grader();
+    if (g) {
+      try { r = await g(teachPrompt(m, full), ctl.signal); }
+      catch (e) {
+        if (my !== token) return;
+        const code = e && e.code;
+        if (HIDE_CODES.has(code)) samplePromise = Promise.resolve(null);
+        note = code === "rate_limited" ? "Claude is busy right now, so Kube could only match words this time." : code === "bad_key" ? "Your API key stopped working, so Kube could only match words." : "Claude couldn't answer, so Kube could only match words this time.";
+      }
+    }
+    if (my !== token) return;
+    if (!r || !Array.isArray(r.covered)) { r = quickTeach(m, full); if (!note) note = noClaudeNote(); }
+    const cov = (r.covered || []).map(Number).filter((n) => n >= 1 && n <= m.explain.length);
+    const lvl = r.level === "solid" ? "solid" : r.level === "partly" ? "partly" : "off";
+    s.text = full; s.cov = [...new Set([...s.cov, ...cov])].sort((a, b) => a - b);
+    if (lvl !== "off" && RANK[lvl] > RANK[s.level]) s.level = lvl;
+    save();
+    resultView(m, text, r, lvl, note);
+  }
+  function noClaudeNote() {
+    return window.claude ? "Claude isn't available here, so Kube can only match words. It can't tell if you explained them right."
+      : "Kube can only match words until you connect Claude (top right). Then it really understands you.";
+  }
+  function nextIdx() {
+    for (let j = S.i + 1; j < IDS.length; j++) if (idea(IDS[j]).level !== "solid") return j;
+    return -1;
+  }
+  function resultView(m, text, r, lvl, note) {
+    const s = idea(m.id), hs = BUDDY_HINTS[m.id] || [], c = new Set(s.cov);
+    const open = hs.find(([, p]) => !p.some((x) => c.has(x))) || hs.find(([, p]) => !p.every((x) => c.has(x)));
+    const follow = lvl === "solid" ? null : (r.ask || (open && open[0]) || null);
+    s.follow = follow; save();
+    const wrong = (r.wrong || []).filter((w) => w && w.fix);
+    const nx = nextIdx(), more = nx >= 0;
+    const nextLabel = more ? "Next idea" : "See what you taught me";
+    const acts = lvl === "off"
+      ? `<button class="tk-btn main" id="r-look" type="button">Let's look it up together ${ARR}</button><button class="tk-btn" id="r-again" type="button">Try again</button><button class="tk-btn quiet push" id="r-next" type="button">${nextLabel}</button>`
+      : follow
+        ? `<button class="tk-btn main" id="r-again" type="button">Answer that ${ARR}</button><button class="tk-btn" id="r-ask" type="button">Ask something first</button><button class="tk-btn quiet push" id="r-next" type="button">${nextLabel}</button>`
+        : `<button class="tk-btn main" id="r-next" type="button">${nextLabel} ${ARR}</button><button class="tk-btn quiet" id="r-ask" type="button">Ask something anyway</button>`;
+    view(tag(m) + kube(lvl === "solid" ? "happy" : lvl === "partly" ? "smile" : "huh", `<p class="kb-react">${esc(r.say || (lvl === "off" ? "Hmm, I'm not sure I follow yet." : "I think I get some of it."))}</p>${follow ? `<p class="kb-q">${esc(follow)}</p>` : ""}`)
+      + `<p class="tk-quote">${esc(text)}</p>` + hintsList(m, s.cov)
+      + (wrong.length ? `<p class="tk-sub2">Not quite</p><ul class="tk-list">${wrong.map((w) => `<li><span>${w.quote ? `<b>“${esc(w.quote)}”</b> ` : ""}${esc(w.fix)}</span></li>`).join("")}</ul>` : "")
+      + (note ? `<p class="tk-note tk-acts">${esc(note)}</p>` : "")
+      + `<div class="tk-row tk-acts">${acts}</div>`);
+    const on = (id, fn) => { const b = $(id); if (b) b.addEventListener("click", fn); };
+    on("r-again", () => askView(lvl === "off" ? null : follow));
+    on("r-ask", () => openAsk(true));
+    on("r-look", () => { openLesson(m, true); askView(null, "Read the short version, ask anything you like, then try me again."); });
+    on("r-next", () => { if (!more) return doneView(); S.i = nx; save(); askView(idea(IDS[nx]).follow); });
+  }
+
+  // "I don't know" is fine: it's how you find out what to learn. The idea is new, so the picture shows up front.
+  function dontKnow(m) {
+    const s = idea(m.id); s.dk = true; save();
+    openLesson(m, true);
+    askView(null, "No problem, we're both new to it! Read the short version, ask anything, then teach me.");
+  }
+
+  // ---------- the end ----------
+  function doneView() {
+    stopAll(); S.done = true; save(); closeAsk(true);
+    const n = IDS.filter((id) => idea(id).level === "solid").length, gap = IDS.findIndex((id) => idea(id).level !== "solid");
+    const label = { solid: "You taught me", partly: "Partly", none: "Not yet" };
+    view(kube(n === 5 ? "happy" : "smile", `<p class="kb-react">${n === 5 ? "You taught me Kubernetes! I really get it now. Thank you!" : n ? `Thanks! You taught me ${n} of the 5 ideas.` : "Thanks for trying! We can go again anytime."}</p>${gap >= 0 ? `<p class="kb-q">Want to teach me the rest?</p>` : ""}`)
+      + `<ul class="tk-sum">${IDS.map((id) => `<li><span>${esc(MOD[id].title)}</span><em class="${idea(id).level}">${label[idea(id).level]}</em></li>`).join("")}</ul>`
+      + `<div class="tk-row tk-acts">${gap >= 0 ? `<button class="tk-btn main" id="d-rest" type="button">Teach the rest ${ARR}</button>` : ""}<button class="tk-btn ${gap >= 0 ? "quiet" : ""}" id="d-over" type="button">Start over</button></div>`);
+    const rest = $("d-rest"); if (rest) rest.addEventListener("click", () => { S.done = false; S.i = gap; save(); askView(idea(IDS[gap]).follow); });
+    $("d-over").addEventListener("click", () => { S = { i: 0, ideas: {}, met: true, done: false, asked: [] }; save(); $("ask-log").innerHTML = ""; askView(); });
+  }
+
+  // ---------- Ask anything ----------
+  const narrow = () => matchMedia("(max-width:900px)").matches;
+  function openAsk(focus) {
+    $("tk-ask").hidden = false; $("tk-main").classList.add("asking"); setAskChips();
+    if (!$("ask-log").children.length) $("ask-log").innerHTML = `<p class="ask-empty">Ask anything you're unsure about. When it clicks, go back and teach Kube.</p>`;
+    if (focus && !narrow()) $("ask-in").focus({ preventScroll: true });
+  }
+  function closeAsk(quiet) {
+    $("tk-ask").hidden = true; $("tk-main").classList.remove("asking");
+    const ta = $("tk-ta"); if (ta && !quiet && !narrow()) ta.focus({ preventScroll: true });
+  }
+  $("ask-back").addEventListener("click", () => closeAsk());
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("tk-ask").hidden && narrow()) closeAsk(); });
+  function setAskChips() {
+    const m = cur(), asked = new Set(S.asked);
+    const keys = [...topicsOf(m)].filter((k) => TOPICS[k] && !asked.has(k));
+    if (m.id === "why" && !asked.has("k8sname")) keys.splice(2, 0, "k8sname");
+    $("ask-chips").innerHTML = keys.slice(0, 3).map((k) => `<button type="button" data-k="${k}">${esc(TOPICS[k].q)}</button>`).join("");
+  }
+  $("ask-chips").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) askQ(TOPICS[b.dataset.k].q, b.dataset.k); });
+  $("ask-form").addEventListener("submit", (e) => { e.preventDefault(); const q = $("ask-in").value.trim(); if (!q) return; $("ask-in").value = ""; askQ(q); });
+
+  function qaCard(q, tagText) {
+    const log = $("ask-log"); const empty = log.querySelector(".ask-empty"); if (empty) empty.remove();
+    const el = document.createElement("div"); el.className = "qa";
+    el.innerHTML = (q ? `<div class="qa-q">${esc(q)}</div>` : "") + `<div class="qa-a">${tagText ? `<p class="qa-t">${esc(tagText)}</p>` : ""}<p class="qa-body">…</p></div>`;
+    log.append(el); requestAnimationFrame(() => { log.scrollTop = el.offsetTop - 8; });
+    return el;
+  }
+  const visKey = (k, lv) => { const v = TOPICS[k] && TOPICS[k].visual; const key = v && (v[lv] || v[1] || v[0]); return key && typeof VISUALS[key] === "function" ? key : null; };
+  // Fill an answer card. Topic answers can get simpler, and can show their picture (only when asked, unless picOpen).
+  function fillCard(el, html, k, lv, pic, picOpen) {
+    const a = el.querySelector(".qa-a"); el.classList.remove("wait");
+    a.querySelector(".qa-body").innerHTML = html;
+    a.querySelectorAll(".qa-acts,.visual").forEach((x) => x.remove());
+    const simpler = k && TOPICS[k] && TOPICS[k].a[lv + 1] && lv < 3;
+    const acts = document.createElement("div"); acts.className = "qa-acts";
+    if (pic) acts.insertAdjacentHTML("beforeend", `<button type="button" class="qa-pic">${picOpen ? "Hide picture" : "Show a picture"}</button>`);
+    if (simpler) acts.insertAdjacentHTML("beforeend", `<button type="button" class="qa-simple">Simpler</button>`);
+    if (acts.children.length) a.append(acts);
+    const showPic = (on) => {
+      const v = a.querySelector(".visual"); if (v) v.remove();
+      if (on) acts.insertAdjacentHTML("beforebegin", `<div class="visual">${VISUALS[pic]()}</div>`);
+      const b = acts.querySelector(".qa-pic"); if (b) b.textContent = on ? "Hide picture" : "Show a picture";
+    };
+    if (pic && picOpen) showPic(true);
+    const pb = acts.querySelector(".qa-pic"); if (pb) pb.addEventListener("click", () => showPic(!a.querySelector(".visual")));
+    const sb = acts.querySelector(".qa-simple"); if (sb) sb.addEventListener("click", () => fillCard(el, `<p>${fmt(TOPICS[k].a[lv + 1])}</p>`, k, lv + 1, visKey(k, lv + 1), !!a.querySelector(".visual")));
+  }
+  function topicAnswer(el, k) {
+    if (!S.asked.includes(k)) { S.asked.push(k); save(); }
+    fillCard(el, `<p>${fmt(TOPICS[k].a[1])}</p>`, k, 1, visKey(k, 1), false);
+    setAskChips();
+  }
+  function openLesson(m, picOpen) {
+    openAsk(false);
+    const el = qaCard(null, `The short version · ${m.title}`);
+    fillCard(el, `<p>${fmt(m.teach ? m.teach[1] : m.said)}</p>`, null, 1, typeof VISUALS[m.visual] === "function" ? m.visual : null, picOpen);
+  }
+  // Your own words: Claude answers briefly from the lesson; without Claude, the closest written answer.
+  const AW = (t) => (t.toLowerCase().match(/[a-z0-9]+/g) || []).filter((w) => w.length > 2 && !STOPW.has(w) && !["what", "whats", "how", "why", "does", "the", "and", "are", "can"].includes(w)).map((w) => w.length > 4 ? w.replace(/(es|s)$/, "") : w);
+  function closest(q) {
+    const A = new Set(AW(q)); let best = null, bs = 0;
+    if (!A.size) return null;
+    Object.keys(TOPICS).forEach((k) => {
+      const B = new Set(AW(TOPICS[k].q + " " + k)); let n = 0; A.forEach((w) => { if (B.has(w)) n++; });
+      const sc = B.size ? 0.6 * n / B.size + 0.4 * n / A.size : 0;
+      if (sc > bs) { bs = sc; best = k; }
+    });
+    return bs >= 0.3 ? best : null;
+  }
+  function askPrompt(q) {
+    const m = cur();
+    const facts = Object.keys(TOPICS).map((k) => `- [${k}] ${TOPICS[k].q} ${plainTerms(TOPICS[k].a[1])}`).join("\n");
+    return `Someone is learning Kubernetes by teaching it to a beginner. They paused to look something up. Right now they're on: "${m.title}".
+
+Their question: """${q}"""
+
+Lesson notes, each with a topic key in brackets. Stay consistent with them:
+${facts}
+
+Answer like a friendly expert: plain words, at most 3 short sentences, no lists, no markdown. Explain any technical term you use. If the question isn't about Kubernetes or computing, say so kindly in one sentence.
+Also pick the one topic key above that best matches the question, or null if none fits.
+
+Reply with only JSON, like: {"answer":"…","topic":"container"}`;
+  }
+  async function askQ(q, k) {
+    const el = qaCard(q); el.classList.add("wait");
+    if (k) return topicAnswer(el, k);
+    const g = await grader();
+    if (g) {
+      try {
+        const r = await g(askPrompt(q), undefined);
+        if (r && typeof r.answer === "string") {
+          const t = r.topic && TOPICS[r.topic] ? r.topic : null;
+          return fillCard(el, `<p>${esc(r.answer)}</p>`, null, 1, t ? visKey(t, 1) : null, false);
+        }
+      } catch (e) { if (e && HIDE_CODES.has(e.code)) samplePromise = Promise.resolve(null); }
+    }
+    const c = closest(q);
+    if (c) { const a = el.querySelector(".qa-a"); a.insertAdjacentHTML("afterbegin", `<p class="qa-t">Closest I have: ${esc(TOPICS[c].q)}</p>`); return topicAnswer(el, c); }
+    fillCard(el, `<p>I don't have that one written down${window.claude || apiKey() ? "" : " (connect Claude to ask anything)"}. Try one of the questions below.</p>`, null, 1, null, false);
+  }
+
+  // ---------- grading and answering: claude.ai's sample, else your own key, else word match ----------
+  async function grader() {
+    const sm = await getSample();
+    if (sm && typeof sm.json === "function") return (p, signal) => sm.json(p, { modelTier: "default", signal });
+    if (apiKey()) return (p, signal) => apiJson(p, signal);
+    return null;
+  }
+
+  // ---------- voice (blocked inside claude.ai; works on the hosted copy in Chrome, Edge and Safari) ----------
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = null, listening = false;
+  function stopMic() { if (rec && listening) { try { rec.stop(); } catch (e) {} } listening = false; }
+  function toggleMic(btn, ta, note, sync) {
+    if (listening) return stopMic();
+    try {
+      rec = new SR(); rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true;
+      const base = ta.value.trim() ? ta.value.trimEnd() + " " : "";
+      rec.onresult = (e) => { let t = ""; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; ta.value = base + t.trimStart(); sync(); };
+      rec.onerror = (e) => { if (/not-allowed|service-not-allowed|audio-capture/.test(e.error)) { note.hidden = false; note.textContent = "Voice is blocked here, so type instead. Voice works on aneesh-123.github.io/autolearn in Chrome, Edge or Safari."; btn.hidden = true; } };
+      rec.onend = () => { listening = false; btn.classList.remove("on"); btn.innerHTML = MIC; btn.setAttribute("aria-label", "Talk"); if (/Listening/.test(note.textContent)) note.hidden = true; };
+      rec.start(); listening = true;
+      btn.classList.add("on"); btn.innerHTML = STOP; btn.setAttribute("aria-label", "Stop listening");
+      note.hidden = false; note.textContent = "Listening… tap the red button when you're done.";
+    } catch (e) { note.hidden = false; note.textContent = "Voice isn't available here, so type instead."; btn.hidden = true; }
+  }
+
+  // ---------- Connect Claude (outside claude.ai): your own API key, kept in this browser ----------
+  function paintConn() {
+    const c = $("tk-conn");
+    c.hidden = !!window.claude;
+    c.classList.toggle("on", !!apiKey()); c.textContent = apiKey() ? "Claude connected ✓" : "Connect Claude";
+  }
+  $("tk-conn").addEventListener("click", () => { $("tk-key-in").value = ""; $("tk-key-err").hidden = true; $("tk-key-remove").hidden = !apiKey(); $("tk-key").hidden = false; $("tk-key-in").focus(); });
+  $("tk-key-cancel").addEventListener("click", () => { $("tk-key").hidden = true; });
+  $("tk-key-remove").addEventListener("click", () => { try { localStorage.removeItem(APIKEY); } catch (e) {} $("tk-key").hidden = true; paintConn(); });
+  $("tk-key-save").addEventListener("click", async () => {
+    const k = $("tk-key-in").value.trim(), err = $("tk-key-err");
+    if (!/^sk-ant-/.test(k)) { err.hidden = false; err.textContent = "That doesn't look like an Anthropic key. It starts with sk-ant-."; return; }
+    const b = $("tk-key-save"); b.disabled = true; b.textContent = "Checking…";
+    try { await apiJson('Reply with only this JSON: {"ok":true}', undefined, k); try { localStorage.setItem(APIKEY, k); } catch (e) {} $("tk-key").hidden = true; paintConn(); }
+    catch (e) { err.hidden = false; err.textContent = e && e.code === "bad_key" ? "That key didn't work. Check it and try again." : "Couldn't reach Claude just now. Try again in a moment."; }
+    b.disabled = false; b.textContent = "Connect";
+  });
+
+  // ---------- start ----------
+  $("tk-mini").innerHTML = FACE("smile");
+  paintConn(); setTimeout(paintConn, 1500);
+  if (S.done) doneView(); else askView(idea(IDS[S.i]).follow);
+
+})();
+</script>
