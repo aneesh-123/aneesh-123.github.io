@@ -1127,6 +1127,34 @@ path.k-edge{fill:none}
 .tk-hl li.now>span{font-weight:600}
 .tk-hl li.now i{border-color:var(--branch);background:var(--branch-soft);box-shadow:0 0 0 3px var(--branch-soft)}
 @media (prefers-reduced-motion:reduce){.next-idea.glow{animation:none}}
+
+.tk-conn{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--accent);background:var(--surface);color:var(--accent);border-radius:999px;padding:6px 13px;font:600 14px var(--display);cursor:pointer;white-space:nowrap}
+.tk-conn[hidden]{display:none}
+.tk-conn i{width:9px;height:9px;border-radius:50%;background:var(--branch);box-shadow:0 0 0 3px var(--branch-soft)}
+.tk-conn:hover{background:var(--accent);color:var(--accent-ink)}
+.tk-conn.on{border-color:var(--line);color:var(--muted)}
+.tk-conn.on i{background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.tk-conn.on:hover{background:var(--surface);color:var(--ink)}
+.tk-conn .l-short{display:none}
+.syl-conn{margin:18px 0 0;padding:12px 14px;border-radius:14px;border:1.5px dashed var(--branch);background:var(--branch-soft);font-size:16px;line-height:1.45}
+.syl-conn.on{border:1.5px solid var(--accent-soft);background:var(--surface)}
+.syl-conn[hidden]{display:none}
+.syl-conn .ok{color:var(--accent);font-weight:700;margin-right:4px}
+.syl-conn .start{margin-top:10px;padding:10px 18px 10px 20px;font-size:16px}
+.tk-modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ink) 35%,transparent)}
+.tk-modal[hidden]{display:none}
+.tk-mcard{width:min(460px,100%);box-sizing:border-box;background:var(--surface);border-radius:22px;padding:24px 24px 22px;box-shadow:var(--shadow)}
+.tk-mcard h2{margin:0 0 8px;font-family:var(--display);font-size:24px}
+.tk-mcard p{margin:0 0 12px;font-size:16px;line-height:1.45}
+.tk-mcard input{box-sizing:border-box;width:100%;font:15px var(--mono);padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);margin-bottom:10px}
+.tk-mcard input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tk-mcard .tk-key-help{color:var(--muted);font-size:14.5px}
+.tk-key-help a{color:var(--accent);font-weight:600}
+.tk-key-msg{font-weight:600}
+.tk-key-msg.err{color:var(--wrong)}
+.tk-key-msg.ok{color:var(--accent)}
+.tk-key-msg[hidden]{display:none}
+@media (max-width:700px){.tk-conn{padding:5px 9px;font-size:12.5px;gap:5px}.tk-conn .l-long{display:none}.tk-conn .l-short{display:inline}}
 </style>
 
 <!-- ============ SCREEN 0: the article, as a learner would first meet it ============ -->
@@ -1213,8 +1241,9 @@ path.k-edge{fill:none}
     <p class="syl-sub">What you'll teach me</p>
     <ol class="syl-list" id="syl-list"></ol>
     <p class="syl-how">One idea at a time, teach me what you already know. I'll tell you what you got right, and you'll only explore the parts you missed.</p>
+    <p class="syl-conn" id="syl-conn" hidden></p>
     <div class="syl-acts"><button class="start" id="syl-go" type="button">Start teaching Kube <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button><button class="words-prev" id="syl-read" type="button">Read the article instead</button></div>
-    <p class="syl-src">Based on GeeksforGeeks' “Introduction to Kubernetes (K8s)”. <span class="syl-ver">v40 · Teach Kube</span></p>
+    <p class="syl-src">Based on GeeksforGeeks' “Introduction to Kubernetes (K8s)”. <span class="syl-ver">v41 · Teach Kube</span></p>
   </div>
 </main>
 <!-- ============ v25: learn it in 5 minutes. A quick check of what you know, then Kubernetes at work ============ -->
@@ -1280,7 +1309,7 @@ path.k-edge{fill:none}
     <div class="credits" id="intro-credits" hidden>
       <span>Syllabus: <b><a href="https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/" target="_blank" rel="noopener">Introduction to Kubernetes (K8s)</a></b> by GeeksforGeeks</span>
       <span>Learning format by <b>Aneesh Nagalkar</b></span>
-      <span>v40 · Teach Kube</span>
+      <span>v41 · Teach Kube</span>
     </div>
     <button class="skip intro-skip" id="intro-skip" type="button">skip</button>
    </div>
@@ -1344,7 +1373,7 @@ path.k-edge{fill:none}
       <nav class="steps" id="steps" aria-label="The 5 main ideas"></nav>
       
     </div>
-    <div class="tools"><button class="voice" id="voice" type="button" aria-pressed="false" title="Hands-free: talk instead of clicking" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Voice</span></button><span class="tclock" id="clock" hidden title="Time left. Tap to hide the clock." role="button" tabindex="0" aria-label="Hide the clock"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/><path class="ck-hands" d="M12 7v5l3 2" transform="rotate(90 12 12)"/></svg><b>5:00</b><span class="ck-x" aria-hidden="true">×</span></span><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
+    <div class="tools"><button class="tk-conn" id="tk-conn" type="button" hidden><i aria-hidden="true"></i><span class="l-long">Connect Claude</span><span class="l-short">Claude</span></button><button class="voice" id="voice" type="button" aria-pressed="false" title="Hands-free: talk instead of clicking" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Voice</span></button><span class="tclock" id="clock" hidden title="Time left. Tap to hide the clock." role="button" tabindex="0" aria-label="Hide the clock"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/><path class="ck-hands" d="M12 7v5l3 2" transform="rotate(90 12 12)"/></svg><b>5:00</b><span class="ck-x" aria-hidden="true">×</span></span><button class="meters" id="meters" type="button" title="Your progress. Tap to see what you know.">
       <span class="meter cov"><span>Covered</span><i><b id="m-cov"></b></i><em id="m-cov-n">0%</em></span>
       <span class="meter und"><span>Understood</span><i><b id="m-und"></b></i><em id="m-und-n">0%</em></span></button><button class="tally" id="tally" hidden aria-label="What you've learned" title="What you've learned"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span id="tally-n">0</span></button><button class="tool icon" id="recenter" aria-label="Recenter" title="Recenter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/><path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3"/></svg></button></div>
   </header>
@@ -1395,7 +1424,7 @@ path.k-edge{fill:none}
       <button id="zoom-fit" type="button" title="See everything (0)" aria-label="See everything"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       <button id="zoom-home" type="button" title="Back to the question" aria-label="Back to the question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></button>
     </div>
-    <div class="version-tag">v40 · Teach Kube</div>
+    <div class="version-tag">v41 · Teach Kube</div>
     <div class="buddy" id="buddy"><div class="buddy-say" id="buddy-say" hidden></div><button class="buddy-btn" id="buddy-btn" type="button" aria-label="Teach it back: explain what you learned" title="Teach me this"></button></div>
     <aside class="map" id="map-box" aria-label="Map of your questions">
       <span class="map-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="17" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M11 15 6.2 7.6M13 15l4.8-7.4"/></svg></span>
@@ -1420,6 +1449,16 @@ path.k-edge{fill:none}
 </div>
 <div class="clock-intro" id="clock-intro" hidden aria-hidden="true"><div class="ci-card" id="ci-card"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" class="ck-bg"/><circle cx="12" cy="12" r="9" class="ck-fg" pathLength="100"/></svg><b id="ci-t">5:00</b><span id="ci-say">Your 5 minutes start now</span></div></div>
 <div class="knote" id="knote" hidden role="status"><span class="kn-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg></span><span><i>Added to what you know</i><b id="kn-t"></b></span></div>
+<div class="tk-modal" id="tk-key" hidden role="dialog" aria-modal="true" aria-labelledby="tk-key-h">
+  <div class="tk-mcard">
+    <h2 id="tk-key-h">Connect Claude</h2>
+    <p>Kube uses Claude to understand what you tell it. Paste your own Anthropic API key. It stays in this browser and is only sent to Anthropic.</p>
+    <input id="tk-key-in" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" aria-label="Anthropic API key">
+    <p class="tk-key-msg" id="tk-key-msg" hidden></p>
+    <p class="tk-key-help">No key yet? Add a little credit under Billing at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>, then create a key under API Keys. Each answer Kube reads is one small paid call.</p>
+    <div class="tk-row"><button class="start" id="tk-key-save" type="button">Connect</button><button class="words-prev" id="tk-key-remove" type="button" hidden>Remove key</button><button class="words-prev" id="tk-key-cancel" type="button">Not now</button></div>
+  </div>
+</div>
 <script>
 (() => {
   const TK = true;   // v39: Teach Kube on the map
@@ -4893,7 +4932,7 @@ Reply with only JSON, like:
     teachGrader().then((g) => { if (!g) connLine(el.querySelector(".t-conn")); });
     setTimeout(() => ta.focus({ preventScroll: true }), 60);
   }
-  function connLine(p) {
+  function connLineV36(p) {
     p.hidden = false;
     p.innerHTML = `Claude isn't connected here, so I can only match words. <button type="button">Connect Claude</button> with your own API key for real grading.`;
     p.querySelector("button").addEventListener("click", () => {
@@ -5328,7 +5367,7 @@ Reply with only JSON, like:
     body.innerHTML = `<p class="t-quote">${esc(st.text)}</p>
       <div class="tk-sub">${lvl === "solid" ? "You covered all of it" : "What you taught Kube"}</div>${tkHints(m, st.cov, gk < 0 && lvl !== "solid", gk)}
       ${wrong.length ? `<div class="tk-sub">Not quite right</div><ul class="t-list off">${wrong.map((w) => `<li><span>${w.quote ? `<b>“${esc(w.quote)}”</b> ` : ""}${esc(w.fix)}</span></li>`).join("")}</ul>` : ""}
-      ${st.note ? `<p class="t-note">${esc(st.note)}</p>` : ""}
+      ${st.note ? `<p class="t-note">${esc(st.note)}${r.quick && tkNoSample && !tkHasKey() ? ` <button type="button" class="t-link tk-connb">Connect Claude</button>` : ""}</p>` : ""}
       ${lvl === "solid" ? `<p class="tk-win">Kube gets it! Explore the map if you're curious, or go on to the next idea.</p>`
         : gk >= 0 ? `<p class="tk-pin">${pin} ${missing.length > 1 ? "Let's go through them." : "Can you help?"}</p>
         <div class="tk-gap">
@@ -5355,6 +5394,7 @@ Reply with only JSON, like:
         sh.querySelector("b").textContent = "Show it again"; card.querySelector(".tk-gap-seen").hidden = false;
       });
     }
+    const cb = body.querySelector(".tk-connb"); if (cb) cb.addEventListener("click", tkKeyOpen);
     const re = body.querySelector(".tk-regap"); if (re) re.addEventListener("click", () => { st.gapSkip.clear(); tkResult(root); });
     const sh = body.querySelector(".tk-short"); if (sh) sh.addEventListener("click", () => tkShort(root));
     if (lvl === "solid" && !isLearned("root-" + m.id)) { addLearned("root-" + m.id, "root", root.el.querySelector(".q")); root.el.classList.add("answered"); $("next-idea").classList.add("glow"); }
@@ -5394,6 +5434,67 @@ Reply with only JSON, like:
     $("teach-dlg").hidden = false;
     teachSummary();
   }
+
+  // ---------- v41: Connect Claude ----------
+  // Shown only where the page can't use claude.ai's own Claude (the github.io copy): a pill in the top bar, a line on
+  // the start screen, and a link wherever Kube had to fall back to matching words.
+  const tkHasKey = () => !!apiKey();
+  let tkNoSample = false;
+  function tkConnUI() {
+    getSample().then((sm) => {
+      tkNoSample = !(sm && typeof sm.json === "function");
+      const on = tkHasKey(), b = $("tk-conn"), sc = $("syl-conn");
+      b.hidden = !tkNoSample; sc.hidden = !tkNoSample;
+      if (!tkNoSample) return;
+      b.classList.toggle("on", on);
+      b.querySelector(".l-long").textContent = on ? "Claude connected" : "Connect Claude";
+      b.title = on ? "Kube reads your answers with Claude, using your API key. Tap to change it." : "Kube can only match words right now. Connect Claude with your own API key.";
+      sc.classList.toggle("on", on);
+      sc.innerHTML = on ? `<span class="ok">✓</span>Claude is connected, so Kube really reads what you say. <button type="button" class="t-link">Change key</button>`
+        : `Kube uses Claude to understand what you tell it. Without it, Kube can only match words.<br><button type="button" class="start">Connect Claude ${ARR}</button>`;
+      sc.querySelector("button").addEventListener("click", tkKeyOpen);
+      if (on) document.querySelectorAll(".t-conn").forEach((p) => { p.hidden = true; });
+    });
+  }
+  function connLine(p) {
+    if (tkHasKey()) return;
+    p.hidden = false;
+    p.innerHTML = `Kube can only match words right now. <button type="button">Connect Claude</button> so it really understands you.`;
+    p.querySelector("button").addEventListener("click", tkKeyOpen);
+  }
+  function tkKeyMsg(text, kind) { const e = $("tk-key-msg"); e.hidden = !text; e.textContent = text || ""; e.className = "tk-key-msg " + (kind || ""); }
+  function tkKeyOpen() {
+    stopMic();
+    $("tk-key-in").value = ""; tkKeyMsg("");
+    $("tk-key-remove").hidden = !tkHasKey();
+    $("tk-key-h").textContent = tkHasKey() ? "Claude is connected" : "Connect Claude";
+    $("tk-key-save").textContent = tkHasKey() ? "Use this key" : "Connect";
+    $("tk-key").hidden = false;
+    setTimeout(() => $("tk-key-in").focus(), 30);
+  }
+  const tkKeyClose = () => { $("tk-key").hidden = true; };
+  $("tk-key-save").addEventListener("click", async () => {
+    const k = $("tk-key-in").value.trim(), b = $("tk-key-save");
+    if (!k) return $("tk-key-in").focus();
+    b.disabled = true; tkKeyMsg("Checking the key…");
+    try {
+      await apiJson('Reply with only this JSON: {"ok":true}', undefined, k);
+      try { localStorage.setItem(APIKEY, k); } catch (e) {}
+      tkKeyMsg("Connected! Kube will read your next answer with Claude.", "ok");
+      tkConnUI();
+      setTimeout(tkKeyClose, 1400);
+    } catch (e) {
+      tkKeyMsg(e.code === "bad_key" ? "That key didn't work. Check it was copied in full." : e.code === "network" ? "Couldn't reach Anthropic. Check your connection." : e.code === "rate_limited" ? "Anthropic is busy right now. Try again in a moment." : "Something went wrong. Try again.", "err");
+    }
+    b.disabled = false;
+  });
+  $("tk-key-in").addEventListener("keydown", (e) => { if (e.key === "Enter") $("tk-key-save").click(); });
+  $("tk-key-remove").addEventListener("click", () => { try { localStorage.removeItem(APIKEY); } catch (e) {} tkConnUI(); tkKeyClose(); });
+  $("tk-key-cancel").addEventListener("click", tkKeyClose);
+  $("tk-key").addEventListener("click", (e) => { if (e.target === $("tk-key")) tkKeyClose(); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("tk-key").hidden) tkKeyClose(); });
+  $("tk-conn").addEventListener("click", tkKeyOpen);
+  tkConnUI();
   const startAt = MODULES.findIndex((m) => "#" + m.id === location.hash);
   if (startAt >= 0 || location.hash === "#canvas") show("canvas", Math.max(0, startAt));
   else if (location.hash === "#start") show("diag");
