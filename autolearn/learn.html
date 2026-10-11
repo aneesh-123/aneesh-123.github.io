@@ -1,0 +1,1834 @@
+<title>Learn anything</title>
+<meta name="description" content="Pick a topic, see what you'll be able to explain, then teach it to Kube.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#EDF0EC;--dot:#C9D0C9;--surface:#FFFFFF;--surface-2:#F5F7F4;--ink:#18201C;--muted:#5B6660;--line:#D6DCD6;--ghost:#9AA59E;
+  --accent:#1E6B50;--accent-ink:#FFFFFF;--accent-soft:#DCEBE3;--branch:#B7800F;--branch-soft:#F5E7C6;--wrong:#B4442F;--wrong-soft:#F6DDD6;--mark:#F3DC8C;
+  --shadow:0 1px 2px rgba(24,32,28,.06),0 12px 32px -12px rgba(24,32,28,.22);
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;--ground:#121714;--dot:#26302A;--surface:#1A211D;--surface-2:#202823;--ink:#E6ECE8;--muted:#98A59E;--line:#2E3832;--ghost:#5E6B64;
+    --accent:#5FBF95;--accent-ink:#0E1A14;--accent-soft:#1F3A2E;--branch:#E0A93A;--branch-soft:#3A2F17;--wrong:#E5826C;--wrong-soft:#3B221C;--mark:#5A4A16;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 16px 40px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;--ground:#121714;--dot:#26302A;--surface:#1A211D;--surface-2:#202823;--ink:#E6ECE8;--muted:#98A59E;--line:#2E3832;--ghost:#5E6B64;
+  --accent:#5FBF95;--accent-ink:#0E1A14;--accent-soft:#1F3A2E;--branch:#E0A93A;--branch-soft:#3A2F17;--wrong:#E5826C;--wrong-soft:#3B221C;--mark:#5A4A16;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 16px 40px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+[hidden]{display:none!important}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+::selection{background:var(--mark)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;margin:0}
+
+/* Kube */
+.kube-face{width:72px;height:72px;flex:none}
+.kube-face.small{width:56px;height:56px}
+.kube-face svg{width:100%;height:100%;display:block}
+.bf-head{fill:var(--branch-soft);stroke:var(--branch);stroke-width:2.2}
+.bf-hair{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.bf-eye{fill:var(--ink)}
+.bf-eyes{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+.bf-line{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.bf-cheek{fill:var(--wrong);opacity:.22}
+.bf-happy,.bf-huh{display:none}
+.face-happy .bf-eyes,.face-happy .bf-smile{display:none}.face-happy .bf-happy{display:inline}
+.face-huh .bf-smile{display:none}.face-huh .bf-huh{display:inline}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.kube-hi{display:flex;gap:18px;align-items:center;margin:8px 0 28px}
+.bubble{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px 22px;box-shadow:var(--shadow);display:grid;gap:2px}
+.bubble span{color:var(--muted);font-size:16px}
+.bubble b{font-family:var(--display);font-size:clamp(22px,3.4vw,30px);line-height:1.15;letter-spacing:-.02em}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:500;font-size:17px;padding:12px 22px;box-shadow:var(--shadow)}
+.btn:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.45;cursor:default;filter:none}
+.btn.small{font-size:15px;padding:8px 16px}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.amber{background:var(--branch-soft);color:var(--ink);border:1.5px dashed var(--branch);box-shadow:none}
+.linkish{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;text-underline-offset:3px;font-size:15px}
+
+/* Shelf */
+.screen{min-height:100vh}
+.shelf-in,.start-in,.end-in{max-width:880px;margin:0 auto;padding:56px 16px 64px}
+.start-in,.end-in{max-width:680px}
+.shelf h1{font-size:clamp(36px,6.4vw,64px);line-height:1;letter-spacing:-.03em;margin:14px 0 16px;text-wrap:balance}
+.lede{font-size:clamp(18px,2.2vw,21px);max-width:44ch;margin:0 0 36px;color:var(--ink)}
+.shelf-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.topic{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px 22px 18px;display:grid;gap:10px;align-content:start;box-shadow:var(--shadow);transition:transform .15s}
+.topic:hover{transform:translateY(-2px);border-color:var(--accent)}
+.topic .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--branch)}
+.topic h3{font-size:24px}
+.topic .hook{font-size:17px;line-height:1.4}
+.topic .meta{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
+.topic .meta b{color:var(--accent);font-weight:500}
+
+/* Start */
+.back-link{background:none;border:0;padding:0;color:var(--muted);font-family:var(--mono);font-size:13px;margin-bottom:18px}
+.goal-box{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px 22px;margin-bottom:22px}
+.goal-box h2{font-size:22px;margin:6px 0 12px}
+.goal-ideas{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:g}
+.goal-ideas>li{display:grid;grid-template-columns:28px 1fr;gap:10px;counter-increment:g}
+.goal-ideas>li::before{content:counter(g);width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--mono);font-size:12px;margin-top:1px}
+.goal-ideas b{font-family:var(--display);font-weight:500;display:block;line-height:1.3}
+.goal-ideas span{color:var(--muted);font-size:15px;line-height:1.35}
+.goal-note{margin:14px 0 0;font-size:15px;color:var(--muted)}
+.claude-box{background:var(--branch-soft);border:1px dashed var(--branch);border-radius:16px;padding:14px 18px;margin-bottom:22px;font-size:15.5px;display:grid;gap:10px;justify-items:start}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0 18px}
+.mode-card{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:4px;align-content:start}
+.mode-card b{font-family:var(--display);font-weight:500;font-size:18px}
+.mode-card span{font-size:14.5px;color:var(--muted);line-height:1.35}
+.mode-card:hover{border-color:var(--accent)}
+.mode-card.main{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.mode-card.main span{color:inherit;opacity:.85}
+.article-link{font-size:15px;color:var(--muted)}
+@media (max-width:620px){.modes{grid-template-columns:1fr}}
+
+/* Learning layout */
+.learn{background-color:var(--ground);background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:22px 22px}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 16px;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);flex:none;font-size:18px}
+.bar-title{display:grid;line-height:1.2;min-width:0;flex:1}
+.bar-title span:first-child{font-family:var(--display);font-weight:700;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-step{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;border-radius:999px;padding:6px 14px;font-family:var(--display);font-size:15px;color:var(--muted)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.claude-pill{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--accent);background:var(--surface);border-radius:999px;padding:7px 14px;font-family:var(--display);font-size:15px;color:var(--accent)}
+.claude-pill i{width:9px;height:9px;border-radius:50%;background:var(--branch)}
+.claude-pill.on i{background:var(--accent)}
+
+/* Your list: opens from the top bar */
+.syl{position:fixed;top:70px;right:16px;left:auto;width:340px;max-height:calc(100vh - 90px);overflow:auto;z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px}
+.syl-head{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;padding:0}
+.syl-count{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.syl-lede{font-size:14px;color:var(--muted);margin:8px 0 10px;line-height:1.4}
+.syl-meter{height:6px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;margin-bottom:12px}
+.syl-meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .6s}
+.syl-list{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.syl-idea>button{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:6px 6px}
+.syl-idea>button:hover{background:var(--surface-2)}
+.syl-num{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.syl-idea.now .syl-num{border-color:var(--accent);color:var(--accent)}
+.syl-idea.full .syl-num{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.syl-t{font-family:var(--display);font-weight:500;font-size:15px;line-height:1.25}
+.syl-k{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.syl-pts{list-style:none;margin:2px 0 8px 36px;padding:0;display:grid;gap:6px}
+.syl-pts li{display:grid;grid-template-columns:18px 1fr;gap:8px;font-size:14px;line-height:1.35;color:var(--muted)}
+.syl-pts li i{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--ghost);margin-top:2px;display:grid;place-items:center}
+.syl-pts li.yes{color:var(--ink)}
+.syl-pts li.yes i{background:var(--accent);border-color:var(--accent)}
+.syl-pts li.yes i::after{content:"";width:7px;height:4px;border:solid var(--accent-ink);border-width:0 0 2px 2px;transform:translateY(-1px) rotate(-45deg)}
+.syl-pts li.pop i{animation:pop .6s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.syl-finish{margin-top:12px;background:none;border:0;padding:0;color:var(--muted);font-size:13.5px;text-decoration:underline;text-underline-offset:3px}
+
+/* Map */
+.map-wrap{padding:28px 16px 140px}
+.map{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px) minmax(0,1fr);gap:48px;align-items:center;max-width:1280px;margin:0 auto}
+.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.links path{fill:none;stroke:var(--line);stroke-width:2}
+.links path.wonder{stroke:var(--branch);stroke-dasharray:5 6}
+.links path.done{stroke:var(--accent)}
+.holes{display:grid;gap:22px;align-content:center;position:relative}
+.hole{position:relative;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);font-family:var(--display);font-size:16.5px;line-height:1.3;animation:appear .4s both}
+.hole:hover{border-color:var(--accent)}
+.hole .tagline{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.hole.wonder{border:1.5px dashed var(--branch);background:var(--branch-soft)}
+.hole.wonder .tagline{color:var(--branch)}
+.hole.seen{border-style:dashed;border-color:var(--accent)}
+.hole.seen .tagline{color:var(--accent)}
+.hole.open{border-color:var(--accent);border-style:solid;background:var(--surface)}
+.hole .ans{display:block;font-family:var(--serif);font-size:16px;line-height:1.5;margin-top:8px;color:var(--ink)}
+.hole .hole-acts{display:flex;gap:14px;margin-top:10px;font-family:var(--serif)}
+.hole.flash{animation:flash 1.2s}
+@keyframes flash{0%,100%{box-shadow:var(--shadow)}30%{box-shadow:0 0 0 6px var(--mark)}}
+@keyframes appear{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.quiet-holes{font-family:var(--mono);font-size:12px;color:var(--ghost);text-align:center}
+
+/* The main card */
+.card{position:relative;z-index:2;background:var(--surface);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:24px 26px 26px;display:grid;gap:16px}
+.card-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.asks{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start}
+.asks .kube-face{width:52px;height:52px}
+.asks-q{background:var(--surface-2);border:1px solid var(--line);border-radius:18px;padding:12px 16px}
+.asks-q small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.asks-q p{margin:2px 0 0;font-family:var(--display);font-size:clamp(20px,2.4vw,24px);line-height:1.25;letter-spacing:-.01em}
+.short{background:var(--accent-soft);border-radius:16px;padding:14px 16px;font-size:17.5px;line-height:1.5}
+.short small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.answer{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.mic{width:48px;height:48px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:var(--shadow)}
+.mic svg{width:22px;height:22px}
+.mic.on{background:var(--wrong);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--wrong) 25%,transparent)}}
+.answer textarea{width:100%;min-height:96px;resize:vertical;border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--surface);font-size:17px;line-height:1.45}
+.answer textarea:focus{outline:none;border-color:var(--accent)}
+.answer.solo{grid-template-columns:1fr}
+.note{font-size:14px;color:var(--muted);margin:0}
+.row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.idk{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;text-align:left;background:var(--branch-soft);border:1.5px dashed var(--branch);border-radius:16px;padding:10px 14px}
+.idk i{grid-row:span 2;width:28px;height:28px;border-radius:50%;background:var(--branch);color:var(--surface);display:grid;place-items:center;font-style:normal;font-family:var(--display);font-weight:700}
+.idk b{font-family:var(--display);font-weight:500}
+.idk span{font-size:14px;color:var(--muted)}
+.react{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start}
+.react .kube-face{width:52px;height:52px}
+.react-say{font-family:var(--display);font-size:19px;line-height:1.3;padding-top:8px}
+.fixes{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.fixes li{background:var(--wrong-soft);border-radius:12px;padding:8px 12px;font-size:15.5px}
+.fixes q{font-style:italic}
+.gap{border:1.5px solid var(--branch);border-radius:18px;padding:14px 16px;display:grid;gap:12px;background:color-mix(in srgb,var(--branch-soft) 45%,var(--surface))}
+.gap small{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--branch)}
+.gap .gq{margin:0;font-family:var(--display);font-size:19px;line-height:1.3}
+.got{font-family:var(--display);color:var(--accent);font-size:17px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.next-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
+.ask-own{display:flex;gap:8px}
+.ask-own input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;background:var(--surface)}
+.ask-own input:focus{outline:none;border-color:var(--accent)}
+
+/* Kube in the corner: optional tips */
+.kube-corner{position:fixed;right:18px;bottom:18px;z-index:25;display:flex;align-items:flex-end;gap:10px;pointer-events:none}
+.kube-corner>*{pointer-events:auto}
+.kube-say{max-width:320px;background:var(--surface);border:1px solid var(--line);border-radius:18px 18px 4px 18px;padding:12px 14px;box-shadow:var(--shadow);font-family:var(--display);font-size:16px;line-height:1.35;animation:appear .3s both}
+.kube-say .row{margin-top:10px}
+.kube-say button{font-size:14px}
+.version{position:fixed;left:16px;bottom:10px;font-family:var(--mono);font-size:11px;color:var(--ghost);z-index:1}
+
+/* End */
+.end-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:14px}
+.end-list h3{font-size:17px;font-weight:500;margin-bottom:4px}
+.end-list ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.end-list li li{display:grid;grid-template-columns:18px 1fr;gap:8px;font-size:15px;color:var(--muted)}
+.end-list li li::before{content:"○";color:var(--ghost)}
+.end-list li li.yes{color:var(--ink)}
+.end-list li li.yes::before{content:"✓";color:var(--accent);font-weight:700}
+.noticed{margin-bottom:22px}
+.noticed ul{margin:8px 0 0;padding-left:20px;display:grid;gap:4px;font-size:16px}
+.end-acts{display:flex;flex-wrap:wrap;gap:10px}
+
+/* Modals */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(10,14,12,.45);display:grid;place-items:center;padding:16px}
+.modal-card{background:var(--surface);border-radius:22px;padding:24px;max-width:440px;width:100%;display:grid;gap:12px;box-shadow:var(--shadow);justify-items:start}
+.modal-card p{margin:0;color:var(--muted)}
+.modal-card input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface-2)}
+.key-note{font-size:14px}
+
+/* Narrower screens: the checklist sits above the map and folds up */
+@media (max-width:1180px){
+  .map{grid-template-columns:minmax(0,1fr);gap:20px;max-width:620px}
+  .holes{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .holes.left{order:2}.card{order:1}.holes.right{order:3}
+  .links{display:none}
+}
+@media (max-width:900px){
+  .syl{left:16px;right:16px;width:auto}
+  .holecard{position:static!important;order:2}
+  .map-wrap{padding:16px 16px 120px}
+  .seg button{padding:6px 10px}
+}
+@media (max-width:560px){
+  .bar{gap:8px;flex-wrap:wrap}
+  .seg{order:3;width:100%;justify-content:center}
+  .claude-pill span{display:none}
+  .card{padding:18px 16px;border-radius:20px}
+  .kube-say{max-width:240px}
+  .kube-corner .kube-face.small{width:40px;height:40px}
+  .kube-corner:has(.kube-say[hidden]){opacity:.5}
+  .version{display:none}
+}
+
+/* v43 */
+.syl-title{font-size:clamp(30px,5vw,46px);line-height:1.05;letter-spacing:-.03em;margin:10px 0 12px;text-wrap:balance}
+.lede.small{font-size:18px;margin-bottom:22px}
+.goal-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.goal-ideas.big{gap:14px}
+.goal-ideas li div span.q{display:block;color:var(--muted);font-size:15.5px;margin-top:2px}
+.goal-note{margin:0 0 22px}
+.choose-in{max-width:980px;margin:0 auto;padding:56px 16px 64px}
+.choose-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}
+.choice{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:22px;display:grid;gap:12px;align-content:start;justify-items:start}
+.choice h2{font-size:22px;line-height:1.2}
+.muted{color:var(--muted);margin:0;font-size:16px}
+.kube-row{display:flex;gap:14px;align-items:center}
+.kube-row .kube-face{width:56px;height:56px}
+.back-ready{display:grid;gap:8px;justify-items:start;border-top:1px solid var(--line);padding-top:12px;width:100%}
+.back-ready p{margin:0}
+.own-way{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;color:var(--muted);font-size:16px;border:1px dashed var(--line);border-radius:16px;padding:12px 16px}
+.own-way p{margin:0}
+@media (max-width:760px){.choose-grid{grid-template-columns:1fr}}
+.list-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-family:var(--display);font-size:15px;white-space:nowrap}
+.list-btn b{font-family:var(--mono);font-weight:500;font-size:12.5px;color:var(--accent);margin-left:4px}
+.list-btn.bump{animation:bump .8s}
+@keyframes bump{30%{transform:scale(1.12);border-color:var(--accent);box-shadow:0 0 0 5px var(--accent-soft)}}
+.syl-head .x{background:none;border:0;font-size:22px;line-height:1;color:var(--muted);padding:0 2px}
+.syl-head{gap:8px}.syl-head .eyebrow{flex:1}
+/* Kube asks first: only the question, typed while Kube talks */
+.intro{display:grid;justify-items:center;text-align:center;gap:18px;padding:26px 6px 18px;cursor:pointer}
+.intro .kube-face{width:112px;height:112px}
+.intro-q{font-family:var(--display);font-size:clamp(24px,3.2vw,32px);line-height:1.2;letter-spacing:-.02em;max-width:22ch;min-height:2.4em}
+.intro-q .caret{display:inline-block;width:2px;height:1em;background:var(--accent);vertical-align:-.12em;margin-left:2px;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.bf-open{display:none;fill:var(--ink)}
+.face-talk .bf-smile{animation:mouthA .26s steps(1) infinite}
+.face-talk .bf-open{display:inline;animation:mouthB .26s steps(1) infinite}
+@keyframes mouthA{0%{opacity:1}50%{opacity:0}}
+@keyframes mouthB{0%{opacity:0}50%{opacity:1}}
+.fade-in{animation:appear .5s both}
+.ways{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.way{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;gap:2px}
+.way b{font-family:var(--display);font-weight:500;font-size:16.5px}
+.way span{font-size:13.5px;color:var(--muted);line-height:1.35}
+.way:hover{border-color:var(--accent)}
+.way.rec{border-color:var(--accent)}
+@media (max-width:560px){.ways{grid-template-columns:1fr}}
+.tools{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.fig{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:12px}
+.fig svg{width:100%;height:auto;display:block}
+.fig .fig-t{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fig .fig-n{font-size:14px;color:var(--muted);margin-top:6px}
+.fig text{font-family:var(--display);fill:var(--ink)}
+.fig .box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.fig .box.hi{fill:var(--accent-soft);stroke:var(--accent)}
+.fig .arw{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .arwh{fill:var(--accent)}
+.fig .bar{fill:var(--accent)}
+.fig .bar.alt{fill:var(--branch)}
+.fig .muted-t{fill:var(--muted)}
+/* Live signals (testing only) */
+.signals{position:fixed;left:16px;bottom:30px;z-index:16;width:300px;background:var(--surface);border:1.5px dashed var(--branch);border-radius:16px;box-shadow:var(--shadow);padding:10px 14px;font-size:13.5px}
+.sig-head{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;padding:0}
+.sig-head .eyebrow{color:var(--branch)}
+.sig-x{font-family:var(--mono);color:var(--muted)}
+.signals.folded .sig-body{display:none}
+.sig-body{display:grid;gap:3px;margin-top:8px;font-family:var(--mono);font-size:12px}
+.sig-row{display:flex;justify-content:space-between;gap:10px}
+.sig-row span:first-child{color:var(--muted)}
+.sig-read{margin-top:6px;padding-top:6px;border-top:1px solid var(--line);font-family:var(--serif);font-size:13.5px;line-height:1.4}
+.sig-read b{font-family:var(--display);font-weight:500;color:var(--branch)}
+@media (max-width:1180px){.signals{width:260px}}
+@media (max-width:560px){.signals{left:12px;right:auto;bottom:12px;width:auto;max-width:calc(100% - 90px)}}
+
+/* v44 */
+.asks-list{margin:6px 0 0;padding-left:18px;display:grid;gap:4px;color:var(--ink);font-size:15.5px;line-height:1.4}
+.asks-list li{display:list-item}
+.goal-ideas>li{align-items:start}
+.signals.folded{width:auto;padding:6px 12px;border-style:dashed;opacity:.8;box-shadow:none}
+.signals.folded:hover{opacity:1}
+.sig-x{margin-left:12px;font-size:11px}
+
+/* v45 */
+.voice-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-family:var(--display);font-size:15px;color:var(--muted)}
+.voice-btn svg{width:16px;height:16px}
+.voice-btn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.list-wrap{position:relative}
+.list-tip{position:absolute;right:0;top:calc(100% + 12px);width:250px;background:var(--ink);color:var(--ground);border-radius:12px;padding:10px 12px;font-size:14.5px;line-height:1.4;box-shadow:var(--shadow);animation:appear .4s both;z-index:40}
+.list-tip::before{content:"";position:absolute;top:-6px;right:28px;width:12px;height:12px;background:var(--ink);transform:rotate(45deg)}
+.list-intro{position:fixed;inset:0;z-index:45;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ground) 70%,transparent);backdrop-filter:blur(3px);transition:background .9s,backdrop-filter .9s}
+.list-intro.going{background:transparent;backdrop-filter:none}
+.li-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:22px 24px;max-width:620px;width:100%;max-height:calc(100vh - 40px);overflow:auto;display:grid;gap:14px;justify-items:start;animation:appear .5s both;transition:transform 1s cubic-bezier(.6,0,.2,1),opacity 1s ease-in}
+.li-card h2{font-size:22px}
+.li-card .goal-ideas{width:100%}
+/* understanding slider */
+.gauge{display:grid;gap:10px;padding:6px 4px 2px}
+.g-q{font-family:var(--display);font-size:16px;color:var(--muted);text-align:center}
+.g-track{position:relative;height:34px;margin:0 14%;cursor:pointer;touch-action:none}
+.g-line{position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;border-radius:4px;background:linear-gradient(90deg,var(--branch-soft),var(--accent-soft));border:1px solid var(--line)}
+.g-dot{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--surface);border:2px solid var(--ghost)}
+.g-thumb{position:absolute;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px var(--accent-soft);transition:left .15s}
+.g-thumb.pick{animation:bump .4s}
+.g-labels{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.g-labels button{background:none;border:0;padding:4px;font-family:var(--display);font-size:14.5px;color:var(--muted);line-height:1.25}
+.g-labels button:first-child{text-align:left}.g-labels button:last-child{text-align:right}
+.g-labels button.on,.g-labels button:hover{color:var(--accent)}
+.g-voice{margin:0;text-align:center;font-size:13.5px;color:var(--muted);display:flex;justify-content:center;align-items:center;gap:6px}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--wrong);animation:caret 1.2s steps(1) infinite}
+/* rabbit holes as pills */
+.map{align-items:stretch}
+.card{align-self:start}
+.holes{display:flex;flex-direction:column;justify-content:space-around;gap:44px;padding:30px 0}
+.holes.left{align-items:flex-end}.holes.right{align-items:flex-start}
+.pill{position:relative;display:inline-flex;align-items:center;gap:10px;max-width:100%;background:var(--surface);border:1.5px dashed var(--ghost);border-radius:999px;padding:12px 16px 12px 14px;font-family:var(--display);font-size:17.5px;line-height:1.25;box-shadow:var(--shadow);cursor:pointer;animation:appear .5s both;transition:transform .15s,border-color .15s}
+.pill:hover{transform:translateY(-2px);border-color:var(--accent)}
+.pill .pi{display:grid;place-items:center;flex:none}
+.pill .pi svg,.hc-top .pi svg{width:20px;height:20px;stroke:var(--accent)}
+.pill .av{width:28px;height:16px;flex:none;fill:var(--surface);stroke:var(--ghost);stroke-width:1.4}
+.pill .badge{position:absolute;top:-11px;left:20px;background:var(--branch);color:#fff;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;padding:2px 8px;border-radius:7px;white-space:nowrap}
+.pill.wonder{background:var(--branch-soft);border:1.5px solid var(--branch)}
+.pill.seen{border:1.5px solid var(--accent)}
+.pill.seen .badge{background:var(--accent);color:var(--accent-ink)}
+.pill.open{background:var(--accent-soft);border:1.5px solid var(--accent)}
+.links path{stroke:var(--ghost);stroke-dasharray:3 6;stroke-width:2}
+.links path.open{stroke:var(--accent);stroke-dasharray:none}
+.holecard{position:absolute;z-index:6;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--branch);border-radius:22px;box-shadow:var(--shadow);padding:18px 20px;display:grid;gap:14px;animation:hc-in .35s both}
+@keyframes hc-in{from{opacity:0;transform:translateX(16px) scale(.98)}to{opacity:1;transform:none}}
+.holecard.from-l{animation-name:hc-in-l}
+@keyframes hc-in-l{from{opacity:0;transform:translateX(-16px) scale(.98)}to{opacity:1;transform:none}}
+.hc-top{display:flex;gap:10px;align-items:flex-start}
+.hc-top h3{flex:1;font-size:21px;line-height:1.25}
+.hc-top .x{background:none;border:0;font-size:24px;line-height:1;color:var(--muted)}
+.hc-body{font-size:18px;line-height:1.55}
+.sent{opacity:0;animation:appear .5s forwards}
+/* diagrams draw themselves in */
+.fig.anim .draw{opacity:0;animation:drawin .5s forwards}
+@keyframes drawin{from{opacity:0}to{opacity:1}}
+.fig.anim .grow{transform-box:fill-box;transform-origin:left center;animation:grow .7s cubic-bezier(.3,0,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (max-width:1180px){.holes{flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:16px 12px;padding:6px 0}.holes.left,.holes.right{align-items:flex-start}}
+@media (max-width:560px){.voice-btn span{display:none}.g-track{margin:0 10%}.list-tip{right:-40px}}
+
+/* v45 fixes: list intro keeps its button in view; holecard sits under its pill on phones */
+.li-card{display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}
+.li-card #li-list{flex:1 1 auto;min-height:0;overflow:auto;padding-right:6px}
+.li-card #li-go{flex:none}
+.li-card{transition:transform 1.7s cubic-bezier(.55,0,.25,1),opacity .6s ease-in 1.15s}
+@media (max-width:1180px){.holes .holecard{position:static!important;grid-column:1/-1;width:auto!important;margin:2px 0 6px}}
+
+/* v46: the list intro runs on its own; a thin bar shows when it will tuck away */
+.list-intro{cursor:pointer}
+.li-timer{width:100%;height:3px;border-radius:2px;background:var(--line);overflow:hidden;flex:none}
+.li-timer i{display:block;height:100%;background:var(--accent);transform-origin:left}
+.li-card #li-list>li{animation:appear .4s both}
+.li-card #li-list>li:nth-child(1){animation-delay:0.30s}
+.li-card #li-list>li:nth-child(2){animation-delay:0.45s}
+.li-card #li-list>li:nth-child(3){animation-delay:0.60s}
+.li-card #li-list>li:nth-child(4){animation-delay:0.75s}
+.li-card #li-list>li:nth-child(5){animation-delay:0.90s}
+.li-card #li-list>li:nth-child(6){animation-delay:1.05s}
+
+/* v47: the article, with Kube's notes in the margin */
+.article-wrap{padding:28px 16px 160px}
+.art{max-width:1040px;margin:0 auto;display:grid;gap:18px}
+.art-head{max-width:680px;display:grid;gap:8px;padding:8px 0 10px}
+.art-head h1{font-size:clamp(30px,4.4vw,44px);line-height:1.08}
+.art-hook{font-size:20px;line-height:1.45;margin:0}
+.art-src{font-size:14px;color:var(--muted);margin:0}
+.art-src a{color:var(--accent)}
+.art-sec{display:grid;grid-template-columns:minmax(0,680px) minmax(0,300px);gap:28px;align-items:start;scroll-margin-top:84px;border-radius:24px;transition:background .6s}
+.art-main{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:22px 26px;display:grid;gap:10px;justify-items:start;position:relative}
+.art-num{font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--accent-soft);border-radius:99px;width:26px;height:26px;display:grid;place-items:center}
+.art-main h2{font-size:clamp(22px,2.6vw,27px);line-height:1.15}
+.art-lead{margin:0;color:var(--muted);font-size:18px}
+.art-pts{margin:2px 0 0;padding-left:22px;display:grid;gap:8px;font-size:18.5px;line-height:1.5}
+.art-pts li::marker{color:var(--accent)}
+.art-main .fig{width:100%}
+.art-notes{display:grid;gap:10px;padding-top:14px}
+.nk{border-left:2px dashed var(--branch);padding:2px 0 2px 12px}
+.nk-q{display:flex;gap:8px;align-items:flex-start;background:none;border:0;padding:0;text-align:left;font-family:var(--display);font-size:15.5px;line-height:1.35;color:var(--ink)}
+.nk-q:hover span:last-child{text-decoration:underline;text-decoration-color:var(--branch);text-underline-offset:3px}
+.nk-face{flex:none;width:22px;height:22px;margin-top:-1px}
+.nk-face svg{width:100%;height:100%}
+.nk.seen{border-left-style:solid;border-left-color:var(--accent)}
+.nk-a{font-size:15.5px;line-height:1.5;margin-top:6px;color:var(--ink);animation:appear .35s both}
+.art-sec.flash .art-main{animation:artflash 2.4s ease-out}
+@keyframes artflash{0%,35%{box-shadow:0 0 0 6px var(--mark),var(--shadow)}100%{box-shadow:var(--shadow)}}
+.art-end{max-width:680px;display:flex;gap:16px;align-items:center;background:var(--accent-soft);border-radius:22px;padding:20px 24px;margin-top:8px}
+.art-end .kube-face{width:64px;height:64px;flex:none}
+.art-end h2{font-size:24px}
+.art-end p{margin:4px 0 12px}
+.art-end .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.art-btn{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 14px;font-family:var(--display);font-size:15px}
+.back-kube{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:25;background:var(--accent);color:var(--accent-ink);border:0;border-radius:99px;padding:12px 22px;font-family:var(--display);font-size:16px;font-weight:600;box-shadow:var(--shadow)}
+.hint{background:var(--branch-soft);border-radius:16px;padding:12px 16px;display:grid;gap:8px}
+.hint small,.lookback small{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--branch)}
+.hint p{margin:0;font-size:17.5px}
+.lookback{display:flex;gap:12px;align-items:center;background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+.lookback .kube-face{width:44px;height:44px;flex:none}
+.lookback p{margin:0 0 8px}
+.lookback.done{justify-content:space-between}
+.lookback.done p{margin:0;font-family:var(--display);font-weight:600}
+@media (max-width:900px){
+  .art-sec{grid-template-columns:minmax(0,1fr);gap:10px}
+  .art-notes{padding:0 6px}
+  .art-main{padding:18px 18px}
+  .art-pts{font-size:17.5px}
+  .art-end{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:560px){ .art-btn{padding:6px 10px;font-size:14px} }
+@media (max-width:560px){ .bar-title{min-width:0;flex:1} .bar-title span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} }
+
+</style>
+<!-- Topic shelf -->
+<main id="shelf" class="screen shelf">
+  <div class="shelf-in">
+    <div class="eyebrow">AutoLearn</div>
+    <h1>Learn something in 15 minutes. Then teach it.</h1>
+    <p class="lede">Pick a topic. You'll see exactly what you need to be able to explain. Kube, a curious beginner, checks by asking you to teach it, and you only fill in what you're missing.</p>
+    <div id="shelf-list" class="shelf-list"></div>
+  </div>
+</main>
+
+<!-- Step 1: the syllabus, what you must be able to teach -->
+<main id="start" class="screen start" hidden>
+  <div class="start-in">
+    <button class="back-link" id="start-back" type="button">← All topics</button>
+    <div class="eyebrow" id="start-topic"></div>
+    <h1 class="syl-title">Tomorrow, you'll teach this to someone.</h1>
+    <p class="lede small" id="start-lede"></p>
+    <section class="goal-box">
+      <div class="goal-top"><div class="eyebrow">Questions you must be able to answer</div><button type="button" class="btn small ghost" id="copy-list">Copy list</button></div>
+      <ol id="start-ideas" class="goal-ideas"></ol>
+    </section>
+    <p class="goal-note">Learn it any way you like, even with ChatGPT or another AI. Copy list gives you these questions to paste in.</p>
+    <button type="button" class="btn" id="start-next">Next: how do you want to learn it? →</button>
+  </div>
+</main>
+
+<!-- Step 2: the article, or Kube -->
+<main id="choose" class="screen choose" hidden>
+  <div class="choose-in">
+    <button class="back-link" id="choose-back" type="button">← The list</button>
+    <h1 class="syl-title">How do you want to learn it?</h1>
+    <div class="choose-grid">
+      <section class="choice">
+        <div class="eyebrow">Read the article</div>
+        <h2 id="art-title"></h2>
+        <p class="muted" id="art-meta"></p>
+        <a class="btn ghost" id="art-open" target="_blank" rel="noopener">Open the article ↗</a>
+        <div class="back-ready" id="art-ready" hidden>
+          <p>Done reading? Kube will ask you about each part.</p>
+          <button type="button" class="btn" data-test="article">I'm ready. Test me</button>
+        </div>
+      </section>
+      <section class="choice kube-choice">
+        <div class="eyebrow">Learn with Kube</div>
+        <div class="kube-row"><div class="kube-face" id="choose-face"></div><h2>Skim a short version, then teach it to Kube</h2></div>
+        <p class="muted">Read a quick, bullet-point version with Kube's notes in the margin. When you're done, teach it to Kube, and Kube fills in what you missed.</p>
+        <div id="start-claude" class="claude-box" hidden>Kube uses Claude to understand what you say. Without it, Kube can only match words. <button type="button" class="btn small" data-key>Connect Claude</button></div>
+        <button type="button" class="btn" id="go-kube">Start with Kube</button>
+      </section>
+    </div>
+    <div class="own-way">
+      <p>Prefer another way, like ChatGPT or Google? Go ahead. <button type="button" class="linkish" id="copy-list-2">Copy the list</button>, and come back when you're ready.</p>
+      <button type="button" class="btn ghost small" data-test="own">I learned it my own way. Test me</button>
+    </div>
+  </div>
+</main>
+
+<!-- Learning: syllabus checklist (top left), the map, Kube -->
+<div id="learn" class="screen learn" hidden>
+  <header class="bar">
+    <button class="icon-btn" id="learn-back" type="button" aria-label="All topics">←</button>
+    <div class="bar-title"><span id="bar-topic"></span><span class="bar-step" id="bar-step"></span></div>
+    <button type="button" class="art-btn" id="art-btn" hidden>Article</button>
+    <button type="button" class="voice-btn" id="voice-btn" aria-pressed="false" title="Kube reads aloud, and you can answer by voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Voice</span></button>
+    <div class="list-wrap"><button type="button" class="list-btn" id="list-btn" aria-expanded="false" aria-controls="syl">Your list <b id="list-count"></b></button><div class="list-tip" id="list-tip" hidden>Tap here any time to see how far you've got, or to jump to another part.</div></div>
+    <button type="button" class="claude-pill" id="claude-pill" data-key hidden><i></i><span>Connect Claude</span></button>
+  </header>
+  <aside id="syl" class="syl" hidden>
+    <div class="syl-head"><span class="eyebrow">Questions to answer</span><span class="syl-count" id="syl-count"></span><button type="button" class="x" id="syl-close" aria-label="Close">×</button></div>
+    <div class="syl-body" id="syl-body">
+      <p class="syl-lede">Each question ticks when you answer it in your own words.</p>
+      <div class="syl-meter"><i id="syl-fill"></i></div>
+      <ol id="syl-list" class="syl-list"></ol>
+      <button type="button" class="syl-finish" id="syl-finish">I'm done, show my results</button>
+    </div>
+  </aside>
+  <main class="map-wrap" id="map-wrap">
+    <div class="map" id="map">
+      <svg class="links" id="links" aria-hidden="true"></svg>
+      <div class="holes left" id="holes-l"></div>
+      <section class="card" id="card"></section>
+      <article class="holecard" id="holecard" hidden></article>
+      <div class="holes right" id="holes-r"></div>
+    </div>
+  </main>
+  <main class="article-wrap" id="article" hidden><div class="art" id="art"></div></main>
+  <button type="button" class="back-kube" id="back-kube" hidden>Back to Kube →</button>
+  <div class="list-intro" id="list-intro" hidden>
+    <div class="li-card" id="li-card">
+      <div class="kube-row"><div class="kube-face" id="li-face"></div><h2>Here's what you'll be able to answer</h2></div>
+      <ol class="goal-ideas big" id="li-list"></ol>
+      <div class="li-timer" aria-hidden="true"><i></i></div>
+    </div>
+  </div>
+  <div class="kube-corner" id="kube-corner">
+    <div class="kube-say" id="kube-say" hidden></div>
+    <div class="kube-face small" id="corner-face"></div>
+  </div>
+  <aside class="signals folded" id="signals">
+    <button type="button" class="sig-head" id="sig-toggle" aria-expanded="true"><span class="eyebrow" id="sig-label">Show live signals</span><span class="sig-x">+</span></button>
+    <div class="sig-body" id="sig-body"></div>
+  </aside>
+  <div class="version">v47 · Learn anything</div>
+</div>
+
+<!-- Results -->
+<main id="end" class="screen end" hidden>
+  <div class="end-in">
+    <div class="kube-hi"><div class="kube-face" id="end-face"></div><div class="bubble"><span id="end-hi"></span><b id="end-big"></b></div></div>
+    <section class="goal-box"><div class="eyebrow">What you can explain now</div><ol id="end-list" class="end-list"></ol></section>
+    <section class="noticed"><div class="eyebrow">What I noticed</div><ul id="end-noticed"></ul></section>
+    <div class="end-acts">
+      <button type="button" class="btn" id="end-more">Fill the gaps</button>
+      <button type="button" class="btn ghost" id="end-shelf">Pick another topic</button>
+      <button type="button" class="btn ghost" id="end-copy">Copy session notes</button>
+    </div>
+  </div>
+</main>
+
+<!-- Pause -->
+<div class="modal" id="pause" hidden><div class="modal-card"><div class="kube-face" id="pause-face"></div><h2>Take a break</h2><p>Your progress is saved in this browser. Come back whenever you like.</p><button type="button" class="btn" id="pause-back">I'm back</button></div></div>
+
+<!-- Connect Claude -->
+<div class="modal" id="keydlg" hidden role="dialog" aria-modal="true" aria-labelledby="key-h">
+  <div class="modal-card">
+    <h2 id="key-h">Connect Claude</h2>
+    <p>Paste an Anthropic API key so Kube can really understand what you say. It's saved only in this browser and sent only to Anthropic.</p>
+    <input id="key-in" type="password" autocomplete="off" placeholder="sk-ant-…">
+    <p class="key-note" id="key-note" hidden></p>
+    <div class="end-acts"><button type="button" class="btn" id="key-save">Connect</button><button type="button" class="btn ghost" id="key-remove" hidden>Remove key</button><button type="button" class="btn ghost" id="key-cancel">Cancel</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+const TOPICS = [];
+// The placebo effect, from Harvard Health Publishing, "The power of the placebo effect" (reviewed by Howard E. LeWine, MD).
+TOPICS.push({
+  id: "placebo", subject: "Mind and body", title: "The placebo effect",
+  hook: "A pill with nothing in it can make real pain fade. How?",
+  minutes: 15,
+  source: { site: "Harvard Health", title: "The power of the placebo effect", url: "https://www.health.harvard.edu/mental-health/the-power-of-the-placebo-effect", read: 5 },
+  ideas: [
+    {
+      id: "what", title: "What a placebo is", blurb: "A fake treatment, and why it can still help",
+      q: "People say \"it's just a placebo.\" So what is a placebo, and what's the placebo effect?",
+      points: ["A placebo is a fake treatment with nothing active in it", "Believing it works can make you feel better", "It's a real link between brain and body, not just positive thinking"],
+      asks: ["What is a placebo?", "What is the placebo effect?", "Is the placebo effect just positive thinking? Why or why not?"],
+      teach: "A placebo is a fake treatment, like a sugar pill. The placebo effect is when it still makes you feel better, because your brain expects it to work and your body follows.",
+      fig: {"type": "flow", "steps": ["A fake pill", "You expect relief", "Your brain reacts", "You feel better"]},
+      holes: [
+        { q: "What does a placebo actually look like?", a: "Anything that looks like treatment but has nothing active in it: a sugar pill, a saline shot, even a fake procedure.", pts: [0] },
+        { q: "Can a fake really help as much as a real treatment?", a: "Sometimes. Under the right conditions, research has found a placebo can work about as well as a standard treatment for some symptoms.", pts: [1] },
+        { q: "Isn't it just positive thinking?", a: "No. Your brain sets off real changes in your body. It's a stronger link between brain and body than just feeling upbeat.", pts: [2] },
+        { q: "How long have people known about this?", a: "For thousands of years. Healers noticed that people sometimes got better from treatments that did nothing by themselves.", pts: [1] }
+      ]
+    },
+    {
+      id: "limits", title: "What it can and can't do", blurb: "Feeling better is not the same as being cured",
+      q: "So if I were really sick, could a sugar pill cure me?",
+      points: ["It can't cure disease, like lowering cholesterol or shrinking a tumor", "It eases symptoms the brain controls, like pain", "It helps most with pain, trouble sleeping from stress, and treatment side effects like tiredness and nausea"],
+      asks: ["What can't a placebo do?", "What kinds of symptoms can a placebo ease?", "Where do placebos help most?"],
+      teach: "A placebo won't cure you. It doesn't touch the disease itself. It changes how your brain senses symptoms, so it helps most with things like pain, stress-related sleeplessness, and nausea or tiredness during cancer treatment.",
+      fig: {"type": "groups", "groups": [{"label": "Can ease", "items": ["Pain", "Trouble sleeping from stress", "Nausea and tiredness"]}, {"label": "Can't fix", "items": ["High cholesterol", "Tumors", "The illness itself"]}]},
+      holes: [
+        { q: "Why can't it cure things?", a: "Because it doesn't change the illness. It won't lower your cholesterol or shrink a tumor. It only changes how your brain handles symptoms.", pts: [0] },
+        { q: "Then what does it change?", a: "Symptoms your brain controls, like how much pain you feel. The pain really feels smaller, even though the cause is still there.", pts: [1] },
+        { q: "Where does it help most?", a: "Pain, trouble sleeping because of stress, and side effects of cancer treatment like tiredness and nausea.", pts: [2] },
+        { q: "So is the relief fake?", a: "No. The relief is real. You really do feel less pain. You just aren't cured.", pts: [1] }
+      ]
+    },
+    {
+      id: "trials", title: "Why drug tests use placebos", blurb: "How scientists know a drug really works",
+      q: "Why would scientists give some people in a drug test a fake pill on purpose?",
+      points: ["Drug trials compare people on the drug with people on a placebo", "If both groups improve the same, the drug is judged not to work", "Experts now see a placebo response as real relief that comes from something other than the drug"],
+      asks: ["Why do drug trials give some people a placebo?", "What does it mean if the placebo group improves as much as the drug group?", "How has expert thinking about the placebo response changed?"],
+      teach: "In a trial, one group gets the drug and another gets a placebo. The drug only counts as working if people on it do better than people on the placebo.",
+      fig: {"type": "flow", "steps": ["Split people into 2 groups", "One gets the drug, one a placebo", "Compare who improves", "The drug counts only if it does better"]},
+      holes: [
+        { q: "Why do they need a fake group at all?", a: "People often improve just from being treated. The placebo group, called the control, shows how much, so the drug's own effect can be measured.", pts: [0] },
+        { q: "What if the fake-pill group gets better too?", a: "If they improve just as much, the drug is judged ineffective. It adds nothing beyond what the placebo did.", pts: [1] },
+        { q: "So is a placebo response a sign of failure?", a: "It used to be seen that way. Now experts say it may show real relief coming from something other than the drug, like the care around it.", pts: [2] }
+      ]
+    },
+    {
+      id: "how", title: "How it works", blurb: "What happens in your brain, and why care matters",
+      q: "How can my body react to a pill that does nothing?",
+      points: ["The brain releases feel-good chemicals like endorphins and dopamine", "Brain areas tied to mood, emotion and self-awareness get more active", "Feeling cared for (doctor visits, pills, procedures) changes how symptoms feel"],
+      asks: ["What chemicals does the brain release in the placebo effect?", "Which brain areas become more active?", "How does the experience of being treated affect symptoms?"],
+      teach: "Expecting relief changes your brain: it releases natural feel-good chemicals and lights up areas tied to mood. The ritual of being treated (a doctor, a pill, a procedure) also makes you feel cared for, and that changes how symptoms feel.",
+      fig: {"type": "flow", "steps": ["You expect relief", "Endorphins and dopamine rise", "Mood areas get busier", "Symptoms feel smaller"]},
+      holes: [
+        { q: "What changes in my brain?", a: "It releases more endorphins and dopamine, natural chemicals that ease pain and lift mood.", pts: [0] },
+        { q: "Which parts of the brain are involved?", a: "Areas linked to mood, emotion and self-awareness become more active.", pts: [1] },
+        { q: "Why do some people respond more than others?", a: "In brain scans of people with knee arthritis pain, those helped by a placebo had more activity in the middle frontal gyrus, a big area at the front of the brain.", pts: [1] },
+        { q: "Why does seeing a doctor matter?", a: "The ritual itself helps. Visits, caring staff, pills and procedures make you feel looked after, and that changes how you feel your symptoms.", pts: [2] }
+      ]
+    },
+    {
+      id: "self", title: "Using it on purpose", blurb: "Can it work even when you know it's fake?",
+      q: "If I knew a pill was fake, would it still work on me?",
+      points: ["Sometimes: a pill openly labeled \"placebo\" eased migraines about half as well as the real drug", "Just the ritual of taking a pill seems to help", "Healthy habits and caring for yourself may give placebo-like benefits"],
+      asks: ["Can a placebo work if you know it's a placebo? What did the migraine study find?", "Why might taking a pill help by itself?", "How might everyday habits give placebo-like benefits?"],
+      teach: "Sometimes, yes. Migraine patients given a pill clearly labeled \"placebo\" got about half the pain relief of the real drug. Just taking a pill seems to help, and healthy habits may work in a similar way.",
+      fig: {"type": "bars", "title": "Migraine pain relief, compared with the real drug", "unit": "%", "bars": [["Real drug", 100], ["Pill labeled \"placebo\"", 50]]},
+      holes: [
+        { q: "How was that tested?", a: "Migraine patients got the real drug, a pill clearly labeled \"placebo\", or nothing. The labeled placebo cut pain about half as much as the drug.", pts: [0] },
+        { q: "Why would it work if I know?", a: "Researchers think the ritual helps by itself: the act of taking a pill tells your brain that care is happening.", pts: [1] },
+        { q: "Can I give myself a placebo?", a: "In a way. Exercise, good food, yoga, meditation and time with friends may give similar benefits, more so when you treat them as caring for yourself.", pts: [2] }
+      ]
+    }
+  ]
+});
+
+// How vaccines work, from the World Health Organization, "How do vaccines work?"
+TOPICS.push({
+  id: "vaccines", subject: "Biology", title: "How vaccines work",
+  hook: "Your body remembers germs it met years ago. Vaccines use that memory without making you sick.",
+  minutes: 15,
+  source: { site: "World Health Organization", title: "How do vaccines work?", url: "https://www.who.int/news-room/feature-stories/detail/how-do-vaccines-work", read: 6 },
+  ideas: [
+    {
+      id: "defense", title: "Your body's first defenses", blurb: "Why germs everywhere don't make you sick all the time",
+      q: "Germs are everywhere. Why don't I get sick all the time?",
+      points: ["Skin, mucus and tiny hairs called cilia keep most germs out", "Germs that cause disease are called pathogens: certain bacteria, viruses, parasites or fungi", "If one gets in, the immune system works to destroy it"],
+      asks: ["What stops most germs from getting into your body?", "What is a pathogen, and what kinds are there?", "What happens when a pathogen gets past those barriers?"],
+      teach: "Your skin, mucus and tiny hairs in your airways block most germs. If a disease-causing germ, a pathogen, gets past them, your immune system goes after it.",
+      fig: {"type": "flow", "steps": ["Skin, mucus and cilia block germs", "A few get through", "Your immune system attacks"]},
+      holes: [
+        { q: "What stops germs from getting in?", a: "Physical barriers: your skin, mucus, and cilia, tiny hairs in your airways that sweep dirt and germs away from your lungs.", pts: [0] },
+        { q: "What counts as a pathogen?", a: "Any germ that causes disease: certain bacteria, viruses, parasites or fungi.", pts: [1] },
+        { q: "What happens when one gets past?", a: "Your immune system tries to destroy it or overpower it.", pts: [2] }
+      ]
+    },
+    {
+      id: "antibodies", title: "Antibodies and antigens", blurb: "How your body fights a germ it has never seen",
+      q: "When a germ my body has never seen gets inside me, how does my body fight it? And why do I still get sick first?",
+      points: ["The immune system makes antibodies against the germ", "Each antibody matches one antigen, the part of the germ it recognizes", "The first time, making antibodies takes a while, so you can get sick in the meantime"],
+      asks: ["What does the immune system make to fight a new germ?", "What is an antigen, and how do antibodies relate to it?", "Why do you often get sick the first time you meet a germ?"],
+      teach: "Your body makes antibodies, each built to match one specific part of the germ, called an antigen. With a new germ this takes time, which is why you get sick first.",
+      fig: {"type": "flow", "steps": ["A new germ gets in", "Your body spots its antigen", "It slowly makes matching antibodies", "You're sick in the meantime"]},
+      holes: [
+        { q: "What's an antigen?", a: "The part of a germ that makes your body produce antibodies. It's like the germ's name tag.", pts: [1] },
+        { q: "What do antibodies do?", a: "They're made by your immune system to fight the germ. Each one recognizes just one antigen.", pts: [0, 1] },
+        { q: "Why do I get sick before I get better?", a: "The first time you meet a germ, your body needs time to make the right antibodies. Meanwhile, the germ can make you ill.", pts: [2] }
+      ]
+    },
+    {
+      id: "memory", title: "Immune memory", blurb: "Why the second time is different",
+      q: "Say the same germ gets into me again next year. What's different the second time?",
+      points: ["After an infection is cleared, memory cells stay behind", "If the same germ comes back, the response is much faster and stronger", "So the same germ usually can't make you as sick again"],
+      asks: ["What stays behind after your body clears an infection?", "What's different when the same germ comes back?", "Why does that usually stop you getting as sick again?"],
+      teach: "After your body beats a germ, it keeps memory cells. If the same germ returns, your body fights it faster and harder, usually before you get sick.",
+      fig: {"type": "groups", "groups": [{"label": "First time", "items": ["Slow antibody response", "You get sick"]}, {"label": "Next time", "items": ["Memory cells react fast", "Usually no illness"]}]},
+      holes: [
+        { q: "What stays behind after I recover?", a: "Memory cells. They remember that germ's antigen.", pts: [0] },
+        { q: "How do memory cells help?", a: "If the same germ shows up again, they let your body make the right antibodies much faster and in larger numbers.", pts: [1, 2] }
+      ]
+    },
+    {
+      id: "vaccine", title: "What a vaccine does", blurb: "Practice for your immune system",
+      q: "So what's actually inside a vaccine, and how does it protect me without making me sick?",
+      points: ["It holds a weakened or inactive germ or antigen, or genetic instructions (DNA or RNA) for making the antigen", "It doesn't cause the disease", "Your immune system reacts as if it met the real germ, building antibodies and memory", "Some vaccines need several doses to build long-lasting protection"],
+      asks: ["What can be inside a vaccine?", "Why doesn't a vaccine give you the disease?", "How does your body respond to a vaccine?", "Why do some vaccines need more than one dose?"],
+      teach: "A vaccine shows your body a harmless version of a germ: a weakened or inactive germ, a piece of it, or instructions to make that piece. Your body builds antibodies and memory, so it's ready for the real thing.",
+      fig: {"type": "flow", "steps": ["A harmless germ, or a piece of one", "Your immune system practices", "Antibodies and memory cells", "Ready for the real germ"]},
+      holes: [
+        { q: "What's in a vaccine?", a: "A weakened or inactive germ, or just its antigen. Newer vaccines carry instructions (DNA or RNA) so your own cells make the antigen.", pts: [0] },
+        { q: "Why doesn't it make me sick?", a: "The germ is weakened, inactive, or only a harmless piece of it, so it can't cause the disease. Your body still treats it as a threat.", pts: [1, 2] },
+        { q: "What does my body do with it?", a: "It responds as it would to the real germ: makes antibodies and keeps memory cells.", pts: [2] },
+        { q: "Why do some vaccines need more than one shot?", a: "Several doses, weeks or months apart, help build antibodies and memory cells that last a long time.", pts: [3] }
+      ]
+    },
+    {
+      id: "herd", title: "Herd immunity", blurb: "How your shot protects other people",
+      q: "Some people can't get vaccinated. How can everyone else's shots protect them?",
+      points: ["Some people can't be vaccinated, like those with weak immune systems or severe allergies", "When most people are vaccinated, the germ struggles to spread", "That protects people who can't be vaccinated, though no vaccine is 100%", "Vaccines wiped out smallpox and have nearly ended polio"],
+      asks: ["Who can't get vaccinated, and why?", "What happens to a germ when most people are vaccinated?", "How does that protect people who can't be vaccinated, and is it perfect?", "What diseases have vaccines wiped out or nearly ended?"],
+      teach: "When most people are vaccinated, a germ has trouble finding someone to spread to. That shields people who can't get vaccinated. It's called herd immunity, and it helped wipe out smallpox.",
+      fig: {"type": "groups", "groups": [{"label": "Few people vaccinated", "items": ["The germ hops from person to person", "It reaches people who can't be vaccinated"]}, {"label": "Most people vaccinated", "items": ["The germ keeps hitting dead ends", "People who can't be vaccinated stay safer"]}]},
+      holes: [
+        { q: "Who can't get vaccinated?", a: "People with weakened immune systems, for example from cancer or HIV, and people with severe allergies to something in a vaccine.", pts: [0] },
+        { q: "How does that protect them?", a: "If most people around them are immune, the germ has a hard time spreading, so it rarely reaches them.", pts: [1, 2] },
+        { q: "Does it protect everyone completely?", a: "No. No vaccine gives 100% protection and herd immunity isn't perfect, but it gives a lot of protection.", pts: [2] },
+        { q: "Has this ever wiped out a disease?", a: "Yes. Smallpox was declared eradicated in 1980. Wild polio, which once paralysed hundreds of thousands a year, now remains only in Pakistan and Afghanistan.", pts: [3] },
+        { q: "How many lives has it saved?", a: "Measles vaccination alone is estimated to have prevented about 60 million deaths between 2000 and 2023.", pts: [3] }
+      ]
+    }
+  ]
+});
+
+// Compound interest, from the Federal Reserve Bank of St. Louis, "How Does Compound Interest Work?" (Open Vault, 2018).
+TOPICS.push({
+  id: "compound", subject: "Money", title: "Compound interest",
+  hook: "One person saves for 10 years, another for 30. The 10-year saver ends up with more. How?",
+  minutes: 12,
+  source: { site: "Federal Reserve Bank of St. Louis", title: "How Does Compound Interest Work?", url: "https://www.stlouisfed.org/open-vault/2018/september/how-compound-interest-works", read: 5 },
+  ideas: [
+    {
+      id: "what", title: "Interest on interest", blurb: "What compounding means, for savers and borrowers",
+      q: "My bank says my savings \"compound.\" What does that mean?",
+      points: ["You earn interest on your money and on the interest it already earned", "So the growth speeds up the longer you leave it", "Borrowers pay it too: unpaid credit card interest piles up the same way"],
+      asks: ["What does it mean for interest to compound?", "Why does compounding make savings grow faster over time?", "How does compounding work against people who borrow, like on a credit card?"],
+      teach: "Each time you earn interest, it's added to your balance. Next time, you earn interest on that bigger amount too. That's interest on interest, and it snowballs. Debt works the same way, against you.",
+      fig: {"type": "bars", "title": "$1,000 earning 10% a year, interest left in", "unit": "$", "bars": [["Start", 1000], ["After year 1", 1100], ["After year 2", 1210], ["After year 3", 1331]], "note": "Each year's interest is bigger than the last: $100, then $110, then $121."},
+      holes: [
+        { q: "Isn't interest the same amount every year?", a: "Not when it compounds. Each year's interest joins your balance, so next year you earn interest on a bigger pile.", pts: [0] },
+        { q: "Why does it speed up?", a: "The pile you earn interest on keeps growing, so each year's interest is bigger than the last.", pts: [1] },
+        { q: "How can it hurt me?", a: "If you owe money, you pay interest on what you owe plus on interest you haven't paid yet. Credit card debt can grow fast this way.", pts: [2] },
+        { q: "Where do savers get compound interest?", a: "Savings like certificates of deposit (CDs) typically pay it.", pts: [0] }
+      ]
+    },
+    {
+      id: "rule72", title: "The Rule of 72", blurb: "A quick way to see how fast money doubles",
+      q: "Is there a quick way to tell how long it takes my money to double?",
+      points: ["Divide 72 by the interest rate to get the years it takes to double", "At 2% that's about 36 years; at 12%, about 6", "It's a rough estimate, not exact"],
+      asks: ["What is the Rule of 72, and how do you use it?", "Roughly how long does money take to double at 2%? At 12%?", "How exact is the Rule of 72?"],
+      teach: "Divide 72 by the yearly interest rate. At 8%, 72 ÷ 8 = 9, so your money doubles about every 9 years.",
+      fig: {"type": "bars", "title": "$5,000 at 8%: 72 ÷ 8 = doubles every 9 years", "unit": "$k", "bars": [["Start", 5], ["Year 9", 10], ["Year 18", 20], ["Year 27", 40], ["Year 36", 80]]},
+      holes: [
+        { q: "Can you show me an example?", a: "$5,000 at 8%: it doubles every 9 years. Over 36 years that's 4 doublings: $10k, $20k, $40k, $80k.", pts: [0] },
+        { q: "How much does the rate matter?", a: "A lot. At 2%, doubling takes about 36 years. At 12%, about 6 years.", pts: [1] },
+        { q: "How accurate is it?", a: "Close, but rough. For $5,000 at 12% over 36 years it predicts $320,000; a calculator says about $295,680.", pts: [2] },
+        { q: "Should I just chase the highest rate?", a: "Higher rates usually come with more risk, so think about how much risk you can live with.", pts: [1] }
+      ]
+    },
+    {
+      id: "early", title: "Starting early", blurb: "Why time beats amount",
+      q: "Ana saves $5,000 a year for 10 years, starting at 25, then stops. Ben waits until 35, then saves $5,000 a year for 30 years. Both earn 8% a year. Who has more at 65, and why?",
+      points: ["Ana, who started early, ends up with more", "Even though she put in a third as much: $50,000 vs $150,000", "Starting early beats saving more: her money had more years to grow"],
+      asks: ["Ana saves for 10 years from 25; Ben saves for 30 years from 35. Who has more at 65?", "How much did each of them put in?", "Why does starting earlier beat putting in more?"],
+      teach: "Ana does: about $787,000 to Ben's $612,000. She put in only $50,000 and he put in $150,000, but her money started 10 years earlier, and those extra years of growth snowball.",
+      fig: {"type": "bars", "title": "Money at 65, at 8% a year", "unit": "$k", "bars": [["Ana put in", 50], ["Ana has", 787], ["Ben put in", 150], ["Ben has", 612]]},
+      holes: [
+        { q: "What are the actual numbers?", a: "At 8% a year: Ana paid in $50,000 and has about $787,180 at 65. Ben paid in $150,000 and has about $611,730.", pts: [0, 1] },
+        { q: "How can less money end up as more?", a: "Ana's early savings kept compounding for 30 more years after she stopped. Ben's money started later, so it had less time to grow.", pts: [2] }
+      ]
+    },
+    {
+      id: "inflation", title: "What inflation does", blurb: "Future money buys less",
+      q: "Say I'll have $787,000 when I retire in 30 years. Is that really as much money as it sounds?",
+      points: ["Inflation means prices rise over time", "So future money buys less: at 2% inflation, $787,000 in 30 years buys about what $435,000 buys today", "The Federal Reserve aims for about 2% inflation a year"],
+      asks: ["What is inflation?", "Why is $787,000 in 30 years worth less than it sounds?", "How much inflation does the Federal Reserve aim for?"],
+      teach: "Not quite. Prices rise over time, which is inflation, so each future dollar buys less. At 2% inflation, $787,000 thirty years from now buys about what $435,000 does today.",
+      fig: {"type": "bars", "title": "With 2% inflation for 30 years", "unit": "$k", "bars": [["Money in 30 years", 787], ["What it buys in today's money", 435]]},
+      holes: [
+        { q: "What is inflation?", a: "The rising cost of goods and services over time.", pts: [0] },
+        { q: "How much less does it buy?", a: "At 2% inflation, $787,180 in 30 years would buy about what $434,580 buys today.", pts: [1] },
+        { q: "Why 2%?", a: "The Federal Reserve aims to keep prices stable, with a long-run inflation target of 2% a year.", pts: [2] }
+      ]
+    }
+  ]
+});
+
+// Kubernetes, from GeeksforGeeks, "Introduction to Kubernetes (K8s)". Same 5 ideas, questions and answers as Teach Kube (kubernetes-v36.html).
+TOPICS.push({
+  id: "kubernetes", subject: "Tech", title: "Kubernetes",
+  hook: "Your app's server dies at 3 a.m. Nobody wakes up, and your app keeps running. How?",
+  minutes: 15,
+  source: { site: "GeeksforGeeks", title: "Introduction to Kubernetes (K8s)", url: "https://www.geeksforgeeks.org/devops/introduction-to-kubernetes-k8s/", read: 12 },
+  ideas: [
+    {
+      id: "why", title: "Why Kubernetes exists", blurb: "What goes wrong running apps by hand, and what Kubernetes does about it",
+      q: "I've never heard of Kubernetes. Why do teams that run apps online need it?",
+      points: ["Containers pack an app so it runs the same anywhere (Docker builds them)", "Big apps get split into many containers (microservices)", "Scaling, updates and running across clouds get too hard by hand", "Kubernetes automates running containers, like a conductor", "When a machine dies, Kubernetes notices and starts your app on another one"],
+      asks: ["What is a container, and what tool builds them?", "Why do big apps end up as many containers?", "What gets too hard to manage by hand with hundreds of containers?", "What does Kubernetes do, in one sentence?", "What happens when a server running your app dies?"],
+      teach: "Kubernetes runs your containers for you. You tell it what should be running, and it keeps checking. When a server dies at 3 a.m., it notices and starts your app on a healthy machine, so nobody has to wake up.",
+      fig: {"type": "flow", "steps": ["A server dies at 3 a.m.", "Kubernetes notices", "It restarts your app on a healthy machine", "Nobody wakes up"]},
+      holes: [
+        { q: "What's a container?", a: "Your app packed with everything it needs, so it runs the same on any machine. Tools like Docker build them.", pts: [0] },
+        { q: "Isn't that just Docker?", a: "No. Docker packs your app into a container and runs it on one machine. Kubernetes runs those containers across many machines and keeps them going.", pts: [0] },
+        { q: "Is my app just one container?", a: "Often not. Most teams split an app into small pieces called microservices, like cart, payments and search, each in its own container. That's a lot of containers to look after.", pts: [1] },
+        { q: "Can't I just fix it myself?", a: "For one container, maybe. With hundreds, four jobs get too big for people: adding copies as traffic changes, running on different clouds, keeping containers secure with enough CPU and memory, and updating without downtime.", pts: [2] },
+        { q: "So what is Kubernetes, really?", a: "Free, open-source software that automates running containers across many machines. Like an orchestra's conductor: you write the sheet music, and it makes sure every container plays its part.", pts: [3] },
+        { q: "Who notices a server died?", a: "Kubernetes does, not you. Every machine checks in every few seconds. When one goes quiet, Kubernetes sees copies missing and starts new ones on a healthy machine.", pts: [4] }
+      ]
+    },
+    {
+      id: "cluster", title: "Clusters and nodes", blurb: "The machines Kubernetes runs on: the brain, and the workers",
+      q: "Kubernetes runs my app on a bunch of machines. How are those machines set up, and what does each one do?",
+      points: ["A cluster is a group of machines run as one", "The control plane is the brain: it decides what runs where", "Worker nodes run your containers", "Each node has a container runtime, a kubelet and kube-proxy", "The scheduler puts each Pod on a node with room"],
+      asks: ["What is a cluster?", "What does the control plane do?", "What do worker nodes do?", "What three helpers run on every node?", "How does Kubernetes pick which machine runs a new copy?"],
+      teach: "The machines form a cluster. The control plane is the brain: it decides what runs where. Worker nodes run your containers, and if one fails, the control plane moves its work to the others.",
+      fig: {"type": "groups", "groups": [{"label": "Control plane (the brain)", "items": ["Decides what runs where", "Its scheduler picks a machine"]}, {"label": "Worker nodes", "items": ["Run your containers", "Each has a runtime, kubelet and kube-proxy"]}]},
+      holes: [
+        { q: "How are the machines organized?", a: "As a cluster. The control plane is the brain: it decides what runs where. The rest are worker nodes, which run your containers. If a worker dies, its work moves to the others.", pts: [0, 1, 2] },
+        { q: "What's on each machine?", a: "Three helpers plus your containers: a container runtime that runs them, the kubelet that takes orders from the control plane, and kube-proxy for networking.", pts: [3] },
+        { q: "How does the brain talk to each machine?", a: "Through the kubelet, a small helper on every node. It starts the Pods it's told to run, checks they're healthy and reports back.", pts: [3] },
+        { q: "Who picks the machine?", a: "The scheduler, part of the control plane. For each new Pod it finds a node with enough free CPU and memory.", pts: [4] }
+      ]
+    },
+    {
+      id: "deploy", title: "Pods and Deployments", blurb: "What you hand Kubernetes, and how it keeps your copies running",
+      q: "I've built my app. What do I actually give Kubernetes to keep 3 copies of it running, and what does it do with that?",
+      points: ["You hand it a Deployment file, which describes the result you want", "It says which version to run and how many copies", "Each running copy is a Pod", "A ReplicaSet keeps that many running and replaces any that crash", "Copies can scale up and down with traffic", "Updates roll out a few at a time, and a bad one can be rolled back"],
+      asks: ["What file do you hand Kubernetes, and what kind of file is it?", "What two things does that file say?", "What is a Pod?", "What keeps the right number of copies running?", "What happens when traffic grows or drops?", "How do you ship a new version without downtime, and undo a bad one?"],
+      teach: "You hand Kubernetes a Deployment: a short file saying which version to run and how many copies. Each running copy is a Pod, and a ReplicaSet keeps exactly that many running, replacing any that crash.",
+      fig: {"type": "flow", "steps": ["You write a Deployment: 3 copies", "A ReplicaSet keeps 3 Pods running", "One Pod crashes", "A new Pod replaces it"]},
+      holes: [
+        { q: "What does that file look like?", a: "A short file called a Deployment. It says which version to run and how many copies, not the steps. That's called declarative: you describe the result and Kubernetes works out how.", pts: [0, 1] },
+        { q: "What counts as a copy?", a: "Each copy is a Pod: your container in a thin wrapper with its own address. A broken Pod isn't fixed. It's replaced.", pts: [2] },
+        { q: "What if a copy crashes?", a: "Behind every Deployment is a ReplicaSet, whose job is counting copies. If one crashes, it's replaced, on another machine if needed.", pts: [3] },
+        { q: "What if I need 10 copies, not 3?", a: "Change one number in the file and Kubernetes starts seven more. It can even add and remove copies by itself as traffic changes.", pts: [4] },
+        { q: "How do I ship a new version without downtime?", a: "Kubernetes swaps old copies for new ones a few at a time. If new copies fail their health check, the swap stops, and one command rolls back.", pts: [5] }
+      ]
+    },
+    {
+      id: "services", title: "Services and Ingress", blurb: "How users find your app when its copies keep changing",
+      q: "My app's copies keep getting replaced, and each new one gets a new address. So how do users still find my app?",
+      points: ["Each copy gets a new address whenever it's replaced", "A Service gives your app one address that never changes", "The Service spreads requests across healthy copies", "An Ingress routes web traffic from outside to the right Service"],
+      asks: ["Why can't users just use one copy's address?", "What gives your app an address that never changes?", "Which copy gets each request?", "How does traffic from the internet reach the right part of your app?"],
+      teach: "You put a Service in front of your copies: one address that never changes, which passes each request to a healthy copy wherever it is. For users on the internet, an Ingress is the front gate that routes them to the right Service.",
+      fig: {"type": "flow", "steps": ["A user", "Ingress, the front gate", "Service, the fixed address", "Any healthy Pod"]},
+      holes: [
+        { q: "Why does the address change?", a: "Every Pod gets its own address when it starts. A broken one is replaced, and the replacement is brand new, so it gets a new address.", pts: [0] },
+        { q: "So what do users connect to?", a: "A Service: one address that never changes, sitting in front of all your copies.", pts: [1] },
+        { q: "Which copy gets my request?", a: "Any healthy one. The Service spreads requests across all your copies so none gets swamped.", pts: [2] },
+        { q: "How do users on the internet get in?", a: "Through an Ingress, the front gate for web traffic. Rules like \"shop.com/cart goes to the cart Service\" send each request to the right place.", pts: [3] }
+      ]
+    },
+    {
+      id: "config", title: "Config, Secrets and storage", blurb: "Where settings, passwords and data live, since Pods come and go",
+      q: "Pods get thrown away and replaced all the time. So where do my app's settings, passwords and data live?",
+      points: ["Pods are temporary, so anything that must last lives outside them", "Settings go in a ConfigMap", "Passwords and keys go in a Secret", "Data that must survive goes on a Persistent Volume"],
+      asks: ["Why can't settings and data live inside Pods?", "Where do settings go?", "Where do passwords and keys go?", "Where does data that must survive go?"],
+      teach: "Outside the Pods. Settings go in a ConfigMap, passwords and keys go in a Secret, and data that must survive goes on a Persistent Volume. Every new Pod plugs into them when it starts.",
+      fig: {"type": "groups", "groups": [{"label": "Pod (temporary)", "items": ["Your running app"]}, {"label": "Outside the Pod (lasts)", "items": ["ConfigMap: settings", "Secret: passwords", "Persistent Volume: data"]}]},
+      holes: [
+        { q: "Where do settings go?", a: "In a ConfigMap: settings like which database to use, kept outside your container and handed to each Pod when it starts.", pts: [1] },
+        { q: "What about passwords?", a: "In a Secret. Like a ConfigMap, but for private things. Access can be locked down, and it's only handed to Pods that need it.", pts: [2] },
+        { q: "What about the data?", a: "On a Persistent Volume: storage outside any Pod. When a Pod is thrown away, the volume stays, and the replacement plugs into it.", pts: [3, 0] }
+      ]
+    }
+  ]
+});
+
+// v47 (on v46): Kube lives in a skimmable article (margin notes, reading signals), then asks you to teach it; no slider; "no idea" gives a hint, then points back to the article
+// v46 (on v45): the list intro tucks itself into "Your list" after a few seconds, no button
+// v45 (on v44): Your list opens centered then flies into its button; a "how well do you understand this?" slider replaces
+// the 3 boxes; Voice mode (Kube reads aloud, the learner answers by voice); rabbit holes are pill bubbles around the card
+// that open their own card on the map, and diagrams draw themselves in.
+// v44 (on v43): the syllabus lists the questions to answer for each part; live signals start hidden.
+// v43: one engine for any short article. Each topic is a data file (topics/*.js) with a few main ideas; each idea has
+// Kube's question, the points a learner must be able to explain, a short version, rabbit holes and an optional diagram.
+// Flow: topic → the list of what you must teach tomorrow (copyable, for ChatGPT or anything) → a free choice between
+// the article and Kube (or your own way) → each idea opens with only Kube asking, then the learner picks how to go on.
+// Quiet signals (idle, skimming, "I don't know", leaving the tab) are shown live on screen for testing, and let Kube
+// offer a different way in. Kube suggests; it never forces.
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const FACE = (mood) => `<svg class="face-${mood}" viewBox="0 0 64 64" aria-hidden="true"><circle class="bf-head" cx="32" cy="35" r="24"/><path class="bf-hair" d="M17 24c3-9 13-14 22-10 3-5 10-5 12-1-5-.5-8 2-9 5"/><g class="bf-eyes"><ellipse class="bf-eye" cx="24" cy="34" rx="3" ry="3.7"/><ellipse class="bf-eye" cx="40" cy="34" rx="3" ry="3.7"/></g><path class="bf-line bf-happy" d="M20.5 35q3.5-5 7 0M36.5 35q3.5-5 7 0"/><path class="bf-line bf-smile" d="M25 43.5c4 4 10 4 14 0"/><ellipse class="bf-open" cx="32" cy="45" rx="4.6" ry="3.8"/><path class="bf-line bf-huh" d="M26 45q3-2.5 6 0t6 0M36 26.5l8-2.5"/><circle class="bf-cheek" cx="17.5" cy="42" r="3.2"/><circle class="bf-cheek" cx="46.5" cy="42" r="3.2"/></svg>`;
+const MIC_I = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
+const STOP_I = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>`;
+const ROUTE_WORD = { kube: "learning with Kube", article: "reading the article", own: "learning their own way (ChatGPT, Google…)" };
+const MODE_WORD = { read: "short answer", ask: "questions", teach: "explain" };
+const QS = new URLSearchParams(location.search);
+const SHOW_SIGNALS = QS.get("signals") !== "0"; // testing only: set false (or ?signals=0) to hide the live signals panel
+
+// ---------- saved progress (this browser only) ----------
+const STORE = "autolearn-learn-1";
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch (e) { saved = {}; }
+const persist = () => { try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch (e) {} };
+
+let T = null, ST = null, P = {}, sessionT0 = Date.now();
+const idea = () => T.ideas[ST.idx];
+const cov = (id) => new Set(ST.covered[id] || []);
+const seenSet = (id) => new Set(ST.seen[id] || []);
+const totalPts = () => T.ideas.reduce((n, i) => n + i.points.length, 0);
+const donePts = () => T.ideas.reduce((n, i) => n + cov(i.id).size, 0);
+const totalQs = (t) => t.ideas.reduce((n, i) => n + i.asks.length, 0);
+const testing = () => ST.route === "article" || ST.route === "own";
+function stateFor(t) {
+  const s = saved[t.id] || (saved[t.id] = {});
+  s.covered ||= {}; s.seen ||= {}; s.how ||= {}; s.custom ||= {}; s.idx ||= 0; s.log ||= [];
+  return s;
+}
+function ph(id) { return P[id] || (P[id] = { phase: "ask", mode: null, intro: false, draft: "", gapDraft: "", gaps: [], gi: 0, revealed: false, short: false, answering: false, fig: false, nudged: new Set(), t0: Date.now(), active: 0, idk: 0 }); }
+const curMode = () => ph(idea().id).mode;
+function log(type, detail) { if (!ST) return; const e = { t: Math.round((Date.now() - sessionT0) / 1000), type, idea: T && ST.idx != null && !$("learn").hidden ? idea().id : null, ...(detail || {}) }; ST.log.push(e); if (ST.log.length > 500) ST.log.shift(); persist(); }
+
+// ---------- screens ----------
+function show(id) { ["shelf", "start", "choose", "learn", "end"].forEach((s) => { $(s).hidden = s !== id; }); window.scrollTo(0, 0); if (id !== "learn") { kubeHush(); $("syl").hidden = true; } }
+
+function renderShelf() {
+  $("shelf-list").innerHTML = TOPICS.map((t) => {
+    const s = saved[t.id], n = t.ideas.reduce((a, i) => a + i.points.length, 0);
+    const d = s && s.covered ? Object.values(s.covered).reduce((a, v) => a + v.length, 0) : 0;
+    return `<button type="button" class="topic" data-topic="${t.id}"><span class="tag">${esc(t.subject)}</span><h3>${esc(t.title)}</h3><span class="hook">${esc(t.hook)}</span>
+      <span class="meta"><span>${t.ideas.length} ideas · about ${t.minutes} min</span>${d ? `<b>${d} of ${n} explained</b>` : ""}</span></button>`;
+  }).join("");
+  $("shelf-list").querySelectorAll("[data-topic]").forEach((b) => b.addEventListener("click", () => openStart(TOPICS.find((t) => t.id === b.dataset.topic))));
+  show("shelf");
+}
+
+// Step 1: the list of what they must be able to teach.
+function openStart(t) {
+  T = t; ST = stateFor(t); P = {}; sessionT0 = Date.now();
+  log("topic", {});
+  $("start-topic").textContent = `${t.subject} · ${t.title}`;
+  $("start-lede").textContent = `${t.ideas.length} parts, ${totalQs(t)} questions, about ${t.minutes} minutes. By the end, you should be able to answer every question below in your own words.`;
+  $("start-ideas").classList.add("big");
+  $("start-ideas").innerHTML = t.ideas.map((i) => `<li><div><b>${esc(i.title)}</b><ul class="asks-list">${i.asks.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div></li>`).join("");
+  ["copy-list", "copy-list-2"].forEach((id) => { $(id).textContent = id === "copy-list" ? "Copy list" : "Copy the list"; });
+  show("start");
+}
+function listText() {
+  return [`I have to teach this to someone tomorrow. Help me learn it well enough to explain each part in my own words.`, ``,
+    `Topic: ${T.title}`, `Source: ${T.source.site}, "${T.source.title}" ${T.source.url}`, ``, `I need to be able to answer these questions:`,
+    ...T.ideas.flatMap((i, k) => [``, `${k + 1}. ${i.title}`, ...i.asks.map((a) => `   - ${a}`)])].join("\n");
+}
+async function copyList(btn) {
+  log("copy-list", { from: btn.id });
+  try { await navigator.clipboard.writeText(listText()); btn.textContent = "Copied"; }
+  catch (e) { const ta = document.createElement("textarea"); ta.value = listText(); document.body.append(ta); ta.select(); try { document.execCommand("copy"); btn.textContent = "Copied"; } catch (x) { btn.textContent = "Couldn't copy here"; } ta.remove(); }
+}
+$("copy-list").addEventListener("click", (e) => copyList(e.currentTarget));
+$("copy-list-2").addEventListener("click", (e) => copyList(e.currentTarget));
+$("start-back").addEventListener("click", renderShelf);
+$("start-next").addEventListener("click", openChoose);
+
+// Step 2: the article on the left, Kube on the right, or their own way. Nothing pushes Kube.
+function openChoose() {
+  $("art-title").textContent = `“${T.source.title}”`;
+  $("art-meta").textContent = `${T.source.site} · about ${T.source.read} min read`;
+  $("art-open").href = T.source.url;
+  $("art-ready").hidden = !ST.articleOpened;
+  $("choose-face").innerHTML = FACE("smile");
+  log("choose", {});
+  show("choose");
+}
+$("choose-back").addEventListener("click", () => show("start"));
+$("art-open").addEventListener("click", () => { ST.articleOpened = true; persist(); log("route", { to: "article-open" }); setTimeout(() => { $("art-ready").hidden = false; }, 400); });
+$("go-kube").addEventListener("click", () => beginLearning("kube"));
+document.querySelectorAll("[data-test]").forEach((b) => b.addEventListener("click", () => beginLearning(b.dataset.test)));
+
+function beginLearning(route) {
+  ST.route = route; ST.firstRoute ||= route; persist();
+  log("start", { route }); $("card").style.visibility = ""; $("list-intro").hidden = true;
+  $("bar-topic").textContent = T.title;
+  $("corner-face").innerHTML = FACE("smile");
+  show("learn");
+  $("signals").hidden = !SHOW_SIGNALS;
+  setSignals(sigOpen());
+  P = {};
+  Object.assign(E, { last: Date.now(), lastMouse: Date.now(), lastKind: "", aways: 0, awayMs: 0, quickCloses: 0, idkRow: 0, idks: 0, solidRow: 0, offered: 0, taken: 0, scrolls: 0, holes: 0, asked: 0, pics: 0, mic: 0, answers: [], lastRead: "", lastTip: "", fastNext: 0 });
+  renderBar(); renderSyl();
+  Object.assign(R, { secs: T.ideas.map(() => 0), backs: T.ideas.map(() => 0), cur: -1, maxSeen: -1, reachedEnd: false, notes: 0 });
+  if (route === "kube") {
+    const go = () => ST.kphase === "teach" ? (showView("map"), goIdea(ST.idx || 0)) : openArticle();
+    if (!ST.listShown) { ST.listShown = true; persist(); showView("map"); listIntro(go); } else go();
+  } else { ST.order = null; showView("map"); goIdea(testing() ? 0 : ST.idx || 0); }
+}
+// The list first appears in the middle, then shrinks into the "Your list" button, with a quick tip next to it.
+function listIntro(next) {
+  const ov = $("list-intro"), card = $("li-card");
+  $("li-face").innerHTML = FACE("smile");
+  $("li-list").innerHTML = T.ideas.map((i) => `<li><div><b>${esc(i.title)}</b><ul class="asks-list">${i.asks.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div></li>`).join("");
+  ov.hidden = false; card.style.transform = ""; card.style.opacity = ""; card.style.animation = ""; ov.classList.remove("going");
+  $("card").innerHTML = ""; $("card").style.visibility = "hidden"; $("holes-l").innerHTML = ""; $("holes-r").innerHTML = "";
+  log("list-intro", {});
+  let gone = false;
+  const go = () => {
+    if (gone) return; gone = true;
+    const a = card.getBoundingClientRect(), b = $("list-btn").getBoundingClientRect();
+    card.style.transformOrigin = "top left";
+    card.style.animation = "none"; void card.offsetWidth; // the entry animation would otherwise pin transform and opacity
+    card.style.transform = `translate(${b.left - a.left}px, ${b.top - a.top}px) scale(${b.width / a.width}, ${b.height / a.height})`;
+    card.style.opacity = "0"; ov.classList.add("going");
+    setTimeout(() => {
+      ov.hidden = true; $("card").style.visibility = ""; const btn = $("list-btn"); btn.classList.remove("bump"); void btn.offsetWidth; btn.classList.add("bump");
+      const tip = $("list-tip"); tip.hidden = false; setTimeout(() => { tip.hidden = true; }, 6500);
+      next();
+    }, 1750);
+  };
+  // No button: it shows for a moment, then tucks itself away (a tap tucks it sooner)
+  const ms = 4500, bar = card.querySelector(".li-timer i");
+  if (bar) { bar.style.transition = "none"; bar.style.transform = "scaleX(1)"; void bar.offsetWidth; bar.style.transition = `transform ${ms}ms linear`; bar.style.transform = "scaleX(0)"; }
+  const timer = setTimeout(go, ms);
+  ov.onclick = () => { clearTimeout(timer); go(); };
+}
+$("learn-back").addEventListener("click", () => { stopMic(); stopCommand(); if (SYN) SYN.cancel(); renderShelf(); });
+
+// ---------- "Your list": the checklist, hidden until they ask for it ----------
+function renderSyl(popped) {
+  const done = donePts(), all = totalPts();
+  $("syl-count").textContent = `${done} of ${all}`;
+  $("list-count").textContent = `${done}/${all}`;
+  $("syl-fill").style.width = (100 * done / all) + "%";
+  $("syl-list").innerHTML = T.ideas.map((it, i) => {
+    const c = cov(it.id), full = c.size === it.points.length, now = i === ST.idx;
+    return `<li class="syl-idea${now ? " now" : ""}${full ? " full" : ""}"><button type="button" data-i="${i}"><span class="syl-num">${full ? "✓" : i + 1}</span><span class="syl-t">${esc(it.title)}</span><span class="syl-k">${c.size}/${it.points.length}</span></button>
+      ${now ? `<ul class="syl-pts">${it.points.map((p, k) => `<li class="${c.has(k) ? "yes" : ""}${popped && popped.has(k) ? " pop" : ""}"><i></i><span>${esc(it.asks[k] || p)}</span></li>`).join("")}</ul>` : ""}</li>`;
+  }).join("");
+  $("syl-list").querySelectorAll("[data-i]").forEach((b) => b.addEventListener("click", () => { toggleList(false); if (ST.route === "kube" && ST.kphase !== "teach") return toSection(+b.dataset.i); showView("map"); goIdea(+b.dataset.i); }));
+  if (popped && popped.size) { const b = $("list-btn"); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); }
+}
+function toggleList(on) {
+  const open = on ?? $("syl").hidden;
+  $("syl").hidden = !open; $("list-btn").setAttribute("aria-expanded", String(open));
+  if (open) log("list-open", {});
+}
+$("list-btn").addEventListener("click", () => toggleList());
+$("syl-close").addEventListener("click", () => toggleList(false));
+$("syl-finish").addEventListener("click", finish);
+
+function renderBar() { $("bar-step").textContent = artOn() ? `Reading · part ${ST.idx + 1} of ${T.ideas.length} · ${idea().title}` : `${ST.order ? "Question" : "Part"} ${qNo()} of ${T.ideas.length} · ${idea().title}`; }
+const qNo = () => ST.order ? ST.order.indexOf(ST.idx) + 1 : ST.idx + 1;
+function nextIdx() { const o = ST.order || T.ideas.map((_, i) => i), k = o.indexOf(ST.idx); return k < 0 || k + 1 >= o.length ? T.ideas.length : o[k + 1]; }
+function setMode(m, why) {
+  const p = ph(idea().id);
+  log("mode", { from: p.mode, to: m, why }); p.mode = m; ST.pref = m; persist();
+  if (p.phase === "ask") p.answering = false;
+  stopCommand(); renderCard(); renderHoles();
+  if (m === "teach") focusTa("main");
+  if (voiceOn) { if (m === "read") say(idea().teach); else if (m === "ask") say("Tap a question, or ask me your own."); else afterCard(); }
+}
+// The understanding slider: drag or tap; letting go on a stop picks it. Left = questions, middle = short answer, right = explain.
+const GAUGE = [["I have questions", "ask"], ["Show me a short answer", "read"], ["I can explain this", "teach"]];
+const GAUGE_SAYS = [[/explain|i know|i got (it|this)|i can teach|teach (you|it)/, "teach"], [/question|ask|not sure|no idea|don'?t know|confused/, "ask"], [/short|show me|answer|read|tell me/, "read"]];
+function wireGauge(g) {
+  const tr = g.querySelector(".g-track"), th = g.querySelector(".g-thumb"); let v = null, down = false, t = null;
+  const set = (nv) => { v = Math.max(0, Math.min(2, nv)); th.hidden = false; th.style.left = v * 50 + "%"; tr.setAttribute("aria-valuetext", GAUGE[v][0]); g.querySelectorAll("[data-g]").forEach((b) => b.classList.toggle("on", +b.dataset.g === v)); };
+  const at = (x) => { const r = tr.getBoundingClientRect(); return Math.round(((x - r.left) / r.width) * 2); };
+  const commit = () => { if (v == null) return; clearTimeout(t); th.classList.add("pick"); t = setTimeout(() => setMode(GAUGE[v][1], "slider"), 380); };
+  tr.addEventListener("pointerdown", (e) => { down = true; tr.setPointerCapture(e.pointerId); clearTimeout(t); set(at(e.clientX)); });
+  tr.addEventListener("pointermove", (e) => { if (down) set(at(e.clientX)); });
+  tr.addEventListener("pointerup", () => { if (down) { down = false; commit(); } });
+  tr.addEventListener("keydown", (e) => { if (e.key === "ArrowLeft") set((v ?? 1) - 1); else if (e.key === "ArrowRight") set((v ?? 1) + 1); else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (v == null) set(1); commit(); } });
+  g.querySelectorAll("[data-g]").forEach((b) => b.addEventListener("click", () => { set(+b.dataset.g); commit(); }));
+}
+
+function renderAll(popped) { renderBar(); renderSyl(popped); renderCard(); renderHoles(); }
+function goIdea(i) {
+  stopMic(); stopCommand(); if (SYN) SYN.cancel(); kubeHush();
+  if (i >= T.ideas.length) return finish();
+  ST.idx = i; persist();
+  const p = ph(idea().id); p.t0 = Date.now();
+  if (!p.mode) p.mode = "teach"; // v47: no slider; Kube asks, you answer or say "no idea"
+  log("idea", {});
+  renderAll(); window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ---------- the main card ----------
+function answerBox(key, label) {
+  return `<div class="answer${SR ? "" : " solo"}">${SR ? `<button type="button" class="mic" data-mic="${key}" aria-label="Talk">${MIC_I}</button>` : ""}
+    <textarea data-ta="${key}" placeholder="${SR ? "Tap the mic and just talk, or type…" : "Tell Kube in your own words…"}"></textarea></div>
+    <p class="note" data-note="${key}" hidden></p>
+    ${grader === "words" ? `<p class="note">Kube can only match words right now. <button type="button" class="linkish" data-key>Connect Claude</button> so it really understands you.</p>` : ""}
+    <div class="row"><button type="button" class="btn" data-send="${key}" disabled>${label}</button></div>`;
+}
+let typeT = null;
+function renderIntro(it, p) {
+  // Only Kube and the question, typed out while Kube talks (and reads it aloud in Voice mode). A click finishes it.
+  $("card").innerHTML = `<div class="intro" id="intro"><div class="kube-face" id="intro-face">${FACE("talk")}</div><div class="intro-q" aria-live="polite"><span id="intro-text"></span><span class="caret"></span></div></div>`;
+  const out = $("intro-text"), q = it.q; let n = 0, typed = false, spoke = !voiceOn || !SYN;
+  const done = () => { if (p.intro) return; clearInterval(typeT); p.intro = true; log("asked", { ms: Date.now() - p.t0 }); renderCard(true); renderHoles(); afterCard(); };
+  const maybe = () => { if (typed && spoke) setTimeout(done, 500); };
+  clearInterval(typeT);
+  typeT = setInterval(() => { n += 1; out.textContent = q.slice(0, n); if (n >= q.length) { clearInterval(typeT); typed = true; const f = $("intro-face"); if (f && spoke) f.innerHTML = FACE("smile"); maybe(); } }, 32);
+  if (!spoke) say(q, () => { spoke = true; const f = $("intro-face"); if (f) f.innerHTML = FACE("smile"); maybe(); });
+  $("intro").addEventListener("click", () => { if (SYN) SYN.cancel(); done(); });
+  requestAnimationFrame(drawLinks);
+}
+// After the card settles: in Voice mode, Kube listens for a choice, or the mic opens for an answer.
+function afterCard() {
+  if (!voiceOn || $("learn").hidden) return;
+  const it = idea(), p = ph(it.id);
+  if (p.phase === "ask" && !p.mode) listenFor(GAUGE_SAYS, (v) => setMode(v, "voice"));
+  else if ($("card").querySelector('[data-mic]') && !listening && !p.grading && !p.gapBusy) setTimeout(() => { const m = $("card").querySelector('[data-mic]'); if (m && !listening) m.click(); }, 300);
+}
+function renderCard(fresh) {
+  const it = idea(), p = ph(it.id), c = cov(it.id), last = nextIdx() >= T.ideas.length;
+  if (!p.intro) return renderIntro(it, p);
+  const mode = p.mode;
+  let h = `<div class="card-eyebrow">${ST.order ? "Question" : "Part"} ${qNo()} of ${T.ideas.length} · ${esc(it.title)}</div>
+    <div class="asks"><div class="kube-face">${FACE(p.phase === "graded" && p.fb && p.fb.level === "solid" ? "happy" : "smile")}</div><div class="asks-q"><small>Kube asks</small><p>${esc(it.q)}</p></div></div>`;
+  const shortBox = `<div class="short"><small>The short answer</small>${esc(it.teach)}</div>`;
+  let body = "";
+  if (p.phase === "ask") {
+    if (!mode) {
+      body += `<div class="gauge" data-gauge>
+        <div class="g-q">How well do you understand this?</div>
+        <div class="g-track" tabindex="0" role="slider" aria-label="How well do you understand this?" aria-valuemin="0" aria-valuemax="2" aria-valuetext="Not chosen"><i class="g-line"></i><i class="g-dot" style="left:0%"></i><i class="g-dot" style="left:50%"></i><i class="g-dot" style="left:100%"></i><b class="g-thumb" hidden></b></div>
+        <div class="g-labels">${GAUGE.map(([label], v) => `<button type="button" data-g="${v}">${label}</button>`).join("")}</div>
+        ${voiceOn && SR ? `<p class="g-voice"><span class="rec-dot"></span>Or just say it</p>` : ""}</div>`;
+    } else if (mode === "read") {
+      body += shortBox + (it.fig ? `<div class="fig anim">${figSVG(it.fig)}</div>` : "") + `<p class="note">Curious about a part? Tap a question around this card.</p>`;
+      body += p.answering ? answerBox("main", "Tell Kube") : `<div class="row"><button type="button" class="btn" data-act="answer">Got it. Let me tell Kube</button></div>`;
+    } else if (mode === "ask") {
+      body += `<p class="note">Tap any question around this card to explore it, or ask your own.</p>
+        <form class="ask-own" data-ask><input type="text" placeholder="Ask anything about this…" aria-label="Ask your own question"><button class="btn small" type="submit">Ask</button></form>`;
+      body += p.answering ? answerBox("main", "Tell Kube") : `<div class="row"><button type="button" class="btn" data-act="answer">I'm ready to tell Kube</button></div>`;
+    } else {
+      if (p.short) body += shortBox;
+      else if (p.hint && !p.lookback) body += `<div class="hint"><small>A hint</small><p>${esc(lead(it.blurb))}</p>${it.fig ? `<div class="fig anim">${figSVG(it.fig)}</div>` : ""}</div>`;
+      if (p.lookback && !p.looked) body += `<div class="lookback"><div class="kube-face">${FACE("smile")}</div><div><p>No worries. Let's look at it together: it's part ${ST.idx + 1} of the article.</p><button type="button" class="btn small" data-act="look">Show me in the article</button></div></div>`;
+      if (p.looked) body += `<div class="lookback done"><p>Now tell me in your own words.</p><button type="button" class="linkish" data-act="look">Look again</button></div>`;
+      body += answerBox("main", "Tell Kube");
+      if (!p.short && !p.lookback) body += `<button type="button" class="idk" data-act="idk"><i>?</i><b>No idea</b><span>${p.hint ? (ST.route === "kube" ? "Show me where it is in the article" : "Show me the short answer") : "Give me a hint"}</span></button>`;
+    }
+  } else {
+    const fb = p.fb || {};
+    if (p.grading) body += `<p class="note"><span class="spin"></span>Kube is thinking about what you said…</p>`;
+    else {
+      body += `<div class="react"><div class="kube-face">${FACE(fb.level === "solid" ? "happy" : fb.level === "off" ? "huh" : "smile")}</div><div class="react-say">${esc(fb.say || "")}</div></div>`;
+      if (fb.wrong && fb.wrong.length) body += `<ul class="fixes">${fb.wrong.map((w) => `<li><q>${esc(w.quote)}</q> ${esc(w.fix)}</li>`).join("")}</ul>`;
+      if (p.gi < p.gaps.length) {
+        const g = it.holes[p.gaps[p.gi]];
+        body += `<div class="gap"><small>Kube's question · ${p.gi + 1} of ${p.gaps.length}</small><p class="gq">${esc(g.q)}</p>
+          ${p.gapMsg ? `<div class="${p.gapMsg.ok ? "got" : "note"}">${esc(p.gapMsg.text)}</div>` : ""}
+          ${p.gapBusy ? `<p class="note"><span class="spin"></span>Listening…</p>` : answerBox("gap", "Answer")}
+          <div class="row"><button type="button" class="linkish" data-act="showme">I don't know, show me</button><button type="button" class="linkish" data-act="skipgap">Skip</button></div></div>`;
+      } else if (c.size === it.points.length) body += `<div class="got">You taught me all of it. Thank you!</div>`;
+      else body += `<p class="note">That's all my questions for now. Tap "Your list" at the top to see what's still open, or move on and come back later.</p>`;
+    }
+  }
+  if (it.fig && mode && !(mode === "read" && p.phase === "ask") && !(p.hint && p.phase === "ask" && !p.lookback && !p.short)) {
+    body += p.fig ? `<div class="fig anim">${figSVG(it.fig)}</div><div class="tools"><button type="button" class="linkish" data-act="fig">Hide the picture</button></div>`
+      : `<div class="tools"><button type="button" class="linkish" data-act="fig">Show me a picture</button></div>`;
+  }
+  const strong = p.phase === "graded" || mode === "read" || (p.short && mode === "teach");
+  body += `<div class="next-row"><button type="button" class="btn${strong ? "" : " ghost"}" data-act="next">${last ? "See what I can explain" : ST.order ? "Next question →" : "Next part →"}</button>
+    ${p.phase === "graded" && !p.grading ? `<button type="button" class="linkish" data-act="again">Teach Kube this again</button>` : ""}</div>`;
+  $("card").innerHTML = h + (fresh ? `<div class="fade-in" style="display:grid;gap:16px">${body}</div>` : body);
+  wireCard();
+}
+function wireCard() {
+  const card = $("card"), it = idea(), p = ph(it.id);
+  card.querySelectorAll("[data-ta]").forEach((ta) => {
+    const key = ta.dataset.ta, send = card.querySelector(`[data-send="${key}"]`);
+    ta.value = key === "main" ? p.draft : p.gapDraft;
+    const sync = () => { if (key === "main") p.draft = ta.value; else p.gapDraft = ta.value; send.disabled = !ta.value.trim(); };
+    ta.addEventListener("input", sync); sync();
+    const mic = card.querySelector(`[data-mic="${key}"]`);
+    if (mic) mic.addEventListener("click", () => toggleMic(mic, ta, card.querySelector(`[data-note="${key}"]`), sync));
+    send.addEventListener("click", () => { stopMic(); key === "main" ? teach(ta.value) : answerGap(ta.value); });
+  });
+  card.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => ACT[b.dataset.act]()));
+  const g = card.querySelector("[data-gauge]"); if (g) wireGauge(g);
+  const f = card.querySelector("[data-ask]");
+  if (f) f.addEventListener("submit", (e) => { e.preventDefault(); const q = f.querySelector("input").value.trim(); if (q) askOwn(q); });
+  wireKeyButtons(card);
+  requestAnimationFrame(drawLinks);
+}
+const ACT = {
+  answer() { const p = ph(idea().id); p.answering = true; renderCard(); focusTa("main"); },
+  idk() {
+    // First "no idea": a hint. Second: back to that part of the article (or the short answer when they learned elsewhere).
+    const it = idea(), p = ph(it.id); p.idk++;
+    E.idkRow++; E.idks++; log("idk", { n: p.idk }); persist();
+    if (p.idk === 1) { p.hint = true; E.lastRead = "Said \"no idea\": showing a hint"; }
+    else if (ST.route === "kube") { p.lookback = true; E.lastRead = "Said \"no idea\" twice: pointing back to the article"; }
+    else { p.short = true; p.revealed = true; ST.how[it.id] ||= "read"; E.lastRead = "Said \"no idea\" twice: showing the short answer"; }
+    renderCard(); renderHoles();
+    if (voiceOn) say(p.lookback ? "No worries. Let's look at it together." : p.short ? it.teach : "Here's a hint. " + lead(it.blurb), () => afterCard());
+  },
+  look() { const p = ph(idea().id); p.looked = true; log("look-back", {}); E.lookbacks = (E.lookbacks || 0) + 1; persist(); showView("article"); toSection(ST.idx, true); },
+  next() { log("next", { ms: Date.now() - ph(idea().id).t0 }); maybeSkimNext(); goIdea(nextIdx()); },
+  again() { const p = ph(idea().id); p.phase = "ask"; p.mode = "teach"; p.answering = true; p.draft = ""; renderCard(); renderHoles(); focusTa("main"); },
+  showme() { const it = idea(), p = ph(it.id), hi = p.gaps[p.gi]; log("showme", { q: it.holes[hi].q }); openHole(hi, true); },
+  skipgap() { const p = ph(idea().id); log("skipgap", {}); p.gi++; p.gapMsg = null; p.gapDraft = ""; renderCard(); renderHoles(); },
+  fig() { const p = ph(idea().id); p.fig = !p.fig; log(p.fig ? "picture" : "picture-hide", {}); E.pics += p.fig ? 1 : 0; renderCard(); }
+};
+function focusTa(k) { const ta = $("card").querySelector(`[data-ta="${k}"]`); if (ta) ta.focus(); }
+
+// ---------- diagrams, drawn only when asked for ----------
+function wrap(text, max) { const out = []; let line = ""; text.split(" ").forEach((w) => { if ((line + " " + w).trim().length > max && line) { out.push(line); line = w; } else line = (line + " " + w).trim(); }); if (line) out.push(line); return out; }
+function figSVG(f) {
+  const W = 520;
+  if (f.type === "flow") {
+    const n = f.steps.length, gap = 26, bw = (W - gap * (n - 1)) / n, maxc = Math.floor(bw / 8.2);
+    const lines = f.steps.map((s) => wrap(s, maxc)), bh = Math.max(...lines.map((l) => l.length)) * 18 + 28;
+    let g = "";
+    f.steps.forEach((s, i) => {
+      const x = i * (bw + gap);
+      g += `<g class="draw" style="animation-delay:${0.2 + i * 0.7}s"><rect class="box${i === n - 1 ? " hi" : ""}" x="${x}" y="4" width="${bw}" height="${bh}" rx="12"/>`;
+      lines[i].forEach((l, k) => { g += `<text x="${x + bw / 2}" y="${4 + bh / 2 + (k - (lines[i].length - 1) / 2) * 18 + 5}" text-anchor="middle" font-size="14">${esc(l)}</text>`; });
+      g += `</g>`;
+      if (i < n - 1) { const ax = x + bw + 4, ay = 4 + bh / 2; g += `<g class="draw" style="animation-delay:${0.55 + i * 0.7}s"><path class="arw" d="M${ax} ${ay}H${ax + gap - 12}"/><path class="arwh" d="M${ax + gap - 12} ${ay - 5}l8 5-8 5z"/></g>`; }
+    });
+    return `<svg viewBox="0 0 ${W} ${bh + 8}" role="img" aria-label="${esc(f.steps.join(", then "))}">${g}</svg>`;
+  }
+  if (f.type === "groups") {
+    const n = f.groups.length, gap = 16, cw = (W - gap * (n - 1)) / n, maxc = Math.floor(cw / 7.6);
+    const rows = f.groups.map((gr) => gr.items.map((it) => wrap(it, maxc - 2)));
+    const ch = Math.max(...rows.map((r) => r.reduce((a, l) => a + l.length * 18 + 8, 0))) + 52;
+    let g = "";
+    f.groups.forEach((gr, i) => {
+      const x = i * (cw + gap); let y = 48;
+      g += `<g class="draw" style="animation-delay:${0.2 + i * 0.9}s"><rect class="box${i === n - 1 ? " hi" : ""}" x="${x}" y="2" width="${cw}" height="${ch}" rx="14"/><text x="${x + 14}" y="30" font-size="15" font-weight="700">${esc(gr.label)}</text>`;
+      rows[i].forEach((ls, j) => { g += `<g class="draw" style="animation-delay:${0.5 + i * 0.9 + j * 0.25}s">`; ls.forEach((l, k) => { g += `<text x="${x + 14}" y="${y + k * 18}" font-size="14">${k ? "" : "• "}${esc(l)}</text>`; }); g += `</g>`; y += ls.length * 18 + 8; });
+      g += `</g>`;
+    });
+    return `<svg viewBox="0 0 ${W} ${ch + 6}" role="img" aria-label="${esc(f.groups.map((gr) => gr.label + ": " + gr.items.join(", ")).join(". "))}">${g}</svg>`;
+  }
+  if (f.type === "bars") {
+    const lw = 190, max = Math.max(...f.bars.map((b) => b[1])), rh = 34;
+    const fmt = (v) => f.unit === "$" ? "$" + v.toLocaleString() : f.unit === "$k" ? "$" + v.toLocaleString() + "k" : v + (f.unit || "");
+    let g = "";
+    f.bars.forEach(([label, v], i) => {
+      const y = i * rh, w = Math.max(3, (W - lw - 80) * v / max);
+      const d = 0.2 + i * 0.45;
+      g += `<g class="draw" style="animation-delay:${d}s"><text x="${lw - 10}" y="${y + 21}" text-anchor="end" font-size="14" class="muted-t">${esc(label)}</text></g><rect class="bar grow${/put in|Start|today/.test(label) ? " alt" : ""}" style="animation-delay:${d}s" x="${lw}" y="${y + 6}" width="${w}" height="22" rx="5"/><g class="draw" style="animation-delay:${d + 0.5}s"><text x="${lw + w + 8}" y="${y + 22}" font-size="14" font-weight="700">${fmt(v)}</text></g>`;
+    });
+    return `<div class="fig-t">${esc(f.title || "")}</div><svg viewBox="0 0 ${W} ${f.bars.length * rh + 4}" role="img" aria-label="${esc(f.bars.map((b) => b[0] + " " + fmt(b[1])).join(", "))}">${g}</svg>${f.note ? `<div class="fig-n">${esc(f.note)}</div>` : ""}`;
+  }
+  return "";
+}
+
+// ---------- rabbit holes: pill bubbles around the card, each opening its own card on the map ----------
+const ICONS = [
+  `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></svg>`,
+  `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9V16h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3z"/></svg>`,
+  `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>`,
+  `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>`
+];
+const YOU_I = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>`;
+const AV = `<svg class="av" viewBox="0 0 28 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><circle cx="14" cy="8" r="6"/><circle cx="20" cy="8" r="6"/></svg>`;
+function missing(it) { const c = cov(it.id); return it.points.map((_, k) => k).filter((k) => !c.has(k)); }
+function holeList(it) { return it.holes.map((hl, i) => ({ ...hl, i, n: i })).concat((ST.custom[it.id] || []).map((hl, j) => ({ ...hl, pts: [], i: "c" + j, n: it.holes.length + j, custom: true }))); }
+function renderHoles() {
+  const it = idea(), p = ph(it.id), seen = seenSet(it.id);
+  const visible = p.intro && (p.mode === "read" || p.mode === "ask" || p.revealed || p.phase === "graded");
+  const miss = new Set(p.phase === "graded" ? missing(it) : []);
+  const html = (hl) => {
+    const wonder = !hl.custom && hl.pts.some((k) => miss.has(k)) && !seen.has(hl.i), open = p.open === hl.i, was = seen.has(hl.i);
+    const badge = wonder ? "Kube wonders" : was ? "✓ Explored" : hl.custom ? "You asked" : "";
+    return `<div class="pill${wonder ? " wonder" : ""}${was ? " seen" : ""}${open ? " open" : ""}" data-h="${hl.i}" role="button" tabindex="0" aria-expanded="${open}" title="${hl.custom ? "You asked this" : "Others asked this"}" style="animation-delay:${0.1 + hl.n * 0.12}s">
+      ${badge ? `<span class="badge">${badge}</span>` : ""}<span class="pi">${hl.custom ? YOU_I : ICONS[hl.n % ICONS.length]}</span><span class="hq">${esc(hl.q)}</span></div>`;
+  };
+  const L = [], R = [];
+  if (visible) holeList(it).forEach((hl, n) => (n % 2 ? R : L).push(html(hl)));
+  const hcard = $("holecard"); if (hcard.parentElement !== $("map")) $("card").after(hcard);
+  $("holes-l").innerHTML = L.join(""); $("holes-r").innerHTML = R.join("");
+  document.querySelectorAll(".pill").forEach((el) => {
+    const id = el.dataset.h, key = /^c/.test(id) ? id : +id;
+    el.addEventListener("click", () => { p.open === key ? closeHole() : openHole(key); });
+    el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); p.open === key ? closeHole() : openHole(key); } });
+  });
+  renderHoleCard();
+  requestAnimationFrame(drawLinks);
+}
+function holeOf(it, key) { return typeof key === "string" ? (ST.custom[it.id] || [])[+key.slice(1)] : it.holes[key]; }
+const wide = () => getComputedStyle($("links")).display !== "none";
+function renderHoleCard() {
+  const hc = $("holecard"), it = idea(), p = ph(it.id);
+  if (p.open == null || !p.intro) { hc.hidden = true; hc.innerHTML = ""; return; }
+  const hl = holeOf(it, p.open), pill = document.querySelector(`.pill[data-h="${p.open}"]`);
+  if (!hl || !pill) { hc.hidden = true; return; }
+  const n = typeof p.open === "string" ? -1 : p.open;
+  const parts = hl.a.match(/[^.!?]+[.!?]+["”]?\s*|[^.!?]+$/g) || [hl.a];
+  hc.innerHTML = `<div class="hc-top"><span class="pi">${n < 0 ? YOU_I : ICONS[n % ICONS.length]}</span><h3>${esc(hl.q)}</h3><button type="button" class="x" data-close aria-label="Close">×</button></div>
+    <div class="hc-body">${parts.map((t, i) => `<span class="sent" style="animation-delay:${0.2 + i * 0.75}s">${esc(t.trim())} </span>`).join("")}</div>
+    <div class="row"><button type="button" class="btn small ghost" data-close>Close this rabbit hole</button></div>`;
+  hc.hidden = false;
+  const left = pill.closest(".holes") === $("holes-l");
+  if (wide()) {
+    const card = $("card"), mapW = $("map").clientWidth, gap = 28;
+    const x = left ? 0 : card.offsetLeft + card.offsetWidth + gap, w = left ? card.offsetLeft - gap : mapW - x;
+    hc.style.left = x + "px"; hc.style.width = Math.max(260, w) + "px";
+    hc.style.top = Math.max(0, pill.offsetTop + pill.parentElement.offsetTop - 30) + "px";
+    if (hc.parentElement !== $("map")) $("card").after(hc);
+  } else { hc.style.left = hc.style.top = hc.style.width = ""; pill.after(hc); }
+  hc.classList.toggle("from-l", left);
+  hc.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => closeHole()));
+}
+function openHole(key, fromGap) {
+  const it = idea(), p = ph(it.id); p.revealed = true;
+  if (p.open != null) closeHole(true);
+  p.open = key; p.openAt = Date.now();
+  const s = seenSet(it.id); s.add(key); ST.seen[it.id] = [...s]; ST.how[it.id] ||= p.mode === "ask" ? "asked" : "read"; persist();
+  E.holes++; log("hole", { q: holeOf(it, key).q, fromGap: !!fromGap });
+  renderHoles();
+  const hc = $("holecard"); if (!hc.hidden) hc.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  if (voiceOn) say(holeOf(it, key).a);
+}
+function closeHole(quiet) {
+  const it = idea(), p = ph(it.id); if (p.open == null) return;
+  const ms = Date.now() - p.openAt; log("hole-close", { ms });
+  if (ms < 2500) { E.quickCloses++; E.lastRead = `Closed a question after ${(ms / 1000).toFixed(1)}s: skimming?`; }
+  p.open = null; if (SYN && voiceOn) SYN.cancel();
+  if (!quiet) { renderHoles(); afterHoleClose(); }
+}
+function drawLinks() {
+  const svg = $("links"), card = $("card"), map = $("map");
+  if (!wide()) return;
+  const m = map.getBoundingClientRect(), c = card.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${m.width} ${m.height}`);
+  const it = idea(), seen = seenSet(it.id);
+  svg.innerHTML = [...document.querySelectorAll(".pill")].map((el) => {
+    const r = el.getBoundingClientRect(), left = r.right < c.left + 10;
+    const x1 = (left ? c.left : c.right) - m.left, y1 = Math.min(Math.max(r.top + r.height / 2, c.top + 40), c.bottom - 40) - m.top;
+    const x2 = (left ? r.right : r.left) - m.left, y2 = r.top + r.height / 2 - m.top, dx = (x2 - x1) / 2;
+    const cls = el.classList.contains("open") ? "open" : el.classList.contains("wonder") ? "wonder" : seen.has(/^c/.test(el.dataset.h) ? el.dataset.h : +el.dataset.h) ? "done" : "";
+    return `<path class="${cls}" d="M${x1} ${y1} C${x1 + dx} ${y1} ${x2 - dx} ${y2} ${x2} ${y2}"/>`;
+  }).join("");
+}
+addEventListener("resize", () => { if (!$("learn").hidden) { renderHoleCard(); drawLinks(); } });
+
+// ---------- Kube reads what you say ----------
+let samplePromise = null, grader = "words";
+function getSample() {
+  if (!samplePromise) samplePromise = window.claude && typeof window.claude.use === "function"
+    ? Promise.resolve(window.claude.use("sample")).catch(() => null) : Promise.resolve(null);
+  return samplePromise;
+}
+const APIKEY = "autolearn-api-key";
+const apiKey = () => { try { return localStorage.getItem(APIKEY) || ""; } catch (e) { return ""; } };
+async function apiJson(text, key = apiKey()) {
+  let res;
+  try {
+    res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({ model: "claude-opus-5-5", max_tokens: 1200, messages: [{ role: "user", content: text }] })
+    });
+  } catch (e) { throw { code: "network" }; }
+  if (!res.ok) throw { code: res.status === 401 || res.status === 403 ? "bad_key" : "api" };
+  const j = await res.json();
+  const out = (j.content || []).filter((b) => b.type === "text").map((b) => b.text).join(""), m = out.match(/\{[\s\S]*\}/);
+  if (!m) throw { code: "parse" };
+  return JSON.parse(m[0]);
+}
+async function askClaude(prompt) {
+  const sm = await getSample();
+  if (sm && typeof sm.json === "function") return sm.json(prompt, { modelTier: "default" });
+  if (apiKey()) return apiJson(prompt);
+  return null;
+}
+async function refreshGrader() {
+  const sm = await getSample();
+  grader = sm ? "claude.ai" : apiKey() ? "key" : "words";
+  const pill = $("claude-pill");
+  pill.hidden = !!sm; pill.classList.toggle("on", grader === "key");
+  pill.querySelector("span").textContent = grader === "key" ? "Claude connected" : "Connect Claude";
+  $("start-claude").hidden = grader !== "words";
+  if (!$("learn").hidden && T && ph(idea().id).intro) renderCard();
+}
+function factsOf(it) { return it.holes.map((h) => `- ${h.q} ${h.a}`).join("\n") + `\n- In short: ${it.teach}`; }
+function teachPrompt(it, text, focus) {
+  return `You are Kube, a curious beginner who knows nothing about ${T.title}. A learner is teaching you, often by voice, so expect speech-to-text slips; ignore typos and filler.
+
+You asked: "${focus || it.q}"
+They said: """${text}"""
+
+A full answer to the main idea "${it.title}" covers these points:
+${it.points.map((k, i) => `${i + 1}. ${k}`).join("\n")}
+
+Facts from the lesson (source: ${T.source.site}, "${T.source.title}"), to check what they say against:
+${factsOf(it)}
+
+Mark it honestly:
+- "covered": the numbers of the points they actually explained correctly in their own words. Naming a term is not explaining it. Different wording is fine.
+- "wrong": anything they said that is incorrect, as {"quote": a short exact phrase of theirs, "fix": a kind correction under 20 words}.
+- "level": "solid" if they explained the heart of it correctly, "partly" if some of it, "off" if little or mostly wrong.
+- "say": your reaction as the beginner, first person, warm and specific to what they said, under 22 words. Never reveal points they missed.
+
+Reply with only JSON, like:
+{"covered":[1,3],"wrong":[],"level":"partly","say":"Oh, so the fake pill still changes how my brain feels pain. Wild!"}`;
+}
+const STOPW = new Set("about after their there these those which where while would could should every other being with from into your that this them they what when have will just like than then also because called".split(" "));
+function quickTeach(it, text) {
+  const t = text.toLowerCase(), words = t.split(/\s+/).filter(Boolean).length, covered = [];
+  if (words >= 5) it.points.forEach((pt, i) => {
+    const kws = [...new Set(pt.toLowerCase().match(/[a-z0-9]{4,}/g) || [])].filter((w) => !STOPW.has(w));
+    const hit = kws.filter((w) => t.includes(w.slice(0, Math.max(4, w.length - 2)))).length;
+    if (kws.length && hit >= Math.min(2, kws.length)) covered.push(i + 1);
+  });
+  const most = covered.length && covered.length >= it.points.length - 1;
+  return { covered, wrong: [], level: most ? "solid" : covered.length ? "partly" : "off", say: most ? "Oh, I think I get it now!" : covered.length ? "I think I get some of that!" : "Hmm, I'm not sure I follow yet.", quick: true };
+}
+async function grade(it, text, focus) {
+  let r = null;
+  try { r = await askClaude(teachPrompt(it, text, focus)); } catch (e) { r = null; }
+  if (!r || !Array.isArray(r.covered)) r = quickTeach(it, text);
+  r.covered = r.covered.map((n) => +n - 1).filter((k) => k >= 0 && k < it.points.length);
+  return r;
+}
+function addCovered(it, ks) {
+  const c = cov(it.id), fresh = new Set(ks.filter((k) => !c.has(k)));
+  ks.forEach((k) => c.add(k)); ST.covered[it.id] = [...c]; persist();
+  return fresh;
+}
+function gapsFor(it) {
+  const out = [];
+  missing(it).forEach((k) => { const i = it.holes.findIndex((h) => h.pts.includes(k)); if (i >= 0 && !out.includes(i)) out.push(i); });
+  return out;
+}
+async function teach(text) {
+  const it = idea(), p = ph(it.id);
+  p.phase = "graded"; p.grading = true; p.fb = null; renderCard();
+  E.idkRow = 0;
+  const r = await grade(it, text);
+  const fresh = addCovered(it, r.covered);
+  ST.how[it.id] = ST.how[it.id] === "read" || ST.how[it.id] === "asked" ? ST.how[it.id] + " then taught" : "taught"; persist();
+  p.grading = false; p.fb = r; p.gaps = gapsFor(it); p.gi = 0; p.gapMsg = null; p.revealed = true; p.answering = false;
+  const words = text.split(/\s+/).filter(Boolean).length;
+  E.answers.push(words); E.lastRead = `Explained in ${words} words: covered ${r.covered.length} of ${it.points.length}`;
+  log("teach", { words, covered: r.covered.length, of: it.points.length, level: r.level, quick: !!r.quick });
+  E.solidRow = r.level === "solid" ? E.solidRow + 1 : 0;
+  renderAll(fresh);
+  if (voiceOn) say([r.say, p.gi < p.gaps.length ? it.holes[p.gaps[p.gi]].q : ""].filter(Boolean).join(" "), afterCard);
+}
+async function answerGap(text) {
+  const it = idea(), p = ph(it.id), g = it.holes[p.gaps[p.gi]];
+  p.gapBusy = true; renderCard();
+  const r = await grade(it, text, g.q);
+  const fresh = addCovered(it, r.covered);
+  p.gapBusy = false; p.gapDraft = "";
+  const landed = g.pts.some((k) => cov(it.id).has(k));
+  log("gap", { q: g.q, landed, words: text.split(/\s+/).filter(Boolean).length });
+  if (landed) { p.gi++; while (p.gi < p.gaps.length && it.holes[p.gaps[p.gi]].pts.every((k) => cov(it.id).has(k))) p.gi++; p.gapMsg = { ok: true, text: "Got it! " + (r.say || "") }; }
+  else p.gapMsg = { ok: false, text: (r.say || "Hmm, I still don't quite get that part.") + " Want me to show you?" };
+  renderAll(fresh);
+  if (voiceOn) say([p.gapMsg.text, p.gi < p.gaps.length && landed ? it.holes[p.gaps[p.gi]].q : ""].filter(Boolean).join(" "), afterCard);
+}
+async function askOwn(q) {
+  const it = idea();
+  E.asked++; log("ask", { q });
+  let a = null;
+  try {
+    const r = await askClaude(`You answer a beginner's question while they learn "${it.title}" in a short lesson on ${T.title} (source: ${T.source.site}, "${T.source.title}").
+Lesson facts:
+${factsOf(it)}
+
+Their question: """${q}"""
+Answer in at most 3 short, plain sentences, using the lesson facts where they apply. Reply with only JSON: {"answer":"..."}`);
+    a = r && r.answer;
+  } catch (e) { a = null; }
+  if (!a) {
+    const best = it.holes.map((h, i) => [vScore(q, h.q + " " + h.a), i]).sort((x, y) => y[0] - x[0])[0];
+    if (best && best[0] > 0.12) { openHole(best[1]); return; }
+    a = "I can't look that up without Claude. Try one of the questions around this card, or connect Claude.";
+  }
+  (ST.custom[it.id] ||= []).push({ q, a }); persist();
+  openHole("c" + (ST.custom[it.id].length - 1));
+}
+const VSTOP = new Set("a an the is are was were be to of and or in on at it its this that what whats how why do does did i my me you your can could would should will just so for with about there their they them if then than im get".split(" "));
+const vWords = (t) => t.toLowerCase().replace(/[^a-z0-9' ]+/g, " ").split(/\s+/).map((w) => w.replace(/'s$/, "").replace(/'/g, "")).filter((w) => w && !VSTOP.has(w)).map((w) => w.length > 3 ? w.replace(/(es|s)$/, "") : w);
+function vScore(said, cand) { const A = new Set(vWords(said)), B = new Set(vWords(cand)); if (!A.size || !B.size) return 0; let n = 0; A.forEach((w) => { if (B.has(w)) n++; }); return 0.6 * n / B.size + 0.4 * n / A.size; }
+
+// ---------- voice (blocked inside claude.ai; works on the hosted copy) ----------
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false;
+function stopMic() { if (rec && listening) { try { rec.stop(); } catch (e) {} } listening = false; }
+function toggleMic(btn, ta, note, sync) {
+  if (listening) return stopMic();
+  try {
+    rec = new SR(); rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true;
+    const base = ta.value.trim() ? ta.value.trimEnd() + " " : "";
+    rec.onresult = (e) => {
+      let t = ""; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      if (/^\s*(no idea|i (don'?t|do not) know|not sure)[.!]?\s*$/i.test(t) && e.results[e.results.length - 1].isFinal) { stopMic(); ta.value = base.trim(); sync(); E.touch("voice"); return ta.dataset.ta === "main" ? ACT.idk() : ACT.showme(); }
+      const fin = /\b(i'?m|i am) done\.?\s*$/i.test(t);
+      ta.value = base + t.replace(/\b(i'?m|i am) done\.?\s*$/i, "").trimStart(); sync(); E.touch("voice");
+      if (fin && ta.value.trim()) { stopMic(); const send = ta.closest(".card").querySelector(`[data-send="${ta.dataset.ta}"]`); if (send) send.click(); }
+    };
+    rec.onerror = (e) => { if (/not-allowed|service-not-allowed|audio-capture/.test(e.error)) { note.hidden = false; note.textContent = "Voice is blocked here, so type instead. Voice works on aneesh-123.github.io/autolearn in Chrome, Edge or Safari."; btn.hidden = true; } };
+    rec.onend = () => { listening = false; btn.classList.remove("on"); btn.innerHTML = MIC_I; if (/Listening/.test(note.textContent)) note.hidden = true; };
+    rec.start(); listening = true; E.mic++; log("mic", {});
+    btn.classList.add("on"); btn.innerHTML = STOP_I;
+    note.hidden = false; note.textContent = voiceOn ? "Listening… say \"I'm done\" when you're finished." : "Listening… tap the red button when you're done.";
+  } catch (e) { note.hidden = false; note.textContent = "Voice isn't available here, so type instead."; btn.hidden = true; }
+}
+
+// ---------- Voice mode: Kube reads aloud, and simple choices are answered by voice (no AI needed) ----------
+const SYN = window.speechSynthesis;
+let voiceOn = false;
+try { voiceOn = localStorage.getItem("autolearn-voice") === "on"; } catch (e) {}
+const V = { prompts: 0, answered: 0, missed: 0, last: "" };
+function say(text, onEnd) {
+  if (!voiceOn || !SYN || !text) { if (onEnd) onEnd(); return false; }
+  SYN.cancel();
+  const u = new SpeechSynthesisUtterance(text); u.rate = 1.02; let fired = false;
+  const end = () => { if (!fired) { fired = true; if (onEnd) onEnd(); } };
+  u.onend = end; u.onerror = end; setTimeout(end, 1500 + text.length * 90);
+  SYN.speak(u); return true;
+}
+let cmdRec = null, cmdT = null;
+function listenFor(choices, onMatch, ms = 9000) {
+  stopCommand();
+  if (!voiceOn || !SR) return;
+  V.prompts++; V.last = "listening for a choice"; log("voice-prompt", {});
+  let done = false;
+  try {
+    cmdRec = new SR(); cmdRec.lang = "en-US"; cmdRec.continuous = true; cmdRec.interimResults = true;
+    cmdRec.onresult = (e) => {
+      let t = ""; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      const hit = choices.find(([re]) => re.test(t.toLowerCase()));
+      if (hit && !done) { done = true; V.answered++; V.last = `heard "${t.trim()}"`; log("voice-answer", { said: t.trim(), to: hit[1] }); stopCommand(); onMatch(hit[1]); }
+    };
+    cmdRec.onend = () => { if (!done) { V.missed++; V.last = "no voice reply"; log("voice-none", {}); } cmdRec = null; };
+    cmdRec.onerror = (e) => { if (/not-allowed|service-not-allowed|audio-capture/.test(e.error)) V.last = "mic blocked here"; };
+    cmdRec.start(); clearTimeout(cmdT); cmdT = setTimeout(() => { if (!done) stopCommand(); }, ms);
+  } catch (e) { V.last = "voice unavailable"; }
+}
+function stopCommand() { clearTimeout(cmdT); if (cmdRec) { try { cmdRec.stop(); } catch (e) {} } }
+function setVoice(on) {
+  voiceOn = on; try { localStorage.setItem("autolearn-voice", on ? "on" : "off"); } catch (e) {}
+  $("voice-btn").classList.toggle("on", on); $("voice-btn").setAttribute("aria-pressed", String(on));
+  log(on ? "voice-on" : "voice-off", {});
+  if (!on) { stopCommand(); stopMic(); if (SYN) SYN.cancel(); }
+  else if (!SR) offer("novoice", "I'll read things out loud. Answering by voice works on the github.io copy, in Chrome, Edge or Safari.", null);
+  if (T && !$("learn").hidden && ph(idea().id).intro) { renderCard(); if (on) afterCard(); }
+}
+$("voice-btn").addEventListener("click", () => setVoice(!voiceOn));
+$("voice-btn").classList.toggle("on", voiceOn); $("voice-btn").setAttribute("aria-pressed", String(voiceOn));
+
+// ---------- quiet signals: how the learner engages decides what Kube offers (shown live while testing) ----------
+const E = { last: Date.now(), lastMouse: Date.now(), lastKind: "", awayAt: 0, aways: 0, awayMs: 0, quickCloses: 0, idkRow: 0, idks: 0, solidRow: 0, offered: 0, taken: 0,
+  scrolls: 0, holes: 0, asked: 0, pics: 0, mic: 0, answers: [], lastRead: "", lastTip: "",
+  touch(kind) { E.last = Date.now(); E.lastKind = kind; if (kind === "mouse") E.lastMouse = Date.now(); } };
+addEventListener("pointermove", () => E.touch("mouse"), { passive: true });
+addEventListener("keydown", () => E.touch("typing"), { passive: true });
+addEventListener("touchstart", () => E.touch("touch"), { passive: true });
+addEventListener("scroll", () => { E.touch("scroll"); E.scrolls++; }, { passive: true });
+addEventListener("wheel", () => E.touch("scroll"), { passive: true });
+document.addEventListener("visibilitychange", () => {
+  if ($("learn").hidden) return;
+  if (document.hidden) E.awayAt = Date.now();
+  else if (E.awayAt) {
+    const ms = Date.now() - E.awayAt; E.awayAt = 0;
+    if (ms > 4000) { E.aways++; E.awayMs += ms; log("away", { ms }); E.lastRead = `Came back after ${Math.round(ms / 1000)}s in another tab`; }
+    if (E.aways >= 2 && ms > 20000) offer("break", "Welcome back! Want to take a proper break? Your progress is saved.", [["Take a break", pause], ["I'm here", null]]);
+  }
+});
+function pause() { log("break", {}); $("pause-face").innerHTML = FACE("smile"); $("pause").hidden = false; }
+$("pause-back").addEventListener("click", () => { $("pause").hidden = true; });
+const secs = (ms) => { const s = Math.round(ms / 1000); return s < 60 ? s + "s" : Math.floor(s / 60) + "m " + String(s % 60).padStart(2, "0") + "s"; };
+function guess() {
+  // The page's best guess at what's going on, in plain words.
+  const it = idea(), p = ph(it.id), idle = Date.now() - E.last, mouse = Date.now() - E.lastMouse;
+  if (document.hidden) return "In another tab right now";
+  if (artOn()) {
+    const seen = R.secs.map((_, i) => i).filter((i) => R.secs[i] > 0), skimmed = seen.filter((i) => ratio(i) < 0.3).length;
+    if (idle > 60000) return `No input for ${secs(idle)} while reading: reading closely, or away`;
+    if (R.backs.some((n) => n)) { const i = R.backs.findIndex((n) => n); if (R.cur === i) return `Scrolled back to part ${i + 1}: rereading, checking something`; }
+    if (R.notes >= 2) return `Opened ${R.notes} of Kube's notes: curious`;
+    if (seen.length >= 2 && skimmed >= Math.ceil(seen.length / 2)) return "Scrolling fast: skimming for the gist";
+    if (seen.length && skimmed === 0) return "Reading at a steady pace";
+    return "Reading";
+  }
+  if (idle > 180000) return `No input for ${secs(idle)}: probably away, or tired`;
+  if (idle > 40000) return p.mode === "teach" && !p.draft.trim() ? `Nothing typed or touched for ${secs(idle)} on Kube's question: stuck, or thinking hard` : `No input for ${secs(idle)}: reading closely, thinking, or tired`;
+  if (mouse > 20000 && E.lastKind === "typing") return "Typing an answer: engaged";
+  if (voiceOn && V.missed >= 2 && V.missed > V.answered) return "Not answering by voice: prefers clicking, or the mic isn't working";
+  if (E.quickCloses >= 2) return "Opening and closing questions fast: skimming";
+  if (E.aways >= 2) return "Keeps leaving the tab: maybe distracted";
+  if (E.idkRow >= 2) return "Two \"I don't know\"s in a row: needs a short answer first";
+  if (E.solidRow >= 2) return "Explaining well: already knows a lot";
+  return "Moving and responding: engaged";
+}
+function renderSignals() {
+  if (!SHOW_SIGNALS || $("learn").hidden || !T) return;
+  const it = idea(), p = ph(it.id), now = Date.now();
+  const avg = E.answers.length ? Math.round(E.answers.reduce((a, b) => a + b, 0) / E.answers.length) : 0;
+  const rows = artOn() ? [
+    ["Mouse still for", secs(now - E.lastMouse)],
+    ["Any input, last", secs(now - E.last) + (E.lastKind ? " ago (" + E.lastKind + ")" : "")],
+    ...T.ideas.map((x, i) => [`Part ${i + 1}${i === R.cur ? " (now)" : ""}`, R.secs[i] ? `${secs(R.secs[i])} of ~${secs(expectedMs(x))} · ${readWord(i)}${R.backs[i] ? " · reread " + R.backs[i] + "×" : ""}` : "not reached"]),
+    ["Kube's notes opened", String(R.notes)],
+    ["Pictures", String(E.pics)],
+    ["Left the tab", `${E.aways}× (${secs(E.awayMs)} away)`],
+    ["Reached the end", R.reachedEnd ? "yes" : "no"]
+  ] : [
+    ["Mouse still for", secs(now - E.lastMouse)],
+    ["Any input, last", secs(now - E.last) + (E.lastKind ? " ago (" + E.lastKind + ")" : "")],
+    ["On this part", `${secs(now - p.t0)} (active ${secs(Math.min(p.active, now - p.t0))})`],
+    ["Left the tab", `${E.aways}× (${secs(E.awayMs)} away)`],
+    ["Questions opened", `${E.holes} · closed fast ${E.quickCloses}`],
+    ["Answers", E.answers.length ? `${E.answers.length} (avg ${avg} words)${E.mic ? " · mic " + E.mic + "×" : ""}` : "none yet"],
+    ["\"I don't know\"", String(E.idks)],
+    ["Voice", voiceOn ? `on · asked ${V.prompts} · answered ${V.answered} · no reply ${V.missed}` : "off"],
+    ["Route · this part", `${ST.route || "-"} · ${p.mode ? MODE_WORD[p.mode] : p.intro ? "choosing" : "Kube asking"}`]
+  ];
+  $("sig-body").innerHTML = rows.map(([k, v]) => `<div class="sig-row"><span>${k}</span><span>${esc(v)}</span></div>`).join("")
+    + `<div class="sig-read"><b>Best guess:</b> ${esc(guess())}${E.lastRead ? `<br><b>Last:</b> ${esc(E.lastRead)}` : ""}${E.lastTip ? `<br><b>Kube did:</b> ${esc(E.lastTip)}` : ""}</div>`;
+}
+// Hidden by default; opening it is remembered in this browser.
+const sigOpen = () => { try { return localStorage.getItem("autolearn-signals") === "open"; } catch (e) { return false; } };
+function setSignals(open) {
+  $("signals").classList.toggle("folded", !open); $("sig-toggle").setAttribute("aria-expanded", String(open));
+  $("sig-label").textContent = open ? "Live signals · testing only" : "Show live signals";
+  $("signals").querySelector(".sig-x").textContent = open ? "Hide" : "+";
+  try { localStorage.setItem("autolearn-signals", open ? "open" : "closed"); } catch (e) {}
+}
+$("sig-toggle").addEventListener("click", () => setSignals($("signals").classList.contains("folded")));
+setInterval(renderSignals, 1000);
+setInterval(() => {
+  if ($("learn").hidden || document.hidden || !T) return;
+  const it = idea(), p = ph(it.id), idle = Date.now() - E.last;
+  if (idle < 5000) p.active += 5000;
+  if (artOn()) { if (idle > 60000 && !R.stillAsked) { R.stillAsked = true; offer("still", "Still there? No rush, take your time.", [["I'm here", null], ["Take a break", pause]]); } return; }
+  if (!p.intro) return;
+  // Stuck on Kube's question with nothing written: offer a peek, never push.
+  if (p.mode === "teach" && p.phase === "ask" && !p.draft.trim() && !p.revealed && idle > 40000)
+    offer("stuck", "Take your time. Want to peek at what I'm curious about? It might jog your memory.", [["Show me", () => { p.revealed = true; renderHoles(); }], ["I'm thinking", null]]);
+  // Hasn't picked a way in yet.
+  if (!p.mode && idle > 30000) offer("pick", "Not sure? It's fine to pick \"Show me a short answer\". You can always explain after.", null);
+  // Reading and exploring for a while: maybe ready to teach.
+  if ((p.mode === "read" || p.mode === "ask") && p.phase === "ask" && !p.answering && (seenSet(it.id).size >= 2 || p.active > 60000))
+    offer("ready", "Sounds like you've got some of this. Want to try telling me?", [["Tell Kube", () => ACT.answer()], ["Not yet", null]]);
+  // Long quiet stretch: maybe a break.
+  if (idle > 180000) offer("idle", "Still there? It's fine to take a break. Your progress is saved.", [["Take a break", pause], ["I'm here", null]]);
+}, 5000);
+function afterHoleClose() {
+  if (curMode() === "read" && E.quickCloses >= 2) offer("skim", "You're moving fast! Want to just tell me what you know instead? It might be quicker.", [["Tell Kube instead", () => setMode("teach", "kube")], ["Keep reading", null]]);
+}
+function maybeSkimNext() {
+  const p = ph(idea().id), ms = Date.now() - p.t0;
+  if (p.mode === "read" && p.phase === "ask" && ms < 15000) { E.fastNext = (E.fastNext || 0) + 1; E.lastRead = `Moved on after ${secs(ms)}`; if (E.fastNext >= 2) setTimeout(() => offer("skimnext", "You're flying through these. Want to try explaining the next one instead?", [["Sure", () => { ST.pref = "teach"; renderCard(); }], ["Keep reading", null]]), 600); }
+  if (E.solidRow >= 2) setTimeout(() => offer("strong", "You really know this! I'll keep my questions short.", null), 600);
+}
+let sayT = null;
+function offer(key, text, acts) {
+  const p = ph(idea().id);
+  if (p.nudged.has(key) || !$("kube-say").hidden) return;
+  p.nudged.add(key); E.offered++; E.lastTip = `offered "${text.split(/[.!?]/)[0]}"`; log("tip", { key });
+  const b = $("kube-say");
+  b.innerHTML = `<div>${esc(text)}</div>` + (acts ? `<div class="row">${acts.map(([l], i) => `<button type="button" class="btn small${i ? " ghost" : ""}" data-i="${i}">${esc(l)}</button>`).join("")}</div>` : "");
+  b.hidden = false;
+  $("corner-face").innerHTML = FACE("happy");
+  b.querySelectorAll("[data-i]").forEach((x) => x.addEventListener("click", () => { const fn = acts[+x.dataset.i][1]; kubeHush(); if (fn) { E.taken++; E.lastTip += ": taken"; log("tip-yes", { key }); fn(); } else { E.lastTip += ": declined"; log("tip-no", { key }); } }));
+  clearTimeout(sayT); sayT = setTimeout(kubeHush, acts ? 30000 : 7000);
+}
+function kubeHush() { clearTimeout(sayT); $("kube-say").hidden = true; $("corner-face").innerHTML = FACE("smile"); }
+
+// ---------- results ----------
+function finish() {
+  stopMic(); log("finish", {});
+  const done = donePts(), all = totalPts();
+  $("end-face").innerHTML = FACE(done / all > 0.6 ? "happy" : "smile");
+  $("end-hi").textContent = done === all ? "You taught me everything!" : "Here's what you taught me.";
+  $("end-big").textContent = `You answered ${done} of ${all} questions about ${T.title.replace(/^The /, "the ")} in your own words.`;
+  $("end-list").innerHTML = T.ideas.map((it) => { const c = cov(it.id); return `<li><h3>${esc(it.title)}</h3><ul>${it.points.map((p, k) => `<li class="${c.has(k) ? "yes" : ""}">${esc(it.asks[k] || p)}</li>`).join("")}</ul></li>`; }).join("");
+  $("end-noticed").innerHTML = noticed().map((s) => `<li>${esc(s)}</li>`).join("");
+  $("end-more").hidden = done === all;
+  show("end");
+}
+function noticed() {
+  const L = ST.log, n = (t) => L.filter((e) => e.type === t).length, mins = Math.max(1, Math.round((Date.now() - sessionT0) / 60000));
+  const out = [];
+  if (ST.firstRoute) out.push(`Chose ${ROUTE_WORD[ST.firstRoute]}${ST.articleOpened && ST.firstRoute !== "article" ? " (also opened the article)" : ""}.`);
+  if (R.secs && R.secs.some((s) => s > 0)) {
+    const sk = R.secs.map((_, i) => i).filter((i) => R.secs[i] > 0 && ratio(i) < 0.3), nr = R.secs.filter((s) => !s).length, rr = R.backs.filter((x) => x).length;
+    out.push(`Read the short article in ${secs(R.secs.reduce((a, b) => a + b, 0))}${sk.length ? `, skimming ${sk.length} of ${T.ideas.length} parts` : ""}${nr ? `, never reached ${nr}` : ""}${rr ? `, scrolled back to reread ${rr}` : ""}. ${R.reachedEnd ? "Reached the end." : "Didn't reach the end."}`);
+    if (R.notes) out.push(`Opened ${R.notes} of Kube's notes in the margin.`);
+    if (E.lookbacks) out.push(`Went back to the article ${E.lookbacks} time${E.lookbacks > 1 ? "s" : ""} after saying "no idea" twice.`);
+  }
+  if (n("copy-list")) out.push(`Copied the list ${n("copy-list")} time${n("copy-list") > 1 ? "s" : ""}.`);
+  out.push(`About ${mins} min here${E.awayMs > 30000 ? `, ${Math.round(E.awayMs / 60000)} min of it in another tab` : ""}.`);
+  const ways = L.filter((e) => e.type === "mode" && ["picked", "slider", "voice"].includes(e.why)).map((e) => MODE_WORD[e.to]);
+  if (ways.length) out.push(`After Kube asked, picked: ${ways.join(", ")}.`);
+  const taught = T.ideas.filter((i) => /taught/.test(ST.how[i.id] || "")).length;
+  out.push(`Explained ${taught} of ${T.ideas.length} parts to Kube.`);
+  if (n("idk")) out.push(`Said "no idea" ${n("idk")} time${n("idk") > 1 ? "s" : ""}.`);
+  const holes = n("hole"); if (holes) out.push(`Opened ${holes} question${holes > 1 ? "s" : ""}${n("ask") ? ` and asked ${n("ask")} of their own` : ""}.`);
+  if (n("picture")) out.push(`Asked for a picture ${n("picture")} time${n("picture") > 1 ? "s" : ""}.`);
+  if (n("voice-prompt")) out.push(`Voice: asked ${n("voice-prompt")} time${n("voice-prompt") > 1 ? "s" : ""}, answered by voice ${n("voice-answer")}.`);
+  if (n("list-open")) out.push(`Opened "Your list" ${n("list-open")} time${n("list-open") > 1 ? "s" : ""}.`);
+  const tw = L.filter((e) => e.type === "teach"); if (tw.length) out.push(`Answers averaged ${Math.round(tw.reduce((a, e) => a + e.words, 0) / tw.length)} words${n("mic") ? ", some spoken" : ""}.`);
+  if (E.offered) out.push(`Kube offered ${E.offered} tip${E.offered > 1 ? "s" : ""}; ${E.taken} taken.`);
+  return out;
+}
+$("end-more").addEventListener("click", () => { const i = T.ideas.findIndex((it) => missing(it).length); show("learn"); showView("map"); goIdea(Math.max(0, i)); });
+$("end-shelf").addEventListener("click", renderShelf);
+$("end-copy").addEventListener("click", async () => {
+  const txt = [`AutoLearn session: ${T.title} (${new Date().toLocaleString()})`, $("end-big").textContent, "", ...noticed(), "", ...T.ideas.map((it) => { const c = cov(it.id); return `${it.title}: ${c.size}/${it.points.length}\n` + it.points.map((p, k) => `  ${c.has(k) ? "✓" : "○"} ${it.asks[k] || p}`).join("\n"); }), "", "Timeline (seconds):", ...ST.log.map((e) => `${e.t}s ${e.type}${e.idea ? " [" + e.idea + "]" : ""} ${Object.entries(e).filter(([k]) => !["t", "type", "idea"].includes(k)).map(([k, v]) => k + "=" + v).join(" ")}`)].join("\n");
+  try { await navigator.clipboard.writeText(txt); $("end-copy").textContent = "Copied"; } catch (e) { $("end-copy").textContent = "Couldn't copy here"; }
+});
+
+// ---------- Connect Claude (outside claude.ai) ----------
+function wireKeyButtons(root) { root.querySelectorAll("[data-key]").forEach((b) => { if (!b.dataset.wired) { b.dataset.wired = 1; b.addEventListener("click", openKey); } }); }
+function openKey() { $("key-in").value = ""; $("key-note").hidden = true; $("key-remove").hidden = !apiKey(); $("keydlg").hidden = false; $("key-in").focus(); }
+$("key-cancel").addEventListener("click", () => { $("keydlg").hidden = true; });
+$("key-remove").addEventListener("click", () => { try { localStorage.removeItem(APIKEY); } catch (e) {} $("keydlg").hidden = true; refreshGrader(); });
+$("key-save").addEventListener("click", async () => {
+  const k = $("key-in").value.trim(), note = $("key-note"); if (!k) return;
+  note.hidden = false; note.textContent = "Checking…";
+  try { await apiJson('Reply with only this JSON: {"ok":true}', k); try { localStorage.setItem(APIKEY, k); } catch (e) {} $("keydlg").hidden = true; refreshGrader(); }
+  catch (e) { note.textContent = e.code === "bad_key" ? "That key didn't work. Check it and try again." : "Couldn't reach Anthropic. Check your connection and try again."; }
+});
+wireKeyButtons(document);
+
+renderShelf();
+refreshGrader();
+
+// ---------- v47: the article, with Kube in the margin ----------
+// Kube watches quietly while they skim: time on each part against a normal reading pace, scrolling back, notes opened, idle, leaving the tab.
+const WPS = 4; // a normal reading pace, about 240 words a minute
+const R = { secs: [], backs: [], cur: -1, maxSeen: -1, reachedEnd: false, notes: 0, stillAsked: false };
+const nWords = (s) => String(s).split(/\s+/).filter(Boolean).length;
+const lead = (s) => /[.!?]$/.test(s) ? s : s + ".";
+const expectedMs = (it) => 1000 * (nWords(it.title + " " + it.blurb + " " + it.points.join(" ")) / WPS + 2);
+const ratio = (i) => R.secs[i] ? R.secs[i] / expectedMs(T.ideas[i]) : 0;
+const readWord = (i) => { const r = ratio(i); return r < 0.3 ? "skimmed" : r < 0.8 ? "quick read" : r <= 2.2 ? "read" : "read slowly"; };
+const artOn = () => !!T && !$("article").hidden && !$("learn").hidden;
+function showView(v) {
+  const art = v === "article";
+  $("article").hidden = !art; $("map-wrap").hidden = art;
+  const teach = ST && ST.route === "kube" && ST.kphase === "teach";
+  $("art-btn").hidden = !teach; $("art-btn").textContent = art ? "Back to Kube" : "Article";
+  $("back-kube").hidden = !(teach && art);
+  if (!art) { $("art").querySelectorAll(".flash").forEach((x) => x.classList.remove("flash")); }
+  if (T) renderBar();
+}
+function openArticle() {
+  ST.kphase = "read"; persist(); log("article", {});
+  R.stillAsked = false; renderArticle(); showView("article"); ST.idx = 0; renderBar(); window.scrollTo(0, 0);
+}
+function renderArticle() {
+  const s = T.source, mins = Math.max(2, Math.round(T.ideas.reduce((n, i) => n + expectedMs(i), 0) / 60000));
+  $("art").innerHTML = `<header class="art-head"><div class="eyebrow">${esc(T.subject)} · about ${mins} min to skim</div><h1>${esc(T.title)}</h1><p class="art-hook">${esc(T.hook)}</p><p class="art-src">A short version of <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>, ${esc(s.site)}.</p></header>`
+    + T.ideas.map((it, i) => `<section class="art-sec" data-sec="${i}" id="sec-${i}">
+      <div class="art-main"><div class="art-num">${i + 1}</div><h2>${esc(it.title)}</h2><p class="art-lead">${esc(lead(it.blurb))}</p>
+        <ul class="art-pts">${it.points.map((pt) => `<li>${esc(pt)}</li>`).join("")}</ul>
+        ${it.fig ? `<button type="button" class="linkish art-pic" data-pic="${i}">Show me a picture</button><div class="fig anim" data-figbox="${i}" hidden></div>` : ""}</div>
+      <aside class="art-notes">${it.holes.map((h, k) => `<div class="nk${seenSet(it.id).has(k) ? " seen" : ""}" data-nk="${i}-${k}"><button type="button" class="nk-q" aria-expanded="false"><span class="nk-face">${FACE("smile")}</span><span>${esc(h.q)}</span></button><div class="nk-a" hidden>${esc(h.a)}</div></div>`).join("")}</aside>
+    </section>`).join("")
+    + `<section class="art-end" id="art-end"><div class="kube-face">${FACE("happy")}</div><div><h2>That's the whole thing.</h2><p>Now I'd love to learn it from you. Can you teach me?</p><div class="row"><button type="button" class="btn" id="art-teach">Teach Kube</button><button type="button" class="linkish" id="art-top">Skim it again</button></div></div></section>`;
+  $("art").querySelectorAll("[data-pic]").forEach((b) => b.addEventListener("click", () => {
+    const i = +b.dataset.pic, box = $("art").querySelector(`[data-figbox="${i}"]`), on = box.hidden;
+    box.hidden = !on; box.innerHTML = on ? figSVG(T.ideas[i].fig) : ""; b.textContent = on ? "Hide the picture" : "Show me a picture";
+    if (on) { E.pics++; log("picture", { part: i }); }
+  }));
+  $("art").querySelectorAll("[data-nk]").forEach((n) => n.querySelector(".nk-q").addEventListener("click", (e) => {
+    const [i, k] = n.dataset.nk.split("-").map(Number), a = n.querySelector(".nk-a"), open = a.hidden, it = T.ideas[i];
+    a.hidden = !open; e.currentTarget.setAttribute("aria-expanded", String(open)); n.classList.toggle("open", open);
+    if (open) { const s = seenSet(it.id); if (!s.has(k)) { R.notes++; E.holes++; } s.add(k); ST.seen[it.id] = [...s]; persist(); n.classList.add("seen"); log("note", { part: i, q: it.holes[k].q }); E.lastRead = `Opened Kube's note "${it.holes[k].q}"`; }
+  }));
+  $("art-teach").addEventListener("click", startTeach);
+  $("art-top").addEventListener("click", () => { log("reskim", {}); window.scrollTo({ top: 0, behavior: "smooth" }); });
+}
+function toSection(i, flash) {
+  if ($("article").hidden) showView("article");
+  const sec = $("sec-" + i); if (!sec) return;
+  sec.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (flash) { sec.classList.remove("flash"); void sec.offsetWidth; sec.classList.add("flash"); }
+}
+// Every half second: which part is being read, and was it actually being read (some input in the last 30 s)?
+setInterval(() => {
+  if (!artOn() || document.hidden) return;
+  const line = innerHeight * 0.4; let cur = -1;
+  $("art").querySelectorAll(".art-sec").forEach((s) => { const r = s.getBoundingClientRect(); if (r.top <= line && r.bottom > line) cur = +s.dataset.sec; });
+  if (cur !== R.cur && cur >= 0) {
+    if (cur < R.maxSeen && R.cur > cur) { R.backs[cur]++; log("reread", { part: cur }); E.lastRead = `Scrolled back up to part ${cur + 1}`; }
+    R.maxSeen = Math.max(R.maxSeen, cur); ST.idx = cur; renderBar();
+  }
+  if (cur >= 0) R.cur = cur;
+  if (cur >= 0 && Date.now() - E.last < 30000) R.secs[cur] += 500;
+  const end = $("art-end"); if (end && !R.reachedEnd && end.getBoundingClientRect().top < innerHeight - 80) { R.reachedEnd = true; log("article-end", { ms: R.secs.reduce((a, b) => a + b, 0) }); }
+}, 500);
+// Teaching: Kube starts with the part they went through fastest, compared with a normal reading pace.
+function startTeach() {
+  ST.kphase = "teach";
+  const order = T.ideas.map((_, i) => i).sort((a, b) => ratio(a) - ratio(b));
+  ST.order = order; persist();
+  log("teach-start", { order: order.join(","), reachedEnd: R.reachedEnd });
+  showView("map"); goIdea(order[0]);
+  const first = T.ideas[order[0]];
+  setTimeout(() => offer("order", R.secs[order[0]] && ratio(order[0]) < 0.8 ? `Let's start with "${first.title}". You went through that one fastest.` : `Let's start with "${first.title}".`, null), 600);
+}
+$("art-btn").addEventListener("click", () => { if ($("article").hidden) { log("article-peek", {}); showView("article"); toSection(ST.idx); } else backToKube(); });
+$("back-kube").addEventListener("click", backToKube);
+function backToKube() { log("back-to-kube", {}); showView("map"); renderCard(); renderHoles(); window.scrollTo({ top: 0, behavior: "smooth" }); focusTa("main"); }
+
+})();
+</script>
