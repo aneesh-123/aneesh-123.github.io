@@ -462,6 +462,199 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;margin
 @media (max-width:560px){ .art-btn{padding:6px 10px;font-size:14px} }
 @media (max-width:560px){ .bar-title{min-width:0;flex:1} .bar-title span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} }
 
+/* v48: skim it all, or step by step */
+.pace{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:3px;background:var(--surface);width:max-content}
+.pace button{border:0;background:none;border-radius:99px;padding:6px 14px;font-family:var(--display);font-size:14px;color:var(--muted)}
+.pace button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.art-next{display:none}
+.art.step .art-next{display:inline-flex;margin-top:4px}
+.art.step .later{display:none!important}
+.art-sec:not(.open-notes) .art-notes{visibility:hidden}
+.art.step .art-sec.cur .art-pts li:not(.later):last-child,.art.step .art-sec.cur .art-pts li{animation:appear .45s both}
+.art.step .art-sec.cur .art-notes .nk{animation:appear .45s both}
+.art.step .art-sec.cur .art-notes .nk:nth-child(2){animation-delay:.12s}
+.art.step .art-sec.cur .art-notes .nk:nth-child(3){animation-delay:.24s}
+.art.step .art-sec.cur .art-notes .nk:nth-child(4){animation-delay:.36s}
+.art.step .art-sec.cur .art-notes .nk:nth-child(5){animation-delay:.48s}
+@media (max-width:900px){ .art-sec:not(.open-notes) .art-notes{display:none} }
+.art.step .art-sec:not(.cur){opacity:.55;transition:opacity .4s}.art.step .art-sec:not(.cur):hover{opacity:1}
+
+/* v50: Kube's first question, centered over the article */
+.pace-intro{position:fixed;inset:0;z-index:42;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ground) 55%,transparent);backdrop-filter:blur(2.5px);animation:appear .4s both}
+.pi-card{background:var(--surface);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:26px 28px;max-width:520px;width:100%;display:grid;gap:12px;justify-items:center;text-align:center;animation:appear .5s .1s both}
+.pi-card .kube-face{width:84px;height:84px}
+.pi-card h2{font-size:26px}
+.pi-card p{margin:0;font-size:18px;line-height:1.5;color:var(--ink)}
+.pi-acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px}
+
+/* v51: ask any time, highlight to dig deeper, Kube offers more */
+.art-acts{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:4px}
+.art-acts .art-next{margin-top:0}
+.ask-me{display:inline-flex;align-items:center;gap:7px;background:none;border:1px dashed var(--branch);border-radius:99px;padding:6px 12px 6px 8px;font-family:var(--display);font-size:14.5px;color:var(--ink)}
+.ask-me:hover{background:var(--branch-soft)}
+.art-main ::selection{background:var(--mark)}
+.dig-btn{position:fixed;z-index:44;background:var(--ink);color:var(--surface);border:0;border-radius:99px;padding:8px 16px;font-family:var(--display);font-size:14.5px;font-weight:600;box-shadow:var(--shadow);animation:appear .2s both}
+.dig-btn::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mark);margin-right:8px;vertical-align:1px}
+body.deep-on{overflow:hidden}
+.deep{position:fixed;inset:0;z-index:40;overflow:auto;background:var(--ground);background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:22px 22px;padding:0 16px 60px;animation:appear .35s both}
+.deep-bar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;max-width:1240px;margin:0 auto;padding:16px 0;background:linear-gradient(var(--ground) 70%,transparent)}
+.deep-bar .x{font-size:26px;background:var(--surface);border:1px solid var(--line);border-radius:99px;width:40px;height:40px;line-height:1}
+.deep-map{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px) minmax(0,1fr);gap:40px;align-items:center;max-width:1240px;margin:0 auto}
+.deep-side{display:grid;gap:22px}
+.deep-side:first-child{justify-items:end}
+.deep-side:last-child{justify-items:start}
+.dp{display:grid;gap:8px;max-width:340px;position:relative}
+.deep-side:first-child .dp::after,.deep-side:last-child .dp::after{content:"";position:absolute;top:26px;width:34px;border-top:2px dotted var(--ghost)}
+.deep-side:first-child .dp::after{right:-38px}
+.deep-side:last-child .dp::after{left:-38px}
+.dp .pill{text-align:left}
+.dp-a{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--branch);border-radius:16px;padding:12px 14px;font-size:16px;line-height:1.5;box-shadow:var(--shadow);animation:appear .35s both}
+.deep-card{background:var(--surface);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:24px 26px;display:grid;gap:16px}
+.dq{margin:2px 0 0;font-family:var(--display);font-size:22px;line-height:1.3;border-left:4px solid var(--mark);padding:2px 0 2px 12px}
+.deep-card .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.nk-offer{display:flex;gap:10px;align-items:flex-start;background:var(--branch-soft);border-radius:16px;padding:10px 12px;animation:appear .4s both}
+.nk-offer .kube-face{width:34px;height:34px;flex:none}
+.nk-offer p{margin:0 0 8px;font-family:var(--display);font-size:15px;line-height:1.35}
+.nk-offer .row{display:flex;gap:12px;align-items:center}
+@media (max-width:1000px){
+  .deep-map{grid-template-columns:minmax(0,1fr);gap:16px;max-width:620px}
+  .deep-card{order:-1}
+  .deep-side,.deep-side:first-child,.deep-side:last-child{justify-items:stretch;gap:12px}
+  .dp{max-width:none}
+  .deep-side .dp::after{display:none}
+}
+
+/* v52: skim = headlines; a clear margin with just Kube; follow-ups in a side panel */
+.art-sec{grid-template-columns:minmax(0,680px) minmax(0,1fr)}
+.skim-open{display:none}
+.art.skim .art-sec:not(.expanded) .art-pts,.art.skim .art-sec:not(.expanded) .art-pic,.art.skim .art-sec:not(.expanded) .fig,.art.skim .art-sec:not(.expanded) .art-acts{display:none!important}
+.art.skim .art-sec:not(.expanded) .skim-open{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:0;font-family:var(--display);font-size:15px;color:var(--accent)}
+.art.skim .art-sec:not(.expanded) .skim-open::after{content:"↓"}
+.art.skim .art-sec:not(.expanded) .art-main{cursor:pointer;padding-block:18px}
+.art.skim .art-sec:not(.expanded) .art-main:hover{border-color:var(--accent)}
+.art.skim .art-sec.expanded .art-pts li{animation:appear .4s both}
+.kube-corner.in-margin{transition:top .5s cubic-bezier(.3,.7,.3,1),left .3s,opacity .3s;flex-direction:row-reverse;align-items:flex-start}
+.kube-corner.in-margin[style*="top"]{bottom:auto;right:auto}
+.kube-corner.in-margin .kube-say{border-radius:18px 18px 18px 4px}
+.kube-corner.in-margin #corner-face{cursor:pointer;width:52px;height:52px;transition:transform .2s}
+.kube-corner.in-margin #corner-face:hover{transform:scale(1.08) rotate(-4deg)}
+.kube-corner.tucked{opacity:0;pointer-events:none}
+.dig-btn{display:inline-flex;align-items:center;gap:8px}
+.dig-btn::before{display:none}
+.dig-btn .nk-face{width:22px;height:22px}
+.kpanel{position:fixed;z-index:30;top:80px;bottom:20px;right:20px;width:min(400px,calc(100vw - 40px));overflow:auto;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--branch);border-radius:24px;box-shadow:var(--shadow);padding:16px 20px 20px;display:grid;align-content:start;gap:14px;animation:kp-in .35s cubic-bezier(.3,.7,.3,1) both}
+@keyframes kp-in{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.kp-top{display:flex;justify-content:space-between;align-items:center}
+.kp-top .x{font-size:24px;background:none;border:0;color:var(--muted)}
+.kp-q{display:flex;gap:12px;align-items:flex-start}
+.kp-q .kube-face{width:52px;height:52px;flex:none}
+.kp-q small,.you-said small{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kp-q p{margin:2px 0 0;font-family:var(--display);font-size:21px;line-height:1.25;font-weight:600}
+.kp-sub{display:block;margin-top:6px;color:var(--muted);font-size:16px}
+.kp-body{display:grid;gap:12px}
+.kp-body .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.kp-body textarea{min-height:84px}
+.you-said{background:var(--surface-2);border-radius:14px;padding:10px 12px;font-size:16px}
+.kp-body .react-say{font-family:var(--display);font-weight:600;font-size:17px}
+.pa{font-size:17px;line-height:1.55}
+.kpanel .dq{font-size:17px;margin:0}
+body.panel-on .article-wrap{padding-right:440px;transition:padding .35s}
+.article-wrap{transition:padding .35s}
+@media (max-width:1100px){
+  body.panel-on .article-wrap{padding-right:16px;padding-bottom:72vh}
+  .kpanel{top:auto;left:0;right:0;bottom:0;width:auto;max-height:68vh;border-radius:24px 24px 0 0;animation-name:kp-up}
+  @keyframes kp-up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+}
+@media (max-width:1000px){ .art-sec{grid-template-columns:minmax(0,1fr)} }
+.you-said small{display:block;margin-bottom:2px}
+body.panel-on .art{max-width:680px}
+body.panel-on .art-sec{grid-template-columns:minmax(0,1fr)}
+.kp-body>.linkish{justify-self:start}
+
+/* v53: Kube floats over to the cursor when it has something to say */
+.kube-corner.in-margin.visiting{transition:top .7s cubic-bezier(.3,.7,.2,1),left .7s cubic-bezier(.3,.7,.2,1);z-index:35}
+.kube-corner.visiting #corner-face{animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-6px) rotate(-5deg)}60%{transform:translateY(2px) rotate(3deg)}}
+.kube-corner.in-margin.flip{flex-direction:row}
+.kube-corner.in-margin.flip .kube-say{border-radius:18px 18px 4px 18px}
+.say-hint{margin:8px 0 0;font-size:13px;color:var(--muted);font-family:var(--mono)}
+.say-hint:empty{display:none}
+.figwrap{width:100%;display:grid;gap:6px;justify-items:start;animation:appear .4s both}
+.figwrap .fig{width:100%}
+.kp-offer{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--surface-2);border-radius:14px;padding:10px 12px;font-family:var(--display);font-size:15.5px}
+.kp-offer .nk-face{width:24px;height:24px}
+
+/* v55: Kube drifts slowly from the cursor to the bottom right */
+.kube-corner.in-margin.visiting.parked{transition:top 1.8s cubic-bezier(.4,0,.2,1),left 1.8s cubic-bezier(.4,0,.2,1)}
+
+/* v56: Kube asks about the line under the cursor */
+.art-pts li[data-pt]{transition:background .3s;border-radius:6px}
+.art-pts li.asked{background:var(--mark);box-shadow:0 0 0 4px var(--mark)}
+.peek{list-style:none;margin:6px 0 14px;padding:12px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);display:grid;gap:10px;justify-items:start;animation:appear .35s both}
+.peek .fig{width:100%;background:var(--surface)}
+.peek-a{display:flex;gap:10px;align-items:flex-start;margin:0;font-size:16px;line-height:1.45}
+.peek-a .nk-face{flex:none;width:26px;height:26px}
+.peek-code{font-family:var(--mono);font-size:13px;line-height:1.6}
+.peek-code .pc-t{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.peek-code pre{margin:0;white-space:pre;overflow-x:auto;color:var(--ink);font:inherit}
+.peek-code .pc-l.hi{background:var(--branch-soft);border-radius:4px}
+.peek-code i{font-style:normal;color:var(--accent);font-weight:500}
+.fig .peek-code{padding:2px}
+.peek{grid-template-columns:minmax(0,1fr);justify-items:stretch}
+.peek .fig,.peek .peek-code{min-width:0}
+.peek [data-peekx]{justify-self:start}
+
+/* v57: Read vs Understood meters, Kube's click invite */
+.meters{display:grid;gap:4px;margin-left:auto;min-width:170px}
+.mt{display:grid;grid-template-columns:76px 1fr 34px;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
+.mt span{text-transform:uppercase}
+.mt i{display:block;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.mt b{display:block;height:100%;width:0;border-radius:3px;background:var(--branch);transition:width .6s cubic-bezier(.3,.7,.3,1)}
+.mt.und b{background:var(--accent)}
+.mt em{font-style:normal;text-align:right;color:var(--ink)}
+.meters + .art-btn,.meters ~ .voice-btn{margin-left:0}
+.kube-corner{position:fixed}
+.kube-tag{position:absolute;top:calc(100% + 6px);right:-6px;pointer-events:auto;white-space:nowrap;font-family:var(--display);font-size:13px;padding:6px 11px;border-radius:14px;background:var(--surface);color:var(--ink);border:1px solid var(--accent);box-shadow:var(--shadow);cursor:pointer}
+.kube-corner.in-margin .kube-tag{right:auto;left:0}
+.kube-tag.fade{animation:appear .35s both}
+.kube-corner:not(.in-margin) .kube-tag{top:auto;bottom:calc(100% + 8px)}
+@media (max-width:760px){.meters{min-width:120px}.mt{grid-template-columns:62px 1fr 30px;font-size:10px}}
+@media (max-width:560px){.meters{order:4;width:100%;grid-template-columns:1fr 1fr;gap:10px;min-width:0}.mt{grid-template-columns:auto 1fr 30px}}
+.kube-corner.in-margin:not([style*="top"]) .kube-tag{top:auto;bottom:calc(100% + 8px);left:auto;right:0}
+@media (max-width:560px){.kube-tag{white-space:normal;width:150px;font-size:12px;text-align:center}}
+@media (max-width:560px){.kube-corner:has(.kube-say[hidden]){opacity:1}.kube-corner:has(.kube-say[hidden]) #corner-face{opacity:.6}}
+
+/* v58: focus on the line being asked about, the panel beside it, source quote, retry, gains */
+.art-pts li[data-pt]{transition:transform .45s cubic-bezier(.3,.7,.3,1),background .3s,opacity .35s}
+.art-pts li.focus{transform:scale(1.07);transform-origin:left center;background:var(--mark);box-shadow:0 0 0 6px var(--mark);border-radius:6px;position:relative;z-index:2}
+mark.sel-focus{background:transparent;color:inherit}
+mark.sel-focus.on{background:var(--mark);box-shadow:0 0 0 3px var(--mark);border-radius:3px}
+body.focus-on .art-sec:not(.has-focus),body.focus-on .art-head{opacity:.3;transition:opacity .35s}
+body.focus-on .art-sec.has-focus .art-pts li:not(.focus):not(.peek),body.focus-on .art-sec.has-focus .art-lead,body.focus-on .art-sec.has-focus h2,body.focus-on .art-sec.has-focus .art-acts{opacity:.4;transition:opacity .35s}
+body.focus-on .art-sec.has-focus:has(mark.sel-focus.on) .art-pts li:has(mark.sel-focus.on){opacity:1}
+.kpanel.beside{bottom:auto;max-height:calc(100vh - 100px)}
+.kpanel.beside{transition:top .35s}
+.kpanel.beside::before{content:"";position:absolute;left:-9px;top:var(--notch,110px);width:16px;height:16px;background:var(--surface);border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+.kpanel .dq small,.kpanel .dq.src small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-style:normal;margin-bottom:2px}
+.kpanel .dq.src{border-left:3px solid var(--branch);padding:4px 0 4px 12px;color:var(--ink);font-size:16px;line-height:1.4}
+.gain{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--accent);animation:appear .4s .3s both}
+.gain b{font-family:var(--display);color:var(--accent);font-size:16px}
+.gain span{font-size:14px;line-height:1.4;color:var(--ink)}
+.gain.soft{background:var(--surface-2);border-color:var(--line)}
+.gain.soft b{color:var(--ink)}
+.syl-pts li.half i{background:linear-gradient(90deg,var(--accent) 50%,transparent 50%);border-color:var(--accent)}
+.syl-pts li.tried i{border-style:dashed;border-color:var(--branch)}
+.syl-pts li.pop{background:var(--accent-soft);border-radius:8px;padding:4px;margin:-4px;color:var(--ink)}
+.syl-gain{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600;white-space:nowrap}
+.syl-gain.soft{color:var(--branch)}
+@media (min-width:1101px){body.panel-on .syl{right:440px}}
+@media (max-width:1100px){body.panel-on .syl{max-height:26vh}}
+body.focus-on .art-end{opacity:.3;transition:opacity .35s}
+
+/* v59: lines are clickable */
+.art.all .art-pts li[data-pt],.art-pts li[data-pt]{cursor:pointer}
+.art-pts li[data-pt]:hover:not(.focus):not(.asked){background:var(--surface-2);box-shadow:0 0 0 4px var(--surface-2)}
+
 </style>
 <!-- Topic shelf -->
 <main id="shelf" class="screen shelf">
@@ -525,6 +718,7 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;margin
   <header class="bar">
     <button class="icon-btn" id="learn-back" type="button" aria-label="All topics">←</button>
     <div class="bar-title"><span id="bar-topic"></span><span class="bar-step" id="bar-step"></span></div>
+    <div class="meters" id="meters" aria-label="Your progress"><div class="mt"><span>Read</span><i><b id="mt-read"></b></i><em id="mt-read-n">0%</em></div><div class="mt und"><span>Understood</span><i><b id="mt-und"></b></i><em id="mt-und-n">0%</em></div></div>
     <button type="button" class="art-btn" id="art-btn" hidden>Article</button>
     <button type="button" class="voice-btn" id="voice-btn" aria-pressed="false" title="Kube reads aloud, and you can answer by voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Voice</span></button>
     <div class="list-wrap"><button type="button" class="list-btn" id="list-btn" aria-expanded="false" aria-controls="syl">Your list <b id="list-count"></b></button><div class="list-tip" id="list-tip" hidden>Tap here any time to see how far you've got, or to jump to another part.</div></div>
@@ -550,6 +744,17 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;margin
   </main>
   <main class="article-wrap" id="article" hidden><div class="art" id="art"></div></main>
   <button type="button" class="back-kube" id="back-kube" hidden>Back to Kube →</button>
+  <button type="button" class="dig-btn" id="dig-btn" hidden><span class="nk-face" id="dig-face"></span>Ask Kube about this</button>
+  <aside class="kpanel" id="kpanel" hidden aria-label="Kube's question"></aside>
+  <div class="deep" id="deep" hidden></div>
+  <div class="pace-intro" id="pace-intro" hidden>
+    <div class="pi-card" role="dialog" aria-modal="true" aria-labelledby="pi-h">
+      <div class="kube-face" id="pi-face"></div>
+      <h2 id="pi-h">This is the whole article.</h2>
+      <p>Everything you need is in here. Read it all, skim just the headlines and open what catches your eye, or go step by step if it feels like a lot.</p>
+      <div class="pi-acts"><button type="button" class="btn" data-pi="read">Read it all</button><button type="button" class="btn ghost" data-pi="skim">Skim it</button><button type="button" class="btn ghost" data-pi="step">Step by step</button></div>
+    </div>
+  </div>
   <div class="list-intro" id="list-intro" hidden>
     <div class="li-card" id="li-card">
       <div class="kube-row"><div class="kube-face" id="li-face"></div><h2>Here's what you'll be able to answer</h2></div>
@@ -560,12 +765,13 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;margin
   <div class="kube-corner" id="kube-corner">
     <div class="kube-say" id="kube-say" hidden></div>
     <div class="kube-face small" id="corner-face"></div>
+    <button type="button" class="kube-tag" id="kube-tag" hidden></button>
   </div>
   <aside class="signals folded" id="signals">
     <button type="button" class="sig-head" id="sig-toggle" aria-expanded="true"><span class="eyebrow" id="sig-label">Show live signals</span><span class="sig-x">+</span></button>
     <div class="sig-body" id="sig-body"></div>
   </aside>
-  <div class="version">v47 · Learn anything</div>
+  <div class="version">v59 · Learn anything</div>
 </div>
 
 <!-- Results -->
@@ -672,83 +878,6 @@ TOPICS.push({
         { q: "How was that tested?", a: "Migraine patients got the real drug, a pill clearly labeled \"placebo\", or nothing. The labeled placebo cut pain about half as much as the drug.", pts: [0] },
         { q: "Why would it work if I know?", a: "Researchers think the ritual helps by itself: the act of taking a pill tells your brain that care is happening.", pts: [1] },
         { q: "Can I give myself a placebo?", a: "In a way. Exercise, good food, yoga, meditation and time with friends may give similar benefits, more so when you treat them as caring for yourself.", pts: [2] }
-      ]
-    }
-  ]
-});
-
-// How vaccines work, from the World Health Organization, "How do vaccines work?"
-TOPICS.push({
-  id: "vaccines", subject: "Biology", title: "How vaccines work",
-  hook: "Your body remembers germs it met years ago. Vaccines use that memory without making you sick.",
-  minutes: 15,
-  source: { site: "World Health Organization", title: "How do vaccines work?", url: "https://www.who.int/news-room/feature-stories/detail/how-do-vaccines-work", read: 6 },
-  ideas: [
-    {
-      id: "defense", title: "Your body's first defenses", blurb: "Why germs everywhere don't make you sick all the time",
-      q: "Germs are everywhere. Why don't I get sick all the time?",
-      points: ["Skin, mucus and tiny hairs called cilia keep most germs out", "Germs that cause disease are called pathogens: certain bacteria, viruses, parasites or fungi", "If one gets in, the immune system works to destroy it"],
-      asks: ["What stops most germs from getting into your body?", "What is a pathogen, and what kinds are there?", "What happens when a pathogen gets past those barriers?"],
-      teach: "Your skin, mucus and tiny hairs in your airways block most germs. If a disease-causing germ, a pathogen, gets past them, your immune system goes after it.",
-      fig: {"type": "flow", "steps": ["Skin, mucus and cilia block germs", "A few get through", "Your immune system attacks"]},
-      holes: [
-        { q: "What stops germs from getting in?", a: "Physical barriers: your skin, mucus, and cilia, tiny hairs in your airways that sweep dirt and germs away from your lungs.", pts: [0] },
-        { q: "What counts as a pathogen?", a: "Any germ that causes disease: certain bacteria, viruses, parasites or fungi.", pts: [1] },
-        { q: "What happens when one gets past?", a: "Your immune system tries to destroy it or overpower it.", pts: [2] }
-      ]
-    },
-    {
-      id: "antibodies", title: "Antibodies and antigens", blurb: "How your body fights a germ it has never seen",
-      q: "When a germ my body has never seen gets inside me, how does my body fight it? And why do I still get sick first?",
-      points: ["The immune system makes antibodies against the germ", "Each antibody matches one antigen, the part of the germ it recognizes", "The first time, making antibodies takes a while, so you can get sick in the meantime"],
-      asks: ["What does the immune system make to fight a new germ?", "What is an antigen, and how do antibodies relate to it?", "Why do you often get sick the first time you meet a germ?"],
-      teach: "Your body makes antibodies, each built to match one specific part of the germ, called an antigen. With a new germ this takes time, which is why you get sick first.",
-      fig: {"type": "flow", "steps": ["A new germ gets in", "Your body spots its antigen", "It slowly makes matching antibodies", "You're sick in the meantime"]},
-      holes: [
-        { q: "What's an antigen?", a: "The part of a germ that makes your body produce antibodies. It's like the germ's name tag.", pts: [1] },
-        { q: "What do antibodies do?", a: "They're made by your immune system to fight the germ. Each one recognizes just one antigen.", pts: [0, 1] },
-        { q: "Why do I get sick before I get better?", a: "The first time you meet a germ, your body needs time to make the right antibodies. Meanwhile, the germ can make you ill.", pts: [2] }
-      ]
-    },
-    {
-      id: "memory", title: "Immune memory", blurb: "Why the second time is different",
-      q: "Say the same germ gets into me again next year. What's different the second time?",
-      points: ["After an infection is cleared, memory cells stay behind", "If the same germ comes back, the response is much faster and stronger", "So the same germ usually can't make you as sick again"],
-      asks: ["What stays behind after your body clears an infection?", "What's different when the same germ comes back?", "Why does that usually stop you getting as sick again?"],
-      teach: "After your body beats a germ, it keeps memory cells. If the same germ returns, your body fights it faster and harder, usually before you get sick.",
-      fig: {"type": "groups", "groups": [{"label": "First time", "items": ["Slow antibody response", "You get sick"]}, {"label": "Next time", "items": ["Memory cells react fast", "Usually no illness"]}]},
-      holes: [
-        { q: "What stays behind after I recover?", a: "Memory cells. They remember that germ's antigen.", pts: [0] },
-        { q: "How do memory cells help?", a: "If the same germ shows up again, they let your body make the right antibodies much faster and in larger numbers.", pts: [1, 2] }
-      ]
-    },
-    {
-      id: "vaccine", title: "What a vaccine does", blurb: "Practice for your immune system",
-      q: "So what's actually inside a vaccine, and how does it protect me without making me sick?",
-      points: ["It holds a weakened or inactive germ or antigen, or genetic instructions (DNA or RNA) for making the antigen", "It doesn't cause the disease", "Your immune system reacts as if it met the real germ, building antibodies and memory", "Some vaccines need several doses to build long-lasting protection"],
-      asks: ["What can be inside a vaccine?", "Why doesn't a vaccine give you the disease?", "How does your body respond to a vaccine?", "Why do some vaccines need more than one dose?"],
-      teach: "A vaccine shows your body a harmless version of a germ: a weakened or inactive germ, a piece of it, or instructions to make that piece. Your body builds antibodies and memory, so it's ready for the real thing.",
-      fig: {"type": "flow", "steps": ["A harmless germ, or a piece of one", "Your immune system practices", "Antibodies and memory cells", "Ready for the real germ"]},
-      holes: [
-        { q: "What's in a vaccine?", a: "A weakened or inactive germ, or just its antigen. Newer vaccines carry instructions (DNA or RNA) so your own cells make the antigen.", pts: [0] },
-        { q: "Why doesn't it make me sick?", a: "The germ is weakened, inactive, or only a harmless piece of it, so it can't cause the disease. Your body still treats it as a threat.", pts: [1, 2] },
-        { q: "What does my body do with it?", a: "It responds as it would to the real germ: makes antibodies and keeps memory cells.", pts: [2] },
-        { q: "Why do some vaccines need more than one shot?", a: "Several doses, weeks or months apart, help build antibodies and memory cells that last a long time.", pts: [3] }
-      ]
-    },
-    {
-      id: "herd", title: "Herd immunity", blurb: "How your shot protects other people",
-      q: "Some people can't get vaccinated. How can everyone else's shots protect them?",
-      points: ["Some people can't be vaccinated, like those with weak immune systems or severe allergies", "When most people are vaccinated, the germ struggles to spread", "That protects people who can't be vaccinated, though no vaccine is 100%", "Vaccines wiped out smallpox and have nearly ended polio"],
-      asks: ["Who can't get vaccinated, and why?", "What happens to a germ when most people are vaccinated?", "How does that protect people who can't be vaccinated, and is it perfect?", "What diseases have vaccines wiped out or nearly ended?"],
-      teach: "When most people are vaccinated, a germ has trouble finding someone to spread to. That shields people who can't get vaccinated. It's called herd immunity, and it helped wipe out smallpox.",
-      fig: {"type": "groups", "groups": [{"label": "Few people vaccinated", "items": ["The germ hops from person to person", "It reaches people who can't be vaccinated"]}, {"label": "Most people vaccinated", "items": ["The germ keeps hitting dead ends", "People who can't be vaccinated stay safer"]}]},
-      holes: [
-        { q: "Who can't get vaccinated?", a: "People with weakened immune systems, for example from cancer or HIV, and people with severe allergies to something in a vaccine.", pts: [0] },
-        { q: "How does that protect them?", a: "If most people around them are immune, the germ has a hard time spreading, so it rarely reaches them.", pts: [1, 2] },
-        { q: "Does it protect everyone completely?", a: "No. No vaccine gives 100% protection and herd immunity isn't perfect, but it gives a lot of protection.", pts: [2] },
-        { q: "Has this ever wiped out a disease?", a: "Yes. Smallpox was declared eradicated in 1980. Wild polio, which once paralysed hundreds of thousands a year, now remains only in Pakistan and Afghanistan.", pts: [3] },
-        { q: "How many lives has it saved?", a: "Measles vaccination alone is estimated to have prevented about 60 million deaths between 2000 and 2023.", pts: [3] }
       ]
     }
   ]
@@ -899,6 +1028,188 @@ TOPICS.push({
   ]
 });
 
+// v56: hand-drawn pictures for the Kubernetes article (in the style of the old Kubernetes v36 visuals: steps appear one at a time),
+// plus "peeks": for each line of the article, the question Kube asks when the cursor rests on it, which follow-up answers it, and an optional picture.
+{
+  const K = TOPICS.find((t) => t.id === "kubernetes");
+  const st = (i) => `class="draw" style="animation-delay:${(0.25 + i * 0.75).toFixed(2)}s"`;
+  const T = (x, y, s, o = "") => `<text x="${x}" y="${y}" font-size="13" ${o}>${s}</text>`;
+  const C = (x, y, s, o = "") => `<text x="${x}" y="${y}" font-size="13" text-anchor="middle" ${o}>${s}</text>`;
+  const MUTED = `style="fill:var(--muted)"`, ACC = `style="fill:var(--accent);font-weight:700"`, BAD = `style="fill:var(--wrong);font-weight:700"`, BR = `style="fill:var(--branch);font-weight:700"`;
+  const pod = (x, y, label = "app", tone = "branch", w = 46) => `<rect x="${x}" y="${y}" width="${w}" height="26" rx="13" fill="var(--${tone}-soft)" stroke="var(--${tone})" stroke-width="2"/>${C(x + w / 2, y + 17.5, label, `font-size="12"`)}`;
+  const card = (x, y, w, h, title, o = "") => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5" ${o}/>${title ? T(x + 10, y + 19, title, `font-weight="700"`) : ""}`;
+  const X = (x, y, r = 11) => `<path d="M${x - r} ${y - r}l${2 * r} ${2 * r}M${x + r} ${y - r}l${-2 * r} ${2 * r}" stroke="var(--wrong)" stroke-width="3.5" stroke-linecap="round"/>`;
+  const ah = (x, y, dir = "r", c = "accent") => { const d = { r: `M${x - 9} ${y - 5}L${x} ${y}L${x - 9} ${y + 5}z`, l: `M${x + 9} ${y - 5}L${x} ${y}L${x + 9} ${y + 5}z`, d: `M${x - 5} ${y - 9}L${x} ${y}L${x + 5} ${y - 9}z`, u: `M${x - 5} ${y + 9}L${x} ${y}L${x + 5} ${y + 9}z` }[dir]; return `<path d="${d}" fill="var(--${c})"/>`; };
+  const line = (d, c = "accent", dash = "") => `<path d="${d}" fill="none" stroke="var(--${c})" stroke-width="2" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
+  const helm = (cx, cy, r = 17) => { let s = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/><circle cx="${cx}" cy="${cy}" r="${r * 0.32}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`; for (let k = 0; k < 7; k++) { const a = (k / 7) * Math.PI * 2 - Math.PI / 2, c = Math.cos(a), sn = Math.sin(a); s += `<path d="M${(cx + c * r * 0.32).toFixed(1)} ${(cy + sn * r * 0.32).toFixed(1)}L${(cx + c * r * 1.25).toFixed(1)} ${(cy + sn * r * 1.25).toFixed(1)}" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>`; } return s; };
+  const svg = (h, label, body) => ({ type: "svg", svg: `<svg viewBox="0 0 520 ${h}" role="img" aria-label="${label}">${body}</svg>` });
+  const code = (title, lines) => ({ type: "html", html: `<div class="peek-code"><div class="pc-t">${title}</div><pre>${lines.map(([c, note, hi]) => `<span class="pc-l${hi ? " hi" : ""}">${c}${note ? `<i>  # ${note}</i>` : ""}</span>`).join("\n")}</pre></div>` });
+
+  // ---------- the five main pictures ----------
+  const servers = [20, 190, 360];
+  const PIC_WHY = svg(262, "Three servers run your app at 3 a.m. One dies. Kubernetes notices and starts the lost copies on the other two servers, so nobody has to wake up.",
+    `<g ${st(0)}><path d="M34 22a14 14 0 1 0 14 18a11 11 0 1 1 -14 -18z" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/>${T(58, 38, "3:00 a.m.", BR)}</g>`
+    + servers.map((x, i) => `<g ${st(0.3 + i * 0.25)}>${card(x, 86, 140, 92, "server " + (i + 1))}${pod(x + 14, 116, "shop")}${pod(x + 70, 116, "shop")}</g>`).join("")
+    + `<g ${st(1.6)}><rect x="190" y="86" width="140" height="92" rx="10" fill="var(--wrong-soft)" opacity=".85"/>${X(260, 132, 16)}${C(260, 198, "dies", BAD)}</g>`
+    + `<g ${st(2.5)}>${helm(260, 40)}${T(288, 36, "Kubernetes", ACC)}${T(288, 52, "notices two copies are missing", MUTED)}${line("M260 62V80", "accent", "3 4")}</g>`
+    + `<g ${st(3.4)}>${line("M228 150C190 228 120 222 92 176", "accent")}${ah(90, 178, "u")}${line("M292 150C330 228 400 222 428 176", "accent")}${ah(430, 178, "u")}${pod(84, 144, "new", "accent", 44)}${pod(412, 144, "new", "accent", 44)}</g>`
+    + `<g ${st(4.3)}><rect x="130" y="222" width="260" height="32" rx="16" fill="var(--accent-soft)"/>${C(260, 243, "Your app never went down. Nobody woke up.", ACC)}</g>`);
+
+  const nodes = [{ x: 10, pods: 2 }, { x: 185, pods: 3 }, { x: 360, pods: 1 }];
+  const PIC_CLUSTER = svg(300, "A cluster: the control plane (API server, scheduler, etcd) above three worker nodes. Each node has a runtime, a kubelet and kube-proxy. The scheduler puts a new Pod on the node with room.",
+    `<g ${st(0)}><rect x="40" y="6" width="390" height="76" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${T(54, 27, "Control plane: the brain", ACC)}`
+    + [["API server", 54], ["scheduler", 176], ["etcd (memory)", 298]].map(([l, x]) => `<rect x="${x}" y="40" width="116" height="28" rx="7" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>${C(x + 58, 59, l, `font-size="12"`)}`).join("") + `</g>`
+    + `<g ${st(0.8)}>${line("M235 82V100M85 100H435M85 100V116M260 100V116M435 100V116", "accent")}</g>`
+    + nodes.map((n, i) => `<g ${st(1.1 + i * 0.3)}>${card(n.x, 116, 150, 150, "worker node " + (i + 1))}`
+      + Array.from({ length: n.pods }, (_, k) => pod(n.x + 10 + k * 45, 144, "Pod", "branch", 40)).join("")
+      + [["runtime", 0], ["kubelet", 1], ["kube-proxy", 2]].map(([l, r]) => `<rect x="${n.x + 10}" y="${180 + r * 26}" width="130" height="22" rx="5" fill="var(--surface-2)" stroke="var(--line)"/>${T(n.x + 18, 195 + r * 26, l, `font-size="12" style="fill:var(--muted)"`)}`).join("") + `</g>`).join("")
+    + `<g ${st(2.6)}>${pod(438, 20, "new Pod", "accent", 70)}${C(473, 62, "needs a home", `font-size="12" style="fill:var(--muted)"`)}</g>`
+    + `<g ${st(3.4)}>${line("M234 68C300 90 420 70 473 70", "accent", "4 4")}${line("M473 72C473 100 445 112 435 138", "accent", "4 4")}${ah(434, 142, "d")}${pod(415, 144, "new", "accent", 40)}</g>`
+    + `<g ${st(4.1)}>${C(260, 292, "The scheduler puts it on node 3, the one with room.", ACC)}</g>`);
+
+  const PIC_DEPLOY = svg(252, "You write a Deployment file asking for 3 copies. A ReplicaSet keeps 3 Pods running. When one crashes, a new Pod replaces it.",
+    `<g ${st(0)}><path d="M10 14h146l22 22v178H10z" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><path d="M156 14v22h22" fill="none" stroke="var(--line)" stroke-width="1.5"/>${T(20, 36, "deployment.yaml", `font-weight="700"`)}`
+    + [["kind: Deployment", 0], ["image: shop:v2", 0], ["replicas: 3", 1]].map(([l, hi], k) => `${hi ? `<rect x="16" y="${66 + k * 30}" width="156" height="24" rx="5" fill="var(--branch-soft)"/>` : ""}<text x="24" y="${83 + k * 30}" font-size="13" style="font-family:var(--mono);fill:var(--ink)">${l}</text>`).join("")
+    + `${T(20, 196, "what you want,", MUTED)}${T(20, 212, "not the steps", MUTED)}</g>`
+    + `<g ${st(1)}>${line("M184 114H204")}${ah(212, 114)}<rect x="214" y="82" width="126" height="64" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${C(277, 106, "ReplicaSet", ACC)}${C(277, 124, "keeps 3 running", `font-size="12"`)}<text x="277" y="140" font-size="12" text-anchor="middle" style="fill:var(--muted)">(it counts)</text></g>`
+    + `<g ${st(1.8)}>${line("M340 114C360 114 360 52 382 52M340 114H382M340 114C360 114 360 176 382 176")}${[52, 114, 176].map((y, k) => pod(384, y - 13, "Pod " + (k + 1), "branch", 64)).join("")}</g>`
+    + `<g ${st(2.8)}><rect x="380" y="97" width="72" height="34" rx="17" fill="var(--wrong-soft)" opacity=".9"/>${X(416, 114, 10)}${T(458, 112, "crashes", BAD)}</g>`
+    + `<g ${st(3.7)}>${pod(384, 196, "new Pod", "accent", 76)}${line("M470 128C500 150 494 196 466 206", "accent")}${ah(462, 208, "l")}${T(372, 244, "3 of 3 running again", ACC)}</g>`);
+
+  const PIC_SERVICES = svg(260, "A user's request goes through the Ingress, the front gate, to a Service with an address that never changes, which sends it to any healthy Pod. A replaced Pod gets a new address, but the Service still finds it.",
+    `<g transform="translate(0 26)">` + `<g ${st(0)}><circle cx="34" cy="94" r="12" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/><path d="M14 136c0-16 9-24 20-24s20 8 20 24z" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/>${C(34, 156, "a user")}</g>`
+    + `<g ${st(0.9)}>${line("M60 116H92")}${ah(100, 116)}<path d="M104 152V96a30 30 0 0 1 60 0v56" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M116 152V100a18 18 0 0 1 36 0v52" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3"/>${C(134, 172, "Ingress", ACC)}${C(134, 188, "the front gate", MUTED)}</g>`
+    + `<g ${st(1.8)}>${line("M168 116H196")}${ah(204, 116)}<rect x="208" y="88" width="120" height="56" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${C(268, 110, "Service", ACC)}<text x="268" y="128" font-size="12" text-anchor="middle" style="font-family:var(--mono);fill:var(--ink)">shop.svc</text>${C(268, 166, "same address forever", MUTED)}</g>`
+    + `<g ${st(2.7)}>${line("M328 116C360 116 360 44 392 44M328 116H392M328 116C360 116 360 188 392 188")}`
+    + [["10.1.2.7", 44], ["10.1.3.9", 116], ["10.1.5.2", 188]].map(([ip, y]) => `${pod(394, y - 13, "Pod", "branch", 44)}<text x="446" y="${y + 4}" font-size="11" style="font-family:var(--mono);fill:var(--muted)">${ip}</text>`).join("") + `</g>`
+    + `<g ${st(3.6)}><rect x="392" y="29" width="48" height="30" rx="15" fill="var(--wrong-soft)" opacity=".9"/>${X(416, 44, 9)}</g>`
+    + `</g>`
+    + `<g ${st(4.3)}>${pod(394, 6, "new", "accent", 44)}<text x="446" y="23" font-size="11" style="font-family:var(--mono);fill:var(--accent);font-weight:700">10.1.8.4</text>${line("M330 134C352 100 364 22 390 19", "accent", "4 4")}${C(268, 252, "New Pod, new address. The Service still finds it.", ACC)}</g>`);
+
+  const PIC_CONFIG = svg(250, "A temporary Pod plugs into three things outside it that last: a ConfigMap for settings, a Secret for passwords and a Persistent Volume for data. When the Pod is replaced, the new one plugs into the same three.",
+    `<g ${st(0)}><rect x="20" y="34" width="150" height="62" rx="31" fill="none" stroke="var(--branch)" stroke-width="2.5" stroke-dasharray="7 5"/>${pod(70, 52, "app")}${C(95, 24, "Pod (temporary)", BR)}</g>`
+    + `<g ${st(0.9)}><path d="M340 14h100l14 14v42H340z" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>${T(350, 36, "ConfigMap", ACC)}<text x="350" y="56" font-size="11" style="font-family:var(--mono);fill:var(--muted)">DB_HOST=db-1</text>${line("M170 58C250 58 260 42 336 42", "accent")}</g>`
+    + `<g ${st(1.7)}><rect x="340" y="92" width="114" height="56" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/><rect x="352" y="112" width="18" height="15" rx="3" fill="var(--accent)"/><path d="M355 112v-5a6 6 0 0 1 12 0v5" fill="none" stroke="var(--accent)" stroke-width="2"/>${T(378, 114, "Secret", ACC)}<text x="378" y="134" font-size="11" style="font-family:var(--mono);fill:var(--muted)">pw: ••••••</text>${line("M170 68C250 68 260 120 336 120", "accent")}</g>`
+    + `<g ${st(2.5)}><ellipse cx="397" cy="178" rx="57" ry="9" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/><path d="M340 178v42a57 9 0 0 0 114 0v-42" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/><ellipse cx="397" cy="178" rx="57" ry="9" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>${C(397, 204, "Persistent", ACC)}${C(397, 220, "Volume: data", ACC)}${line("M150 92C230 140 260 200 336 200", "accent")}</g>`
+    + `<g ${st(3.4)}><rect x="20" y="34" width="150" height="62" rx="31" fill="var(--wrong-soft)" opacity=".85"/>${X(95, 65, 12)}${T(178, 30, "replaced", BAD)}</g>`
+    + `<g ${st(4.2)}><rect x="20" y="150" width="150" height="62" rx="31" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>${pod(70, 168, "app", "accent")}${T(20, 236, "the new Pod plugs into the same three", ACC)}${line("M170 172C240 172 270 60 336 48", "accent", "4 4")}${line("M170 180C250 180 280 124 336 124", "accent", "4 4")}${line("M170 190C250 196 290 204 336 206", "accent", "4 4")}</g>`);
+
+  // ---------- smaller pictures for single lines ----------
+  const PIC_CONTAINER = svg(150, "A container holds your app, its runtime and its libraries, so it runs the same on a laptop, a server and the cloud.",
+    `<g ${st(0)}><rect x="12" y="14" width="130" height="122" rx="10" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2.5"/>${C(77, 8 + 0, "")}`
+    + [["your app", 28], ["runtime", 64], ["libraries", 100]].map(([l, y]) => `<rect x="26" y="${y}" width="102" height="26" rx="5" fill="var(--surface)" stroke="var(--line)"/>${C(77, y + 17, l)}`).join("") + `</g>`
+    + [["laptop", 34], ["server", 76], ["cloud", 118]].map(([l, y], i) => `<g ${st(1 + i * 0.5)}>${line(`M146 75C200 75 200 ${y} 250 ${y}`, "branch", "3 4")}<rect x="256" y="${y - 15}" width="92" height="30" rx="6" fill="var(--surface)" stroke="var(--line)"/><rect x="264" y="${y - 8}" width="16" height="16" rx="3" fill="var(--branch)"/>${T(288, y + 4, l)}</g>`).join("")
+    + `<g ${st(3)}>${T(370, 72, "same result", ACC)}${T(370, 90, "everywhere", ACC)}</g>`);
+
+  const PIC_MICRO = svg(160, "One big online shop is split into small pieces, cart, payments, search and accounts, each in its own container.",
+    `<g ${st(0)}><rect x="10" y="40" width="150" height="80" rx="12" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>${C(85, 76, "one big", `font-weight="700"`)}${C(85, 94, "online shop", `font-weight="700"`)}</g>`
+    + `<g ${st(1)}>${line("M166 80H206")}${ah(214, 80)}${C(190, 70, "split", MUTED)}</g>`
+    + [["cart", 230, 18], ["payments", 380, 18], ["search", 230, 92], ["accounts", 380, 92]].map(([l, x, y], i) => `<g ${st(1.6 + i * 0.35)}><rect x="${x}" y="${y}" width="128" height="50" rx="8" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/>${C(x + 64, y + 30, l)}</g>`).join("")
+    + `<g ${st(3.4)}>${C(374, 158, "each in its own container", ACC)}</g>`);
+
+  const PIC_NODE = svg(184, "Inside one worker node: the kubelet takes orders from the control plane and reports back, the container runtime runs the containers, and kube-proxy routes network traffic.",
+    `<g ${st(0)}><rect x="300" y="8" width="210" height="40" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${C(405, 33, "control plane", ACC)}</g>`
+    + `<g ${st(0.6)}>${card(10, 30, 270, 146, "one worker node")}</g>`
+    + `<g ${st(1.2)}><rect x="24" y="60" width="116" height="30" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>${C(82, 80, "kubelet", ACC)}${line("M140 68C220 40 250 28 296 28", "accent")}${ah(298, 28)}${line("M300 40C250 56 210 82 146 82", "accent", "3 3")}${ah(142, 82, "l")}${T(300, 70, "takes orders, reports back", `font-size="12" style="fill:var(--muted)"`)}</g>`
+    + `<g ${st(2)}><rect x="24" y="100" width="116" height="26" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>${C(82, 118, "runtime", `font-size="12"`)}${pod(150, 100, "app", "branch", 44)}${pod(200, 100, "app", "branch", 44)}</g>`
+    + `<g ${st(2.7)}><rect x="24" y="136" width="116" height="26" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>${C(82, 154, "kube-proxy", `font-size="12"`)}${T(150, 154, "routes traffic", `font-size="12" style="fill:var(--muted)"`)}</g>`);
+
+  const rowPods = (x, y, tags) => tags.map((t, k) => pod(x + k * 52, y, t, t === "v2" ? "accent" : t === "x" ? "wrong" : "branch", 46)).join("");
+  const PIC_SCALE = svg(150, "Normal traffic needs 3 Pods. When traffic doubles, Kubernetes adds 3 more, and removes them when traffic drops.",
+    `<g ${st(0)}>${T(10, 30, "normal day", MUTED)}${rowPods(120, 12, ["app", "app", "app"])}<path d="M440 26h50" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>${T(440, 50, "traffic", `font-size="11" style="fill:var(--muted)"`)}</g>`
+    + `<g ${st(1.2)}>${T(10, 92, "Black Friday", BR)}${rowPods(120, 74, ["app", "app", "app"])}<path d="M440 88h70" stroke="var(--branch)" stroke-width="10" stroke-linecap="round"/></g>`
+    + `<g ${st(2)}>${[0, 1, 2].map((k) => pod(276 + k * 52, 74, "+1", "accent", 46)).join("")}${C(260, 138, "replicas: 3 → 6, by hand or automatically", ACC)}</g>`);
+
+  const PIC_ROLLOUT = svg(176, "A rolling update: old Pods are swapped for new ones a few at a time, so the app never goes down. If the new version fails its health check, the swap stops and it can be rolled back.",
+    `<g ${st(0)}>${T(10, 30, "before", MUTED)}${rowPods(100, 12, ["v1", "v1", "v1", "v1"])}</g>`
+    + `<g ${st(1)}>${T(10, 74, "rolling", MUTED)}${rowPods(100, 56, ["v2", "v1", "v1", "v1"])}${T(320, 74, "a few at a time", `font-size="12" style="fill:var(--muted)"`)}</g>`
+    + `<g ${st(2)}>${T(10, 118, "after", MUTED)}${rowPods(100, 100, ["v2", "v2", "v2", "v2"])}${T(320, 118, "never went down", ACC)}</g>`
+    + `<g ${st(3)}>${T(10, 164, "If v2 fails its health check, the swap stops and one command rolls back to v1.", `font-size="12" style="fill:var(--wrong)"`)}</g>`);
+
+  const PIC_PODIP = svg(130, "A Pod has its own address. When it dies, the new Pod that replaces it gets a brand-new address.",
+    `<g ${st(0)}><rect x="14" y="30" width="140" height="62" rx="31" fill="none" stroke="var(--branch)" stroke-width="2.5"/>${pod(61, 48, "app")}${C(84, 22, "Pod", BR)}<text x="84" y="114" font-size="12" text-anchor="middle" style="font-family:var(--mono);fill:var(--muted)">10.1.2.7</text></g>`
+    + `<g ${st(1.3)}>${X(84, 61, 13)}</g>`
+    + `<g ${st(2)}>${line("M170 61H226")}${ah(234, 61)}${C(202, 50, "replaced", MUTED)}</g>`
+    + `<g ${st(2.7)}><rect x="250" y="30" width="140" height="62" rx="31" fill="none" stroke="var(--accent)" stroke-width="2.5"/>${pod(297, 48, "app", "accent")}${C(320, 22, "new Pod", ACC)}<text x="320" y="114" font-size="12" text-anchor="middle" style="font-family:var(--mono);fill:var(--accent);font-weight:700">10.1.4.3</text>${T(404, 66, "new address", ACC)}</g>`);
+
+  const YAML = code("deployment.yaml", [["apiVersion: apps/v1"], ["kind: Deployment"], ["metadata:"], ["  name: shop"], ["spec:"], ["  replicas: 3", "how many copies", 1], ["  template:"], ["    spec:"], ["      containers:"], ["      - name: shop"], ["        image: shop:v2", "which version", 1]]);
+  const CONFIGMAP = code("configmap.yaml", [["kind: ConfigMap"], ["metadata:"], ["  name: shop-settings"], ["data:"], ["  DB_HOST: db-1", "which database", 1], ["  CURRENCY: USD"]]);
+  const SECRET = code("secret.yaml", [["kind: Secret"], ["metadata:"], ["  name: shop-db-password"], ["data:"], ["  password: c2VjcmV0", "kept private, only for Pods that need it", 1]]);
+
+  const set = (id, fig, peeks) => { const it = K.ideas.find((x) => x.id === id); it.fig = fig; it.peeks = peeks; };
+  set("why", PIC_WHY, [
+    { q: "What do you think a container packs besides your app?", k: 0, pic: PIC_CONTAINER },
+    { q: "Why would one app end up as lots of containers?", k: 2, pic: PIC_MICRO },
+    { q: "With hundreds of containers, what gets too hard to do by hand?", k: 3 },
+    { q: "If Kubernetes is the conductor, what's the sheet music?", k: 4 },
+    { q: "Who do you think notices when a machine dies?", k: 5 }]);
+  set("cluster", PIC_CLUSTER, [
+    { q: "What turns a bunch of machines into a cluster?", k: 0 },
+    { q: "What does the control plane decide?", k: 0 },
+    { q: "If a worker node dies, what happens to its containers?", k: 0 },
+    { q: "What do you think the kubelet does on each node?", k: 2, pic: PIC_NODE },
+    { q: "How do you think the scheduler picks a node?", k: 3 }]);
+  set("deploy", PIC_DEPLOY, [
+    { q: "What do you think a Deployment file looks like?", k: 0, pic: YAML },
+    { q: "What would you change in that file to run version 3 with 5 copies?", k: 0, pic: YAML },
+    { q: "What's the difference between a Pod and a container?", k: 1 },
+    { q: "A Pod crashes at midnight. What brings it back?", k: 2 },
+    { q: "Traffic doubles on Black Friday. What would you change?", k: 3, pic: PIC_SCALE },
+    { q: "How would you ship a new version without going down?", k: 4, pic: PIC_ROLLOUT }]);
+  set("services", PIC_SERVICES, [
+    { q: "Why do you think a Pod's address keeps changing?", k: 0, pic: PIC_PODIP },
+    { q: "If addresses keep changing, what do users connect to?", k: 1 },
+    { q: "Which copy do you think gets your request?", k: 2 },
+    { q: "How do people on the internet reach your Service?", k: 3 }]);
+  set("config", PIC_CONFIG, [
+    { q: "Why can't you keep important stuff inside a Pod?", k: 2 },
+    { q: "Where would you put which database your app uses?", k: 0, pic: CONFIGMAP },
+    { q: "Where would you put the database password, and why not in a ConfigMap?", k: 1, pic: SECRET },
+    { q: "A Pod holding your orders gets replaced. How do the orders survive?", k: 2 }]);
+}
+// v58: hints that point the way without giving the answer away (before, the hint was just the answer's first sentence).
+{
+  const K = TOPICS.find((t) => t.id === "kubernetes");
+  const HINTS = {
+    "What's a container?": "Think of a packed lunchbox. What goes in with your app so it works on any machine?",
+    "Isn't that just Docker?": "Docker works on one machine. Who looks after things when there are many machines?",
+    "Is my app just one container?": "Think of an online shop. Is the cart the same piece as payments or search?",
+    "Can't I just fix it myself?": "Picture hundreds of containers and traffic jumping at night. Which chores pile up?",
+    "So what is Kubernetes, really?": "Think of an orchestra. Who keeps every player doing their part?",
+    "Who notices a server died?": "Every machine checks in every few seconds. What happens when one goes quiet?",
+    "How are the machines organized?": "One part decides, the rest do the work. What are those two parts called?",
+    "What's on each machine?": "There are three helpers: one runs containers, one takes orders, one handles the network.",
+    "How does the brain talk to each machine?": "Every node runs a small helper whose name starts with \"kube\".",
+    "Who picks the machine?": "Part of the control plane looks at which machine has free CPU and memory.",
+    "What does that file look like?": "Does the file list steps to follow, or describe the result you want?",
+    "What counts as a copy?": "Kubernetes wraps each container in a thin wrapper with its own address. It starts with P.",
+    "What if a copy crashes?": "Something behind the Deployment keeps counting the copies.",
+    "What if I need 10 copies, not 3?": "How many numbers in the file would you need to change?",
+    "How do I ship a new version without downtime?": "Would you swap every copy at once, or a few at a time?",
+    "Why does the address change?": "Is a broken Pod repaired, or replaced with a brand-new one?",
+    "So what do users connect to?": "Something sits in front of all the copies and never moves.",
+    "Which copy gets my request?": "Does it matter which copy answers, as long as it's healthy?",
+    "How do users on the internet get in?": "Think of a front gate that sends web traffic to the right place.",
+    "Where do settings go?": "Settings live outside the container, in something named after \"config\".",
+    "What about passwords?": "It's like the place for settings, but for private things. What would you call that?",
+    "What about the data?": "It needs storage that outlives any Pod. Which word in its name means \"lasts\"?"
+  };
+  K.ideas.forEach((it) => it.holes.forEach((h) => { if (HINTS[h.q]) h.hint = HINTS[h.q]; }));
+  const ing = K.ideas.find((x) => x.id === "services").holes.find((h) => /internet/.test(h.q)); if (ing && !ing.pts) ing.pts = [3];
+}
+
+// v59 (on v58): the list that opens after an answer closes itself; clicking a line brings Kube there to offer to show or explain it; hover waits longer
+// v58 (on v57): the line a question comes from stays highlighted, zoomed and centered beside the panel; the panel quotes it; real hints; a second try (with a nudge) before the answer; after an answer the list opens with the matching line marked and how much Understood went up (never down)
+// v57 (on v56): Kube invites a click ("Click me to test your understanding"); Read and Understood bars in the top bar
+// v56 (on v55): hand-drawn step-by-step pictures for the Kubernetes article; Kube asks about the line under the cursor ("What do you think a Deployment file looks like?"): Show me (picture + answer under that line) or I'll explain (side panel)
+// v55 (on v54): Kube pops up at the cursor, then after ~1s without interaction drifts slowly to the bottom right so it never covers the text; "more" offers now ask "Think you could explain this part?"
+// v54 (on v53): Kube floats to the cursor in narrower windows too (like the claude.ai preview pane), not only 1000px+
+// v53 (on v52): when Kube has something to say it floats over to the cursor (and listens for yes/no in Voice mode); Kube offers the pictures, no picture buttons in the article
+// v52 (on v51): skim = headlines only (tap to open); no question lists in the margin, just Kube floating beside what you read; highlight or tap Kube for one follow-up question in a side panel that asks first, then hints, then tells, then pictures
+// v51 (on v50): "Ask me about this" on every part; highlight words to dig deeper (map: what you highlighted + diagram in the center, questions around it); Kube offers more when you linger, reread or highlight
+// v50 (on v49): Kube asks in the middle of the screen how to go through the article (read it all / skim / step by step); every visit starts fresh on the article (answers kept); Article button fixed
+// v49 (on v48): three topics on the shelf (vaccines removed)
+// v48 (on v47): a few seconds into the article Kube asks "skim it all, or step by step?"; step by step shows one point at a time
 // v47 (on v46): Kube lives in a skimmable article (margin notes, reading signals), then asks you to teach it; no slider; "no idea" gives a hint, then points back to the article
 // v46 (on v45): the list intro tucks itself into "Your list" after a few seconds, no button
 // v45 (on v44): Your list opens centered then flies into its button; a "how well do you understand this?" slider replaces
@@ -1012,7 +1323,7 @@ function beginLearning(route) {
   renderBar(); renderSyl();
   Object.assign(R, { secs: T.ideas.map(() => 0), backs: T.ideas.map(() => 0), cur: -1, maxSeen: -1, reachedEnd: false, notes: 0 });
   if (route === "kube") {
-    const go = () => ST.kphase === "teach" ? (showView("map"), goIdea(ST.idx || 0)) : openArticle();
+    const go = () => openArticle(); // v50: always start fresh on the article; answers stay remembered
     if (!ST.listShown) { ST.listShown = true; persist(); showView("map"); listIntro(go); } else go();
   } else { ST.order = null; showView("map"); goIdea(testing() ? 0 : ST.idx || 0); }
 }
@@ -1034,7 +1345,7 @@ function listIntro(next) {
     card.style.opacity = "0"; ov.classList.add("going");
     setTimeout(() => {
       ov.hidden = true; $("card").style.visibility = ""; const btn = $("list-btn"); btn.classList.remove("bump"); void btn.offsetWidth; btn.classList.add("bump");
-      const tip = $("list-tip"); tip.hidden = false; setTimeout(() => { tip.hidden = true; }, 6500);
+      R.tipPending = true; // shown once Kube's "how do you want to go through it?" is answered
       next();
     }, 1750);
   };
@@ -1047,15 +1358,17 @@ function listIntro(next) {
 $("learn-back").addEventListener("click", () => { stopMic(); stopCommand(); if (SYN) SYN.cancel(); renderShelf(); });
 
 // ---------- "Your list": the checklist, hidden until they ask for it ----------
-function renderSyl(popped) {
-  const done = donePts(), all = totalPts();
+function renderSyl(popped, focus, gain) {
+  const done = T.ideas.reduce((n, it) => n + it.points.filter((_, p) => ptVal(it, p) >= 1).length, 0), all = totalPts();
   $("syl-count").textContent = `${done} of ${all}`;
   $("list-count").textContent = `${done}/${all}`;
   $("syl-fill").style.width = (100 * done / all) + "%";
+  const show = focus != null ? focus : ST.idx;
   $("syl-list").innerHTML = T.ideas.map((it, i) => {
-    const c = cov(it.id), full = c.size === it.points.length, now = i === ST.idx;
-    return `<li class="syl-idea${now ? " now" : ""}${full ? " full" : ""}"><button type="button" data-i="${i}"><span class="syl-num">${full ? "✓" : i + 1}</span><span class="syl-t">${esc(it.title)}</span><span class="syl-k">${c.size}/${it.points.length}</span></button>
-      ${now ? `<ul class="syl-pts">${it.points.map((p, k) => `<li class="${c.has(k) ? "yes" : ""}${popped && popped.has(k) ? " pop" : ""}"><i></i><span>${esc(it.asks[k] || p)}</span></li>`).join("")}</ul>` : ""}</li>`;
+    const vals = it.points.map((_, p) => ptVal(it, p)), n = vals.filter((v) => v >= 1).length, full = n === it.points.length, now = i === show;
+    const tr = (ST.tried || {})[it.id] || {}, practiced = (p) => it.holes.some((h, k) => tr[k] && (h.pts || []).includes(p));
+    return `<li class="syl-idea${now ? " now" : ""}${full ? " full" : ""}"><button type="button" data-i="${i}"><span class="syl-num">${full ? "✓" : i + 1}</span><span class="syl-t">${esc(it.title)}</span><span class="syl-k">${n}/${it.points.length}</span></button>
+      ${now ? `<ul class="syl-pts">${it.points.map((p, k) => { const v = vals[k], pop = popped && popped.has(k); return `<li class="${v >= 1 ? "yes" : v > 0 ? "half" : practiced(k) ? "tried" : ""}${pop ? " pop" : ""}"><i></i><span>${esc(it.asks[k] || p)}${pop && gain ? ` <em class="syl-gain${gain.delta > 0 ? "" : " soft"}">${gain.delta > 0 ? (v >= 1 ? "understood" : "halfway") : "practiced"}</em>` : ""}</span></li>`; }).join("")}</ul>` : ""}</li>`;
   }).join("");
   $("syl-list").querySelectorAll("[data-i]").forEach((b) => b.addEventListener("click", () => { toggleList(false); if (ST.route === "kube" && ST.kphase !== "teach") return toSection(+b.dataset.i); showView("map"); goIdea(+b.dataset.i); }));
   if (popped && popped.size) { const b = $("list-btn"); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); }
@@ -1070,7 +1383,7 @@ $("syl-close").addEventListener("click", () => toggleList(false));
 $("syl-finish").addEventListener("click", finish);
 
 function renderBar() { $("bar-step").textContent = artOn() ? `Reading · part ${ST.idx + 1} of ${T.ideas.length} · ${idea().title}` : `${ST.order ? "Question" : "Part"} ${qNo()} of ${T.ideas.length} · ${idea().title}`; }
-const qNo = () => ST.order ? ST.order.indexOf(ST.idx) + 1 : ST.idx + 1;
+const qNo = () => ST.single != null ? ST.idx + 1 : ST.order ? ST.order.indexOf(ST.idx) + 1 : ST.idx + 1;
 function nextIdx() { const o = ST.order || T.ideas.map((_, i) => i), k = o.indexOf(ST.idx); return k < 0 || k + 1 >= o.length ? T.ideas.length : o[k + 1]; }
 function setMode(m, why) {
   const p = ph(idea().id);
@@ -1185,7 +1498,7 @@ function renderCard(fresh) {
       : `<div class="tools"><button type="button" class="linkish" data-act="fig">Show me a picture</button></div>`;
   }
   const strong = p.phase === "graded" || mode === "read" || (p.short && mode === "teach");
-  body += `<div class="next-row"><button type="button" class="btn${strong ? "" : " ghost"}" data-act="next">${last ? "See what I can explain" : ST.order ? "Next question →" : "Next part →"}</button>
+  body += `<div class="next-row"><button type="button" class="btn${strong ? "" : " ghost"}" data-act="next">${ST.single != null ? "Back to the article →" : last ? "See what I can explain" : ST.order ? "Next question →" : "Next part →"}</button>
     ${p.phase === "graded" && !p.grading ? `<button type="button" class="linkish" data-act="again">Teach Kube this again</button>` : ""}</div>`;
   $("card").innerHTML = h + (fresh ? `<div class="fade-in" style="display:grid;gap:16px">${body}</div>` : body);
   wireCard();
@@ -1221,7 +1534,7 @@ const ACT = {
     if (voiceOn) say(p.lookback ? "No worries. Let's look at it together." : p.short ? it.teach : "Here's a hint. " + lead(it.blurb), () => afterCard());
   },
   look() { const p = ph(idea().id); p.looked = true; log("look-back", {}); E.lookbacks = (E.lookbacks || 0) + 1; persist(); showView("article"); toSection(ST.idx, true); },
-  next() { log("next", { ms: Date.now() - ph(idea().id).t0 }); maybeSkimNext(); goIdea(nextIdx()); },
+  next() { log("next", { ms: Date.now() - ph(idea().id).t0 }); if (ST.single != null) return backToArticle(); maybeSkimNext(); goIdea(nextIdx()); },
   again() { const p = ph(idea().id); p.phase = "ask"; p.mode = "teach"; p.answering = true; p.draft = ""; renderCard(); renderHoles(); focusTa("main"); },
   showme() { const it = idea(), p = ph(it.id), hi = p.gaps[p.gi]; log("showme", { q: it.holes[hi].q }); openHole(hi, true); },
   skipgap() { const p = ph(idea().id); log("skipgap", {}); p.gi++; p.gapMsg = null; p.gapDraft = ""; renderCard(); renderHoles(); },
@@ -1233,6 +1546,8 @@ function focusTa(k) { const ta = $("card").querySelector(`[data-ta="${k}"]`); if
 function wrap(text, max) { const out = []; let line = ""; text.split(" ").forEach((w) => { if ((line + " " + w).trim().length > max && line) { out.push(line); line = w; } else line = (line + " " + w).trim(); }); if (line) out.push(line); return out; }
 function figSVG(f) {
   const W = 520;
+  if (f.type === "svg") return f.svg;
+  if (f.type === "html") return f.html;
   if (f.type === "flow") {
     const n = f.steps.length, gap = 26, bw = (W - gap * (n - 1)) / n, maxc = Math.floor(bw / 8.2);
     const lines = f.steps.map((s) => wrap(s, maxc)), bh = Math.max(...lines.map((l) => l.length)) * 18 + 28;
@@ -1516,10 +1831,10 @@ function toggleMic(btn, ta, note, sync) {
     const base = ta.value.trim() ? ta.value.trimEnd() + " " : "";
     rec.onresult = (e) => {
       let t = ""; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
-      if (/^\s*(no idea|i (don'?t|do not) know|not sure)[.!]?\s*$/i.test(t) && e.results[e.results.length - 1].isFinal) { stopMic(); ta.value = base.trim(); sync(); E.touch("voice"); return ta.dataset.ta === "main" ? ACT.idk() : ACT.showme(); }
+      if (/^\s*(no idea|i (don'?t|do not) know|not sure)[.!]?\s*$/i.test(t) && e.results[e.results.length - 1].isFinal) { stopMic(); ta.value = base.trim(); sync(); E.touch("voice"); return ta.dataset.ta === "panel" ? panelHint() : ta.dataset.ta === "main" ? ACT.idk() : ACT.showme(); }
       const fin = /\b(i'?m|i am) done\.?\s*$/i.test(t);
       ta.value = base + t.replace(/\b(i'?m|i am) done\.?\s*$/i, "").trimStart(); sync(); E.touch("voice");
-      if (fin && ta.value.trim()) { stopMic(); const send = ta.closest(".card").querySelector(`[data-send="${ta.dataset.ta}"]`); if (send) send.click(); }
+      if (fin && ta.value.trim()) { stopMic(); const send = ta.closest(".card, .kpanel").querySelector(`[data-send="${ta.dataset.ta}"]`); if (send) send.click(); }
     };
     rec.onerror = (e) => { if (/not-allowed|service-not-allowed|audio-capture/.test(e.error)) { note.hidden = false; note.textContent = "Voice is blocked here, so type instead. Voice works on aneesh-123.github.io/autolearn in Chrome, Edge or Safari."; btn.hidden = true; } };
     rec.onend = () => { listening = false; btn.classList.remove("on"); btn.innerHTML = MIC_I; if (/Listening/.test(note.textContent)) note.hidden = true; };
@@ -1601,7 +1916,7 @@ function guess() {
     const seen = R.secs.map((_, i) => i).filter((i) => R.secs[i] > 0), skimmed = seen.filter((i) => ratio(i) < 0.3).length;
     if (idle > 60000) return `No input for ${secs(idle)} while reading: reading closely, or away`;
     if (R.backs.some((n) => n)) { const i = R.backs.findIndex((n) => n); if (R.cur === i) return `Scrolled back to part ${i + 1}: rereading, checking something`; }
-    if (R.notes >= 2) return `Opened ${R.notes} of Kube's notes: curious`;
+    if (R.notes >= 2) return `Went into ${R.notes} of Kube's questions: curious`;
     if (seen.length >= 2 && skimmed >= Math.ceil(seen.length / 2)) return "Scrolling fast: skimming for the gist";
     if (seen.length && skimmed === 0) return "Reading at a steady pace";
     return "Reading";
@@ -1624,8 +1939,13 @@ function renderSignals() {
     ["Mouse still for", secs(now - E.lastMouse)],
     ["Any input, last", secs(now - E.last) + (E.lastKind ? " ago (" + E.lastKind + ")" : "")],
     ...T.ideas.map((x, i) => [`Part ${i + 1}${i === R.cur ? " (now)" : ""}`, R.secs[i] ? `${secs(R.secs[i])} of ~${secs(expectedMs(x))} · ${readWord(i)}${R.backs[i] ? " · reread " + R.backs[i] + "×" : ""}` : "not reached"]),
-    ["Kube's notes opened", String(R.notes)],
-    ["Pictures", String(E.pics)],
+    ["Pace", (R.intent ? `picked "${{ read: "read it all", skim: "skim it", step: "step by step", dismissed: "closed without picking" }[R.intent]}" · ` : "") + (R.pace === "step" ? `step by step · ${R.steps} steps` : "showing it all")],
+    ["Kube's questions seen", String(R.notes)],
+    ["Highlighted", String((R.hl || []).reduce((a, b) => a + b, 0))],
+    ["Kube's follow-ups", R.fq ? `${R.fq.open} opened · ${R.fq.tried} tried (${R.fq.right} right) · ${R.fq.hints} hints · ${R.fq.told} just told` : "none"],
+    ...(R.pace === "skim" ? [["Parts opened (skim)", `${R.open.size} of ${T.ideas.length}`]] : []),
+    ["Asked about a part early", String(R.asks || 0)],
+    ["Pictures", `${E.pics} shown${R.picOffered ? ` · Kube offered ${R.picOffered.size}` : ""}`],
     ["Left the tab", `${E.aways}× (${secs(E.awayMs)} away)`],
     ["Reached the end", R.reachedEnd ? "yes" : "no"]
   ] : [
@@ -1684,12 +2004,18 @@ function offer(key, text, acts) {
   p.nudged.add(key); E.offered++; E.lastTip = `offered "${text.split(/[.!?]/)[0]}"`; log("tip", { key });
   const b = $("kube-say");
   b.innerHTML = `<div>${esc(text)}</div>` + (acts ? `<div class="row">${acts.map(([l], i) => `<button type="button" class="btn small${i ? " ghost" : ""}" data-i="${i}">${esc(l)}</button>`).join("")}</div>` : "");
-  b.hidden = false;
+  b.hidden = false; $("kube-tag").hidden = true;
   $("corner-face").innerHTML = FACE("happy");
-  b.querySelectorAll("[data-i]").forEach((x) => x.addEventListener("click", () => { const fn = acts[+x.dataset.i][1]; kubeHush(); if (fn) { E.taken++; E.lastTip += ": taken"; log("tip-yes", { key }); fn(); } else { E.lastTip += ": declined"; log("tip-no", { key }); } }));
+  const pick = (i, how) => { const fn = acts[i][1]; kubeHush(); if (fn) { E.taken++; E.lastTip += ": taken"; log("tip-yes", { key, how }); fn(); } else { E.lastTip += ": declined"; log("tip-no", { key, how }); } };
+  b.querySelectorAll("[data-i]").forEach((x) => x.addEventListener("click", () => pick(+x.dataset.i, "click")));
+  R.lastOffer = Date.now(); kubeToCursor();
+  if (voiceOn && acts) {
+    b.insertAdjacentHTML("beforeend", `<p class="say-hint">${SR ? "Or just say yes or no" : ""}</p>`);
+    say(text, () => listenFor([[/\b(yes|yeah|yep|sure|ok|okay|please|show|go)\b/, 0], [/\b(no|nope|nah|not now|later|skip)\b/, acts.length - 1]], (v) => { if (!$("kube-say").hidden) pick(v, "voice"); }));
+  } else if (voiceOn) say(text);
   clearTimeout(sayT); sayT = setTimeout(kubeHush, acts ? 30000 : 7000);
 }
-function kubeHush() { clearTimeout(sayT); $("kube-say").hidden = true; $("corner-face").innerHTML = FACE("smile"); }
+function kubeHush() { clearTimeout(sayT); document.querySelectorAll(".art-pts li.asked").forEach((x) => x.classList.remove("asked")); $("kube-say").hidden = true; $("corner-face").innerHTML = FACE("smile"); stopCommand(); try { kubeHome(); } catch (e) {} }
 
 // ---------- results ----------
 function finish() {
@@ -1710,7 +2036,12 @@ function noticed() {
   if (R.secs && R.secs.some((s) => s > 0)) {
     const sk = R.secs.map((_, i) => i).filter((i) => R.secs[i] > 0 && ratio(i) < 0.3), nr = R.secs.filter((s) => !s).length, rr = R.backs.filter((x) => x).length;
     out.push(`Read the short article in ${secs(R.secs.reduce((a, b) => a + b, 0))}${sk.length ? `, skimming ${sk.length} of ${T.ideas.length} parts` : ""}${nr ? `, never reached ${nr}` : ""}${rr ? `, scrolled back to reread ${rr}` : ""}. ${R.reachedEnd ? "Reached the end." : "Didn't reach the end."}`);
-    if (R.notes) out.push(`Opened ${R.notes} of Kube's notes in the margin.`);
+    if (R.intent) out.push(`When Kube asked how to go through the article: ${{ read: "read it all", skim: "skim it", step: "step by step", dismissed: "closed it without picking" }[R.intent]}${ST.pace === "step" ? ` (${R.steps || 0} steps)` : ""}.`);
+    if (R.fq && R.fq.open) out.push(`Kube asked ${R.fq.open} follow-up question${R.fq.open > 1 ? "s" : ""}: tried ${R.fq.tried} (${R.fq.right} right), asked for ${R.fq.hints} hint${R.fq.hints === 1 ? "" : "s"}, just told ${R.fq.told}${R.fq.pics ? `, opened ${R.fq.pics} picture${R.fq.pics > 1 ? "s" : ""}` : ""}.`);
+    if (ST.pace === "skim" && R.open) out.push(`Skimming, opened ${R.open.size} of ${T.ideas.length} parts.`);
+    const hls = ST.log.filter((e) => e.type === "highlight"); if (hls.length) out.push(`Highlighted ${hls.length} time${hls.length > 1 ? "s" : ""}: ${hls.slice(0, 4).map((e) => `"${e.text}"`).join(", ")}${R.deeps ? `, and dug deeper ${R.deeps}×` : ""}.`);
+    if (R.asks) out.push(`Asked Kube to quiz them on ${R.asks} part${R.asks > 1 ? "s" : ""} before finishing the article.`);
+    const offs = ST.log.filter((e) => e.type === "more-offer"); if (offs.length) out.push(`Kube offered more ${offs.length}× (lingering or rereading); taken ${ST.log.filter((e) => e.type === "more-yes").length}.`);
     if (E.lookbacks) out.push(`Went back to the article ${E.lookbacks} time${E.lookbacks > 1 ? "s" : ""} after saying "no idea" twice.`);
   }
   if (n("copy-list")) out.push(`Copied the list ${n("copy-list")} time${n("copy-list") > 1 ? "s" : ""}.`);
@@ -1767,34 +2098,40 @@ function showView(v) {
   const teach = ST && ST.route === "kube" && ST.kphase === "teach";
   $("art-btn").hidden = !teach; $("art-btn").textContent = art ? "Back to Kube" : "Article";
   $("back-kube").hidden = !(teach && art);
+  if (art && !$("art").childElementCount) renderArticle();
+  $("kube-corner").classList.toggle("in-margin", art); if (!art) { closePanel(true); $("kube-corner").style.top = $("kube-corner").style.left = ""; }
   if (!art) { $("art").querySelectorAll(".flash").forEach((x) => x.classList.remove("flash")); }
   if (T) renderBar();
 }
 function openArticle() {
-  ST.kphase = "read"; persist(); log("article", {});
-  R.stillAsked = false; renderArticle(); showView("article"); ST.idx = 0; renderBar(); window.scrollTo(0, 0);
+  ST.kphase = "read"; ST.order = null; ST.pace = null; persist(); log("article", {});
+  R.stillAsked = false; R.pace = "all"; R.open = new Set(); R.picOffered = new Set(); R.kubeAway = false; R.fq = { open: 0, tried: 0, right: 0, hints: 0, told: 0, pics: 0 }; R.hl = T.ideas.map(() => 0); R.offered = new Set(); R.deeps = 0; R.asks = 0; ST.single = null; R.step = { sec: 0, pt: 0, done: false }; R.steps = 0;
+  renderArticle(); showView("article"); ST.idx = 0; renderBar(); window.scrollTo(0, 0);
+  // Kube jumps in once the whole thing has been on screen for a moment: is this too much at once?
+  paceIntro();
 }
 function renderArticle() {
   const s = T.source, mins = Math.max(2, Math.round(T.ideas.reduce((n, i) => n + expectedMs(i), 0) / 60000));
-  $("art").innerHTML = `<header class="art-head"><div class="eyebrow">${esc(T.subject)} · about ${mins} min to skim</div><h1>${esc(T.title)}</h1><p class="art-hook">${esc(T.hook)}</p><p class="art-src">A short version of <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>, ${esc(s.site)}.</p></header>`
+  $("art").innerHTML = `<header class="art-head"><div class="eyebrow">${esc(T.subject)} · about ${mins} min to skim</div><h1>${esc(T.title)}</h1><p class="art-hook">${esc(T.hook)}</p><div class="pace" role="group" aria-label="How to go through it"><button type="button" data-pace="all">Read it all</button><button type="button" data-pace="skim">Skim</button><button type="button" data-pace="step">Step by step</button></div><p class="art-src">A short version of <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>, ${esc(s.site)}.</p></header>`
     + T.ideas.map((it, i) => `<section class="art-sec" data-sec="${i}" id="sec-${i}">
-      <div class="art-main"><div class="art-num">${i + 1}</div><h2>${esc(it.title)}</h2><p class="art-lead">${esc(lead(it.blurb))}</p>
-        <ul class="art-pts">${it.points.map((pt) => `<li>${esc(pt)}</li>`).join("")}</ul>
-        ${it.fig ? `<button type="button" class="linkish art-pic" data-pic="${i}">Show me a picture</button><div class="fig anim" data-figbox="${i}" hidden></div>` : ""}</div>
-      <aside class="art-notes">${it.holes.map((h, k) => `<div class="nk${seenSet(it.id).has(k) ? " seen" : ""}" data-nk="${i}-${k}"><button type="button" class="nk-q" aria-expanded="false"><span class="nk-face">${FACE("smile")}</span><span>${esc(h.q)}</span></button><div class="nk-a" hidden>${esc(h.a)}</div></div>`).join("")}</aside>
+      <div class="art-main"><div class="art-num">${i + 1}</div><h2>${esc(it.title)}</h2><p class="art-lead">${esc(lead(it.blurb))}</p><button type="button" class="skim-open" data-open="${i}">Open this part</button>
+        <ul class="art-pts">${it.points.map((pt, p) => `<li data-pt="${i}-${p}">${esc(pt)}</li>${it.peeks && it.peeks[p] ? `<li class="peek" data-peek="${i}-${p}" hidden></li>` : ""}`).join("")}</ul>
+        ${it.fig ? `<div class="figwrap" data-figwrap="${i}" hidden><div class="fig anim" data-figbox="${i}"></div><button type="button" class="linkish" data-figx="${i}">Hide the picture</button></div>` : ""}<div class="art-acts"><button type="button" class="btn small art-next" data-next="${i}">Next</button><button type="button" class="ask-me" data-askme="${i}"><span class="nk-face">${FACE("smile")}</span>Ask me about this</button></div></div>
     </section>`).join("")
     + `<section class="art-end" id="art-end"><div class="kube-face">${FACE("happy")}</div><div><h2>That's the whole thing.</h2><p>Now I'd love to learn it from you. Can you teach me?</p><div class="row"><button type="button" class="btn" id="art-teach">Teach Kube</button><button type="button" class="linkish" id="art-top">Skim it again</button></div></div></section>`;
-  $("art").querySelectorAll("[data-pic]").forEach((b) => b.addEventListener("click", () => {
-    const i = +b.dataset.pic, box = $("art").querySelector(`[data-figbox="${i}"]`), on = box.hidden;
-    box.hidden = !on; box.innerHTML = on ? figSVG(T.ideas[i].fig) : ""; b.textContent = on ? "Hide the picture" : "Show me a picture";
-    if (on) { E.pics++; log("picture", { part: i }); }
-  }));
+  $("art").querySelectorAll("[data-figx]").forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.figx; $("art").querySelector(`[data-figwrap="${i}"]`).hidden = true; log("picture-hide", { part: i }); }));
   $("art").querySelectorAll("[data-nk]").forEach((n) => n.querySelector(".nk-q").addEventListener("click", (e) => {
     const [i, k] = n.dataset.nk.split("-").map(Number), a = n.querySelector(".nk-a"), open = a.hidden, it = T.ideas[i];
     a.hidden = !open; e.currentTarget.setAttribute("aria-expanded", String(open)); n.classList.toggle("open", open);
     if (open) { const s = seenSet(it.id); if (!s.has(k)) { R.notes++; E.holes++; } s.add(k); ST.seen[it.id] = [...s]; persist(); n.classList.add("seen"); log("note", { part: i, q: it.holes[k].q }); E.lastRead = `Opened Kube's note "${it.holes[k].q}"`; }
   }));
   $("art-teach").addEventListener("click", startTeach);
+  $("art").querySelectorAll("[data-pace]").forEach((x) => x.addEventListener("click", () => setPace(x.dataset.pace, "toggle")));
+  $("art").querySelectorAll("[data-next]").forEach((x) => x.addEventListener("click", () => stepOn("button")));
+  $("art").querySelectorAll("[data-open]").forEach((x) => x.addEventListener("click", () => openSkim(+x.dataset.open, "button")));
+  $("art").querySelectorAll(".art-sec").forEach((sec) => sec.querySelector(".art-main").addEventListener("click", (e) => { if (R.pace === "skim" && !sec.classList.contains("expanded") && !e.target.closest("button")) openSkim(+sec.dataset.sec, "tap"); }));
+  $("art").querySelectorAll("[data-askme]").forEach((x) => x.addEventListener("click", () => askPart(+x.dataset.askme, "button")));
+  applyPace();
   $("art-top").addEventListener("click", () => { log("reskim", {}); window.scrollTo({ top: 0, behavior: "smooth" }); });
 }
 function toSection(i, flash) {
@@ -1807,19 +2144,23 @@ function toSection(i, flash) {
 setInterval(() => {
   if (!artOn() || document.hidden) return;
   const line = innerHeight * 0.4; let cur = -1;
-  $("art").querySelectorAll(".art-sec").forEach((s) => { const r = s.getBoundingClientRect(); if (r.top <= line && r.bottom > line) cur = +s.dataset.sec; });
+  $("art").querySelectorAll(".art-sec").forEach((s) => { const r = s.getBoundingClientRect(); if (getComputedStyle(s).display !== "none" && r.top <= innerHeight * 0.6 && r.bottom > 80) { if (cur < 0 || r.top <= line) cur = +s.dataset.sec; } });
   if (cur !== R.cur && cur >= 0) {
     if (cur < R.maxSeen && R.cur > cur) { R.backs[cur]++; log("reread", { part: cur }); E.lastRead = `Scrolled back up to part ${cur + 1}`; }
     R.maxSeen = Math.max(R.maxSeen, cur); ST.idx = cur; renderBar();
   }
   if (cur >= 0) R.cur = cur;
-  if (cur >= 0 && Date.now() - E.last < 30000) R.secs[cur] += 500;
+  if (cur >= 0 && Date.now() - E.last < 30000) { R.secs[cur] += 500; const rid = T.ideas[cur].id; ST.readMs = ST.readMs || {}; ST.readMs[rid] = (ST.readMs[rid] || 0) + 500; if (R.secs[cur] % 5000 === 0) persist(); }
+  renderMeters();
+  if (cur >= 0 && $("pace-intro").hidden && !R.offered.has(cur) && (R.backs[cur] >= 1 || ratio(cur) > 2.2)) offerMore(cur, R.backs[cur] >= 1 ? "reread" : "linger");
+  maybeOfferPic(cur);
   const end = $("art-end"); if (end && !R.reachedEnd && end.getBoundingClientRect().top < innerHeight - 80) { R.reachedEnd = true; log("article-end", { ms: R.secs.reduce((a, b) => a + b, 0) }); }
 }, 500);
 // Teaching: Kube starts with the part they went through fastest, compared with a normal reading pace.
 function startTeach() {
-  ST.kphase = "teach";
-  const order = T.ideas.map((_, i) => i).sort((a, b) => ratio(a) - ratio(b));
+  ST.kphase = "teach"; ST.single = null;
+  let order = T.ideas.map((_, i) => i).filter((i) => missing(T.ideas[i]).length).sort((a, b) => ratio(a) - ratio(b));
+  if (!order.length) order = T.ideas.map((_, i) => i);
   ST.order = order; persist();
   log("teach-start", { order: order.join(","), reachedEnd: R.reachedEnd });
   showView("map"); goIdea(order[0]);
@@ -1829,6 +2170,470 @@ function startTeach() {
 $("art-btn").addEventListener("click", () => { if ($("article").hidden) { log("article-peek", {}); showView("article"); toSection(ST.idx); } else backToKube(); });
 $("back-kube").addEventListener("click", backToKube);
 function backToKube() { log("back-to-kube", {}); showView("map"); renderCard(); renderHoles(); window.scrollTo({ top: 0, behavior: "smooth" }); focusTa("main"); }
+
+// ---------- v48: skim it all, or step by step ----------
+// Step by step: only the current part shows, one point at a time. Next, space, the down arrow, or scrolling past the bottom moves on.
+function setPace(p, why) {
+  const was = R.pace; R.pace = ST.pace = p; persist(); clearTimeout(R.paceT);
+  log("pace", { to: p, why }); E.lastRead = p === "step" ? "Chose step by step" : "Chose to skim it all";
+  if (p === "step" && was !== "step") { const c = Math.max(0, R.cur); R.step = { sec: c, pt: 0, done: false }; }
+  if (why !== "toggle" && !$("kube-say").hidden) kubeHush();
+  applyPace();
+  if (p === "step") toSection(R.step.sec);
+}
+function applyPace() {
+  const art = $("art"); if (!art) return;
+  const step = R.pace === "step", S = R.step;
+  art.classList.toggle("step", step); art.classList.toggle("skim", R.pace === "skim");
+  art.querySelectorAll(".art-sec").forEach((sec) => sec.classList.toggle("expanded", R.pace === "skim" && R.open && R.open.has(+sec.dataset.sec)));
+  art.querySelectorAll("[data-pace]").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.pace === R.pace)));
+  art.querySelectorAll(".art-sec").forEach((sec) => {
+    const i = +sec.dataset.sec, cur = step && i === S.sec;
+    sec.classList.toggle("later", step && i > S.sec);
+    sec.classList.toggle("cur", cur);
+    sec.classList.toggle("open-notes", !step || i < S.sec || (cur && S.done));
+    sec.querySelectorAll(".art-pts li[data-pt]").forEach((li, k) => li.classList.toggle("later", cur && k > S.pt));
+    const nb = sec.querySelector(".art-next");
+    if (nb) { nb.hidden = !cur; const last = i === T.ideas.length - 1, n = T.ideas[i].points.length; nb.textContent = S.pt < n - 1 ? "Next" : !S.done ? "Got it" : last ? "That's all of it" : "Next part"; }
+  });
+  $("art-end").classList.toggle("later", step && !(S.sec === T.ideas.length - 1 && S.done));
+}
+function stepOn(how) {
+  if (R.pace !== "step") return;
+  const S = R.step, n = T.ideas[S.sec].points.length, last = S.sec === T.ideas.length - 1;
+  R.steps++; log("step", { how, sec: S.sec, pt: S.pt });
+  if (S.pt < n - 1) S.pt++;
+  else if (!S.done) S.done = true;
+  else if (!last) { S.sec++; S.pt = 0; S.done = false; applyPace(); return toSection(S.sec); }
+  else { applyPace(); return $("art-end").scrollIntoView({ behavior: "smooth", block: "center" }); }
+  applyPace();
+  const sec = $("sec-" + S.sec); if (sec && sec.getBoundingClientRect().bottom > innerHeight - 40) window.scrollBy({ top: sec.getBoundingClientRect().bottom - innerHeight + 120, behavior: "smooth" });
+}
+addEventListener("keydown", (e) => {
+  if (!artOn() || R.pace !== "step" || /INPUT|TEXTAREA|BUTTON/.test(document.activeElement && document.activeElement.tagName)) return;
+  if (e.key === " " || e.key === "ArrowDown") { e.preventDefault(); stepOn("key"); }
+});
+let wheelT = 0;
+addEventListener("wheel", (e) => {
+  if (!artOn() || R.pace !== "step" || e.deltaY <= 0) return;
+  if (innerHeight + scrollY < document.documentElement.scrollHeight - 4) return; // only once they're at the bottom
+  if (Date.now() - wheelT < 700) return; wheelT = Date.now(); stepOn("scroll");
+}, { passive: true });
+
+// ---------- v50: Kube asks first, in the middle of the screen, over the article ----------
+function paceIntro() {
+  const ov = $("pace-intro"); $("pi-face").innerHTML = FACE("talk"); ov.hidden = false; R.paceAskedAt = Date.now();
+  setTimeout(() => { if (!ov.hidden) $("pi-face").innerHTML = FACE("smile"); }, 2200);
+  log("pace-ask", {});
+  if (voiceOn) say("This is the whole article. Read it all, skim it, or we can go step by step.");
+}
+function closePaceIntro(choice) {
+  const ov = $("pace-intro"); if (ov.hidden) return; ov.hidden = true;
+  R.intent = choice; log("pace-pick", { choice, ms: Date.now() - (R.paceAskedAt || Date.now()) });
+  setPace(choice === "step" ? "step" : choice === "skim" ? "skim" : "all", "kube");
+  if (choice === "step") window.scrollTo(0, 0);
+  if (R.tipPending) { R.tipPending = false; const tip = $("list-tip"); tip.hidden = false; setTimeout(() => { tip.hidden = true; }, 6500); }
+}
+$("pace-intro").querySelectorAll("[data-pi]").forEach((b) => b.addEventListener("click", () => closePaceIntro(b.dataset.pi)));
+$("pace-intro").addEventListener("click", (e) => { if (e.target === $("pace-intro")) closePaceIntro("dismissed"); });
+
+// ---------- v51: ask about a part any time ----------
+function askPart(i, how) {
+  R.asks = (R.asks || 0) + 1; log("ask-part", { part: i, how });
+  ST.kphase = "teach"; ST.single = i; ST.order = null; persist();
+  closeDeep(true); showView("map"); goIdea(i);
+}
+function backToArticle() {
+  const i = ST.single; ST.single = null; ST.kphase = "read"; persist(); log("back-to-article", { part: i });
+  showView("article"); applyPace();
+  const nxt = Math.min(T.ideas.length - 1, i + 1);
+  if (R.pace === "step" && R.step.sec <= i) { R.step = { sec: nxt, pt: 0, done: false }; applyPace(); }
+  toSection(i + 1 < T.ideas.length ? nxt : i);
+}
+// ---------- v51: highlight to dig deeper ----------
+function selInArt() {
+  const s = getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
+  const t = s.toString().replace(/\s+/g, " ").trim(); if (t.length < 2 || t.length > 300) return null;
+  const node = s.getRangeAt(0).commonAncestorContainer, el = node.nodeType === 1 ? node : node.parentElement;
+  const sec = el && el.closest && el.closest(".art-main"); if (!sec || !artOn()) return null;
+  return { t: wholeWords(t, el.textContent.replace(/\s+/g, " ")), i: +sec.closest(".art-sec").dataset.sec, r: s.getRangeAt(0).getBoundingClientRect() };
+}
+let digSel = null;
+function showDig() {
+  const s = selInArt(), b = $("dig-btn");
+  if (!s) { b.hidden = true; digSel = null; return; }
+  digSel = s; b.hidden = false;
+  const x = Math.min(innerWidth - 130, Math.max(8, s.r.left + s.r.width / 2 - 55)), y = s.r.top > 70 ? s.r.top - 46 : s.r.bottom + 8;
+  b.style.left = x + "px"; b.style.top = y + "px";
+}
+document.addEventListener("mouseup", () => setTimeout(showDig, 10));
+document.addEventListener("touchend", () => setTimeout(showDig, 350));
+document.addEventListener("selectionchange", () => { if ($("dig-btn").hidden) return; const s = getSelection(); if (!s || s.isCollapsed) { $("dig-btn").hidden = true; } });
+addEventListener("scroll", () => { if (!$("dig-btn").hidden) showDig(); }, { passive: true });
+$("dig-btn").addEventListener("mousedown", (e) => e.preventDefault());
+$("dig-btn").addEventListener("click", () => {
+  if (!digSel) return; const { t, i } = digSel; $("dig-btn").hidden = true;
+  R.hl[i]++; log("highlight", { part: i, text: t.slice(0, 80) }); E.lastRead = `Highlighted "${t.slice(0, 40)}" in part ${i + 1}`;
+  R.offered.add(i); let mk = null, lp = null; const sl = getSelection();
+  try {
+    let rg = sl.rangeCount && !sl.isCollapsed ? sl.getRangeAt(0) : null;
+    if (!rg) { const host = [...$("sec-" + i).querySelectorAll("li[data-pt]")].find((x) => x.textContent.includes(t)); const tn = host && [...host.childNodes].find((n) => n.nodeType === 3 && n.textContent.includes(t)); if (tn) { rg = document.createRange(); const o = tn.textContent.indexOf(t); rg.setStart(tn, o); rg.setEnd(tn, o + t.length); } }
+    const li = (rg.commonAncestorContainer.nodeType === 1 ? rg.commonAncestorContainer : rg.commonAncestorContainer.parentNode).closest("li[data-pt]"); if (li) lp = +li.dataset.pt.split("-")[1]; mk = document.createElement("mark"); mk.className = "sel-focus"; rg.surroundContents(mk); } catch (e) { mk = null; }
+  sl.removeAllRanges(); openPanel(i, null, "highlight", t, { mark: mk, p: lp });
+});
+// The map: what they wanted to know in the center with the picture, related questions around it.
+function openDeep(i, text, why) {
+  const it = T.ideas[i], d = $("deep"), seen = seenSet(it.id);
+  R.deeps = (R.deeps || 0) + 1; log("deep", { part: i, why });
+  const ranked = it.holes.map((h, k) => ({ h, k, s: vScore(text, h.q + " " + h.a) })).sort((a, b) => b.s - a.s);
+  const pill = ({ h, k }) => `<div class="dp${seen.has(k) ? " seen" : ""}" data-dk="${k}"><button type="button" class="pill${seen.has(k) ? " seen" : ""}" aria-expanded="false"><span class="pi">${ICONS[k % ICONS.length]}</span><span class="hq">${esc(h.q)}</span></button><div class="dp-a" hidden>${esc(h.a)}</div></div>`;
+  const L = ranked.filter((_, n) => n % 2 === 0), Rr = ranked.filter((_, n) => n % 2 === 1);
+  const quote = why === "highlight" ? `<blockquote class="dq">${esc(text)}</blockquote>` : "";
+  d.innerHTML = `<div class="deep-bar"><span class="eyebrow">Part ${i + 1} · ${esc(it.title)}</span><button type="button" class="x" data-dclose aria-label="Close">×</button></div>
+    <div class="deep-map"><div class="deep-side">${L.map(pill).join("")}</div>
+      <section class="deep-card"><div class="asks"><div class="kube-face">${FACE("happy")}</div><div class="asks-q"><small>${why === "highlight" ? "You wanted to know more about" : "A bit more on this"}</small>${quote || `<p>${esc(it.title)}</p>`}</div></div>
+        <div class="short"><small>In short</small>${esc(it.teach)}</div>
+        ${it.fig ? `<div class="fig anim">${figSVG(it.fig)}</div>` : ""}
+        <p class="note">Tap a question around this to keep digging.</p>
+        <div class="row"><button type="button" class="btn" data-dclose>Back to the article</button><button type="button" class="ask-me" data-dask><span class="nk-face">${FACE("smile")}</span>Ask me about this</button></div></section>
+      <div class="deep-side">${Rr.map(pill).join("")}</div></div>`;
+  d.hidden = false; d.scrollTop = 0; document.body.classList.add("deep-on");
+  d.querySelectorAll("[data-dclose]").forEach((x) => x.addEventListener("click", () => closeDeep()));
+  d.querySelector("[data-dask]").addEventListener("click", () => askPart(i, "deep"));
+  d.querySelectorAll("[data-dk]").forEach((n) => n.querySelector(".pill").addEventListener("click", (e) => {
+    const k = +n.dataset.dk, a = n.querySelector(".dp-a"), open = a.hidden;
+    a.hidden = !open; e.currentTarget.classList.toggle("open", open); e.currentTarget.setAttribute("aria-expanded", String(open));
+    if (open) { const s = seenSet(it.id); if (!s.has(k)) { R.notes++; E.holes++; } s.add(k); ST.seen[it.id] = [...s]; persist(); e.currentTarget.classList.add("seen"); log("note", { part: i, q: it.holes[k].q, from: "deep" }); }
+  }));
+  if (voiceOn) say(it.teach);
+}
+function closeDeep(quiet) {
+  const d = $("deep"); if (d.hidden) return; d.hidden = true; document.body.classList.remove("deep-on");
+  if (!quiet) { log("deep-close", {}); const nk = $("art").querySelector(`[data-sec="${ST.idx}"]`); renderArticle(); applyPace(); }
+}
+addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("deep").hidden) closeDeep(); });
+// Kube notices interest (rereading, or much longer than a normal pace) and offers more, once per part, in the margin.
+function offerMore(i, why) {
+  R.offered.add(i); log("more-offer", { part: i, why });
+  return offer("more", why === "reread" ? "You came back to this part. Think you could explain it?" : "Think you could explain this part?", [["I think so", () => { log("more-yes", { part: i }); openPanel(i, null, "offer"); }], ["Not really", () => { log("more-unsure", { part: i }); openPanel(i, null, "offer"); panelHint(); }], ["No thanks", null]]);
+}
+function offerMoreOld(i, why) {
+  R.offered.add(i); log("more-offer", { part: i, why });
+  const notes = $("art").querySelector(`[data-sec="${i}"] .art-notes`); if (!notes) return;
+  const el = document.createElement("div"); el.className = "nk-offer";
+  el.innerHTML = `<div class="kube-face">${FACE("happy")}</div><div><p>${why === "reread" ? "You came back to this one. Want a bit more on it?" : "This one seems interesting. Want a bit more on it?"}</p><div class="row"><button type="button" class="btn small">Show me</button><button type="button" class="linkish">No thanks</button></div></div>`;
+  notes.prepend(el);
+  el.querySelector(".btn").addEventListener("click", () => { log("more-yes", { part: i }); el.remove(); openDeep(i, T.ideas[i].title, "offer"); });
+  el.querySelector(".linkish").addEventListener("click", () => { log("more-no", { part: i }); el.remove(); });
+}
+// A highlight that cuts a word in half ("a group of machin") is widened to whole words.
+function wholeWords(t, full) { const i = full.indexOf(t); if (i < 0) return t; let a = i, b = i + t.length; while (a > 0 && /\w/.test(full[a - 1])) a--; while (b < full.length && /\w/.test(full[b])) b++; return full.slice(a, b).trim(); }
+
+// ---------- v52: skim = headlines; tap a part to open it ----------
+function openSkim(i, how) { R.open.add(i); log("skim-open", { part: i, how }); E.lastRead = `Opened part ${i + 1} while skimming`; applyPace(); }
+// ---------- v52: Kube floats in the right margin beside the part being read ----------
+function placeKube() {
+  if (R.kubeAway) return;
+  const kc = $("kube-corner"); if (!artOn() || !kc.classList.contains("in-margin")) return;
+  if (innerWidth < 1000 || !$("kpanel").hidden) { kc.style.top = kc.style.left = ""; kc.classList.toggle("tucked", !$("kpanel").hidden); return; }
+  kc.classList.remove("tucked");
+  const sec = $("sec-" + Math.max(0, R.cur)), main = sec && sec.querySelector(".art-main"); if (!main) return;
+  const r = main.getBoundingClientRect();
+  kc.style.left = Math.round(r.right + 28) + "px";
+  kc.style.top = Math.round(Math.min(innerHeight - 110, Math.max(84, r.top + 18))) + "px";
+}
+addEventListener("scroll", () => requestAnimationFrame(placeKube), { passive: true });
+addEventListener("resize", placeKube);
+setInterval(placeKube, 500);
+$("corner-face").addEventListener("click", () => { if (artOn()) { log("kube-tap", { part: R.cur }); kubeHush(); openPanel(Math.max(0, R.cur), null, "kube"); } });
+$("dig-face").innerHTML = FACE("smile");
+// ---------- v52: one follow-up question at a time, in a panel on the right: ask first, then a hint, then the answer, then a picture ----------
+let PN = null;
+const sentences = (s) => s.match(/[^.!?]+[.!?]+["”]?\s*|[^.!?]+$/g) || [s];
+function pickHole(i, quote, line) {
+  const it = T.ideas[i], seen = seenSet(it.id), all = it.holes.map((_, k) => k);
+  const onLine = line != null ? all.filter((k) => (it.holes[k].pts || []).includes(line)) : [], ks = onLine.length ? onLine : all;
+  const fresh = ks.filter((k) => !seen.has(k)), pool = fresh.length ? fresh : ks;
+  if (quote) return pool.slice().sort((a, b) => vScore(quote, it.holes[b].q + " " + it.holes[b].a) - vScore(quote, it.holes[a].q + " " + it.holes[a].a))[0];
+  return pool[0];
+}
+function openPanel(i, k, why, quote, ov) {
+  if (k == null) k = pickHole(i, quote, ov && ov.p);
+  const h = T.ideas[i].holes[k];
+  const src = ov && ov.p != null ? ov.p : (h.pts && h.pts.length ? h.pts[0] : null);
+  PN = { i, k, why, quote: quote || "", stage: "ask", draft: "", said: "", t0: Date.now(), q: ov && ov.q, pf: ov && ov.pic, src, tries: 0 };
+  R.fq.open++; log("fq-open", { part: i, q: h.q, why, line: src });
+  document.body.classList.add("panel-on"); $("kpanel").hidden = false; renderPanel();
+  focusLine(i, src, ov && ov.mark);
+  if (voiceOn) say((PN.q || h.q) + (PN.q ? "" : " What do you think?"), () => { const m = $("kpanel").querySelector("[data-pmic]"); if (m && !listening) m.click(); });
+  placeKube();
+}
+function closePanel(quiet) {
+  if ($("kpanel").hidden) return; stopMic(); if (SYN && voiceOn) SYN.cancel();
+  $("kpanel").hidden = true; document.body.classList.remove("panel-on");
+  if (!quiet && PN) log("fq-close", { stage: PN.stage, ms: Date.now() - PN.t0 });
+  PN = null; unfocusLine(); placeKube(); clearTimeout(gainT); toggleList(false);
+}
+// v58: the line a question comes from stays highlighted, zoomed in and centered, with everything else dimmed, and the panel sits beside it.
+function focusLine(i, p, mark) {
+  unfocusLine(true, mark);
+  const li = p != null ? $("art").querySelector(`li[data-pt="${i}-${p}"]`) : null;
+  if (mark) mark.classList.add("on");
+  const el = li && li.offsetParent ? li : mark && mark.isConnected ? mark : null; if (!el) return;
+  if (li && li.offsetParent) li.classList.add("focus");
+  const sec = $("sec-" + i); if (sec) sec.classList.add("has-focus");
+  document.body.classList.add("focus-on");
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (innerWidth > 1100) { $("kpanel").classList.add("beside"); fitPanel(); }
+  }, 120);
+}
+// Beside the line: the panel's pointer lines up with the (centered) line, and the panel moves up only as much as it needs to fit.
+function fitPanel() {
+  const kp = $("kpanel"); if (kp.hidden || !kp.classList.contains("beside")) return;
+  const mid = innerHeight / 2, h = Math.min(kp.scrollHeight, innerHeight - 100);
+  const top = Math.max(80, Math.min(Math.round(mid - 120), innerHeight - 20 - h));
+  kp.style.top = top + "px"; kp.style.setProperty("--notch", Math.max(24, Math.min(h - 30, mid - top - 8)) + "px");
+}
+function unfocusLine(keepPanel, keepMark) {
+  document.querySelectorAll(".art-pts li.focus").forEach((x) => x.classList.remove("focus"));
+  document.querySelectorAll(".art-sec.has-focus").forEach((x) => x.classList.remove("has-focus"));
+  document.querySelectorAll("mark.sel-focus").forEach((m) => { if (m === keepMark) return; const pa = m.parentNode; while (m.firstChild) pa.insertBefore(m.firstChild, m); pa.removeChild(m); pa.normalize(); });
+  document.body.classList.remove("focus-on");
+  if (!keepPanel) { const kp = $("kpanel"); kp.style.top = ""; kp.classList.remove("beside"); }
+}
+// A hint points the way without giving the answer: the topic's own hint, or else the answer's first sentence with its key words blanked out.
+function hintFor(h) { return h.hint || clozeFor(h); }
+function clozeFor(h) {
+  const first = sentences(h.a)[0].trim(), words = first.split(/\s+/);
+  const keys = words.map((w, n) => [w.replace(/[^A-Za-z-]/g, ""), n]).filter(([w]) => w.length > 5).sort((a, b) => b[0].length - a[0].length).slice(0, 3).map(([, n]) => n);
+  return "Fill in the blanks: " + words.map((w, n) => keys.includes(n) ? w.replace(/[A-Za-z-]+/, "____") : w).join(" ");
+}
+function renderPanel() {
+  const P = PN, it = T.ideas[P.i], h = it.holes[P.k], parts = sentences(h.a);
+  const face = P.stage === "answered" && P.right ? "happy" : P.stage === "answered" ? "smile" : "talk";
+  const mic = `${SR ? `<button type="button" class="mic" data-pmic aria-label="Talk">${MIC_I}</button>` : ""}`;
+  let body = "";
+  if (P.stage === "thinking") body += `<div class="you-said"><small>You said</small>${esc(P.said)}</div><p class="note"><span class="spin"></span>Kube is thinking…</p>`;
+  else if (P.stage === "ask" || P.stage === "hint") {
+    if (P.stage === "hint") body += `<div class="hint"><small>A hint</small><p>${esc(hintFor(h))}</p></div>`;
+    body += `<div class="answer${SR ? "" : " solo"}">${mic}<textarea data-ta="panel" placeholder="${P.stage === "hint" ? "What do you think now?" : "Just a guess is fine…"}"></textarea></div>
+      <p class="note" data-pnote hidden></p>
+      <div class="row"><button type="button" class="btn small" data-send="panel" disabled>Tell Kube</button>${P.stage === "ask" ? `<button type="button" class="btn small ghost" data-p="hint">Give me a hint</button>` : ""}<button type="button" class="linkish" data-p="tell">Just tell me</button></div>`;
+  } else if (P.stage === "retry") {
+    // One more go before the answer: Kube says what's there and nudges toward what's missing.
+    body += `<div class="you-said"><small>You said</small>${esc(P.said)}</div>`;
+    body += `<div class="react-say">${esc(P.say || (P.level === "partly" ? "You're on the right track!" : "Hmm, not quite yet."))}</div>`;
+    body += `<div class="hint"><small>${P.level === "partly" ? "Can you add" : "Think about"}</small><p>${esc(P.nudge || (P.hinted && h.hint ? clozeFor(h) : hintFor(h)))}</p></div>`;
+    body += `<div class="answer${SR ? "" : " solo"}">${mic}<textarea data-ta="panel" placeholder="${P.level === "partly" ? "Add to your answer…" : "Try again in your own words…"}"></textarea></div>
+      <p class="note" data-pnote hidden></p>
+      <div class="row"><button type="button" class="btn small" data-send="panel" disabled>${P.level === "partly" ? "Add this" : "Try again"}</button><button type="button" class="linkish" data-p="tell">Just tell me</button></div>`;
+  } else {
+    if (P.said) body += `<div class="you-said"><small>You said</small>${esc(P.said)}</div>`;
+    body += `<div class="react-say">${P.stage === "answered" ? esc(P.say2 || (P.level === "right" ? "Yes! That's it." : P.level === "partly" ? "Really close! Here's the full idea:" : "Good effort! Here's how I'd put it:")) : "Here's the idea:"}</div>`;
+    body += `<div class="pa">${parts.map((t, n) => `<span class="sent" style="animation-delay:${0.15 + n * 0.6}s">${esc(t.trim())} </span>`).join("")}</div>`;
+    if (P.gain) body += gainHTML(P.gain);
+    const pf = P.pf || it.fig;
+    if (pf) body += P.pic ? `<div class="fig anim">${figSVG(pf)}</div>` : `<div class="kp-offer"><span class="nk-face">${FACE("smile")}</span><span>Want to see it as a picture?</span><button type="button" class="btn small ghost" data-p="pic">Yes, show me</button></div>`;
+    const more = it.holes.some((_, k) => k !== P.k && !seenSet(it.id).has(k));
+    body += `<div class="row">${more ? `<button type="button" class="btn small" data-p="another">Ask me another</button>` : ""}<button type="button" class="btn small ghost" data-p="close">Back to reading</button></div>`;
+  }
+  const srcTxt = !P.quote && P.src != null && it.points[P.src] ? it.points[P.src] : "";
+  $("kpanel").innerHTML = `<div class="kp-top"><span class="eyebrow">Part ${P.i + 1} · ${esc(it.title)}</span><button type="button" class="x" data-p="close" aria-label="Close">×</button></div>
+    ${P.quote ? `<blockquote class="dq"><small>You highlighted</small>${esc(P.quote)}</blockquote>` : srcTxt ? `<blockquote class="dq src"><small>From the article</small>${esc(srcTxt)}</blockquote>` : ""}
+    <div class="kp-q"><div class="kube-face">${FACE(face)}</div><div><small>Kube wonders</small><p>${esc(P.q || h.q)}</p>${P.stage === "ask" && !P.q ? `<span class="kp-sub">What do you think?</span>` : ""}</div></div>
+    <div class="kp-body">${body}</div>`;
+  const pn = $("kpanel");
+  pn.querySelectorAll("[data-p]").forEach((x) => x.addEventListener("click", () => panelAct(x.dataset.p)));
+  const ta = pn.querySelector("textarea");
+  if (ta) {
+    const send = pn.querySelector('[data-send="panel"]'), sync = () => { P.draft = ta.value; send.disabled = !ta.value.trim(); };
+    ta.value = P.draft; ta.addEventListener("input", sync); sync();
+    ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && ta.value.trim()) { e.preventDefault(); send.click(); } });
+    send.addEventListener("click", () => panelTry(ta.value));
+    const m = pn.querySelector("[data-pmic]"); if (m) m.addEventListener("click", () => toggleMic(m, ta, pn.querySelector("[data-pnote]"), sync));
+    if (!voiceOn) setTimeout(() => ta.focus({ preventScroll: true }), 60);
+  }
+  fitPanel();
+}
+function markSeen(i, k) { const it = T.ideas[i], s = seenSet(it.id); if (!s.has(k)) { R.notes++; E.holes++; } s.add(k); ST.seen[it.id] = [...s]; persist(); }
+async function panelTry(text) {
+  const P = PN, h = T.ideas[P.i].holes[P.k], q = P.q || h.q; stopMic();
+  const first = !P.tries; P.tries++;
+  P.said = first ? text.trim() : (P.said + " " + text.trim()).trim(); P.draft = ""; P.stage = "thinking"; renderPanel();
+  const sc = vScore(P.said, h.a); let level = sc >= 0.3 ? "right" : sc >= 0.12 ? "partly" : "off", say2 = "", nudge = "";
+  if (grader !== "words") {
+    try {
+      const r = await askClaude(`You are Kube, a curious beginner a learner is teaching. Question: "${q}" Reference answer: "${h.a}" The learner said: "${P.said}". Judge only the idea, not wording. Reply as JSON: {"level":"right"|"partly"|"off","say":"one warm sentence, at most 18 words, naming what they got right; never repeat the answer","nudge":"if not right: one short question, at most 16 words, pointing toward the one missing idea WITHOUT naming the answer or its key term; else empty"}`);
+      if (r && /right|partly|off/.test(r.level)) { level = r.level; say2 = String(r.say || ""); nudge = String(r.nudge || ""); }
+    } catch (e) {}
+  }
+  if (PN !== P) return;
+  P.level = level; P.right = level === "right";
+  log("fq-try", { part: P.i, try: P.tries, words: nWords(P.said), level, score: Math.round(sc * 100) / 100, hinted: !!P.hinted, grader });
+  if (first && !P.right) {
+    P.stage = "retry"; P.say = say2; P.nudge = nudge;
+    E.lastRead = level === "partly" ? "Got part of Kube's question, adding more" : "Missed Kube's question, trying again";
+    renderPanel(); if (voiceOn) say((say2 || (level === "partly" ? "You're on the right track!" : "Not quite yet.")) + " " + (nudge || hintFor(h)));
+    return;
+  }
+  P.stage = "answered"; P.say2 = say2;
+  R.fq.tried++; if (P.right) R.fq.right++;
+  E.lastRead = P.right ? "Answered Kube's question well" : level === "partly" ? "Got part of Kube's question" : "Tried Kube's question";
+  P.gain = credit(P.i, P.k, level);
+  markSeen(P.i, P.k); renderPanel(); showGain(P.gain);
+  if (voiceOn) say((say2 || (P.right ? "Yes! That's it." : "Good effort.")) + " " + h.a);
+}
+// v58: what an answer adds. Understood only ever goes up: a right answer counts the list line in full, a partly one half,
+// and a miss is marked as practiced (never as a loss).
+function ptVal(it, p) {
+  const g = (ST.got || {})[it.id] || {}; let v = cov(it.id).has(p) ? 1 : 0;
+  it.holes.forEach((h, k) => { if (g[k] && (h.pts || []).includes(p)) v = Math.max(v, g[k]); });
+  return v;
+}
+function credit(i, k, level) {
+  const it = T.ideas[i], h = it.holes[k], before = meterVals().und, pts = (h.pts && h.pts.length ? h.pts : [0]);
+  const prev = pts.map((p) => ptVal(it, p));
+  if (level !== "off") { ST.got = ST.got || {}; const g = ST.got[it.id] = ST.got[it.id] || {}; g[k] = Math.max(g[k] || 0, level === "right" ? 1 : 0.5); }
+  ST.tried = ST.tried || {}; const t = ST.tried[it.id] = ST.tried[it.id] || {}; t[k] = 1; persist();
+  const after = meterVals().und, up = pts.filter((p, n) => ptVal(it, p) > prev[n]);
+  lastMeters = ""; renderMeters();
+  return { i, pts, up, delta: Math.max(0, after - before), level, lines: pts.map((p) => it.asks[p] || it.points[p]) };
+}
+function gainHTML(g) {
+  const line = g.lines[0] ? `“${esc(g.lines[0])}”` : "";
+  if (g.delta > 0) return `<div class="gain"><b>+${g.delta}% understood</b><span>Counts toward ${line} on your list.</span></div>`;
+  if (g.up.length || g.level !== "off") return `<div class="gain"><b>Already counted</b><span>You'd shown Kube ${line} before. Nice to see it stick.</span></div>`;
+  return `<div class="gain soft"><b>Practiced</b><span>${line} is marked on your list. Kube will come back to it.</span></div>`;
+}
+// The list opens beside the panel with the matching line marked, then tucks itself away.
+let gainT = 0;
+function showGain(g) {
+  if (!g) return; renderSyl(new Set(g.up.length ? g.up : g.pts), g.i, g); toggleList(true);
+  setTimeout(() => { const pop = $("syl").querySelector(".syl-pts .pop"); if (pop) { const sy = $("syl"), r = pop.getBoundingClientRect(), sr = sy.getBoundingClientRect(); sy.scrollTop += r.top - sr.top - sr.height / 2 + r.height / 2; } }, 50);
+  // It closes after a few seconds; if the mouse is on it, as soon as the mouse leaves.
+  clearTimeout(gainT); gainT = setTimeout(() => { const sy = $("syl"); if (!sy.matches(":hover")) return toggleList(false); sy.addEventListener("mouseleave", () => toggleList(false), { once: true }); }, 4500);
+}
+function panelHint() { const P = PN; if (!P) return; P.stage = "hint"; P.hinted = true; R.fq.hints++; log("fq-hint", { part: P.i }); E.lastRead = "Asked Kube for a hint"; renderPanel(); }
+function panelAct(a) {
+  const P = PN; if (!P) return;
+  if (a === "close") return closePanel();
+  if (a === "hint") return panelHint();
+  if (a === "tell") { P.stage = "told"; R.fq.told++; log("fq-tell", { part: P.i, afterHint: !!P.hinted }); E.lastRead = "Asked Kube to just tell them"; markSeen(P.i, P.k); renderPanel(); if (voiceOn) say(T.ideas[P.i].holes[P.k].a); return; }
+  if (a === "pic") { P.pic = true; R.fq.pics++; E.pics++; log("picture", { part: P.i, from: "follow-up" }); return renderPanel(); }
+  if (a === "another") { const it = T.ideas[P.i], next = it.holes.map((_, k) => k).find((k) => k !== P.k && !seenSet(it.id).has(k)); if (next != null) { R.fq.open--; openPanel(P.i, next, "another"); R.fq.open++; } }
+}
+addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("kpanel").hidden) closePanel(); });
+
+// ---------- v53: Kube comes to you ----------
+// When Kube has something to say, it floats next to the cursor (on wide screens), then drifts back to the margin.
+const MOUSE = { x: -1, y: -1 };
+addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") { MOUSE.x = e.clientX; MOUSE.y = e.clientY; } }, { passive: true });
+function kubeToCursor() {
+  const kc = $("kube-corner"); if (!artOn() || innerWidth < 600 || MOUSE.x < 0 || !$("kpanel").hidden) return;
+  R.kubeAway = true; kc.classList.add("visiting");
+  const flip = MOUSE.x > innerWidth * 0.55;
+  kc.classList.toggle("flip", flip);
+  const bw = Math.min(320, innerWidth - 120); kc.querySelector(".kube-say").style.maxWidth = bw + "px";
+  const w = 52 + bw + 20;
+  const left = flip ? Math.max(12, MOUSE.x - w - 18) : Math.min(innerWidth - w - 12, MOUSE.x + 26);
+  const top = Math.min(innerHeight - 200, Math.max(76, MOUSE.y + 18));
+  kc.classList.remove("parked"); kc.style.left = left + "px"; kc.style.top = top + "px";
+  log("kube-visit", {});
+  clearTimeout(driftT); driftT = setTimeout(kubeDrift, 1600);
+}
+// v55: after a moment at the cursor, Kube (bubble still open) drifts slowly to the bottom right so it doesn't cover the text.
+let driftT = 0;
+function kubeDrift() {
+  const kc = $("kube-corner"); if (!R.kubeAway) return;
+  if (kc.matches(":hover")) { driftT = setTimeout(kubeDrift, 800); return; }
+  kc.classList.add("parked");
+  kc.style.left = Math.max(12, innerWidth - kc.offsetWidth - 20) + "px";
+  kc.style.top = Math.max(76, innerHeight - kc.offsetHeight - 20) + "px";
+  log("kube-park", {});
+}
+function kubeHome() { clearTimeout(driftT); if (!R.kubeAway) return; R.kubeAway = false; $("kube-corner").classList.remove("visiting", "flip", "parked"); $("kube-say").style.maxWidth = ""; placeKube(); }
+// Kube offers a picture once per part, after it has been read for a bit, and never right after another offer.
+function maybeOfferPic(i) {
+  if (i < 0 || !R.picOffered) return; const it = T.ideas[i];
+  if (!it.fig || R.picOffered.has(i) || !$("kube-say").hidden || !$("pace-intro").hidden || !$("kpanel").hidden) return;
+  if (R.pace === "skim" && !R.open.has(i)) return;
+  if (R.pace === "step" && !(R.step.sec > i || (R.step.sec === i && R.step.pt >= 1))) return;
+  if (R.secs[i] < 6000 || Date.now() - (R.lastOffer || 0) < 15000) return;
+  R.picOffered.add(i); log("pic-offer", { part: i });
+  offer("pic", PIC_ASK[i % PIC_ASK.length], [["Yes, show me", () => showPic(i, "kube")], ["No thanks", null]]);
+}
+const PIC_ASK = ["Hey, want a picture of this part?", "This one's easier as a drawing. Want to see it?", "Want me to sketch this out for you?", "Would a quick picture help here?"];
+function showPic(i, how) {
+  const w = $("art").querySelector(`[data-figwrap="${i}"]`); if (!w) return;
+  w.hidden = false; w.querySelector("[data-figbox]").innerHTML = figSVG(T.ideas[i].fig);
+  E.pics++; log("picture", { part: i, how });
+  setTimeout(() => { const r = w.getBoundingClientRect(); if (r.bottom > innerHeight - 20) w.scrollIntoView({ behavior: "smooth", block: "center" }); }, 60);
+}
+
+// ---------- v56: Kube asks about the line under the cursor ----------
+// Resting the mouse on a line for a couple of seconds (or tapping it on a phone) makes Kube ask that line's question.
+// "Show me" opens a picture and the short answer right under the line; "I'll explain" opens the side panel to answer it.
+const HOV = { el: null, t: 0 };
+$("art").addEventListener("pointerover", (e) => { const li = e.target.closest(".art-pts li[data-pt]"); if (li !== HOV.el) { HOV.el = li; HOV.t = Date.now(); } });
+$("art").addEventListener("pointerleave", () => { HOV.el = null; });
+// v59: a click (or tap) on a line is a clear sign of interest, so Kube comes to that spot right away. Resting the mouse only counts after 4 seconds.
+$("art").addEventListener("click", (e) => { if (e.target.closest("button,a,.peek")) return; const li = e.target.closest(".art-pts li[data-pt]"); if (li && !getSelection().toString().trim()) { MOUSE.x = e.clientX; MOUSE.y = e.clientY; maybePeek(li, true); } });
+setInterval(() => { if (HOV.el && Date.now() - HOV.t > 4000 && Date.now() - E.lastMouse < 5000) maybePeek(HOV.el, false); }, 400);
+function maybePeek(li, tapped) {
+  if (!artOn() || !li.isConnected || !li.offsetParent) return;
+  const [i, p] = li.dataset.pt.split("-").map(Number), it = T.ideas[i], pk = it.peeks && it.peeks[p]; if (!pk) return;
+  R.peeked = R.peeked || new Set(); const key = i + "-" + p;
+  if (tapped && !$("kube-say").hidden && $("kpanel").hidden) kubeHush();
+  if ((!tapped && R.peeked.has(key)) || !$("kube-say").hidden || !$("pace-intro").hidden || !$("kpanel").hidden) return;
+  if (!tapped && Date.now() - (R.lastOffer || 0) < 9000) return;
+  const box = $("art").querySelector(`[data-peek="${key}"]`); if (!box || !box.hidden) return;
+  R.peeked.add(key); log("peek-offer", { part: i, line: p, how: tapped ? "tap" : "hover" });
+  li.classList.add("asked");
+  ph(idea().id).nudged.delete("peek");
+  offer("peek", pk.q, [["Show me", () => showPeek(i, p, "kube")], ["I'll explain", () => { log("peek-explain", { part: i, line: p }); openPanel(i, pk.k, "peek", "", { q: pk.q, pic: pk.pic, p }); }], ["Not now", null]]);
+}
+function showPeek(i, p, how) {
+  const it = T.ideas[i], pk = it.peeks[p], h = it.holes[pk.k], box = $("art").querySelector(`[data-peek="${i}-${p}"]`); if (!box) return;
+  box.innerHTML = `${pk.pic ? `<div class="fig anim">${figSVG(pk.pic)}</div>` : ""}<p class="peek-a"><span class="nk-face">${FACE("happy")}</span><span>${esc(h.a)}</span></p><button type="button" class="linkish" data-peekx>Got it</button>`;
+  box.hidden = false; markSeen(i, pk.k); E.pics += pk.pic ? 1 : 0; E.lastRead = `Asked Kube to show "${pk.q}"`; log("peek-show", { part: i, line: p, how, pic: !!pk.pic });
+  box.querySelector("[data-peekx]").addEventListener("click", () => { box.hidden = true; log("peek-hide", { part: i, line: p }); });
+  setTimeout(() => { const r = box.getBoundingClientRect(); if (r.bottom > innerHeight - 20) box.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 80);
+}
+
+// ---------- v57: Read vs Understood, and Kube inviting a click ----------
+// Read: time spent on each part compared with how long it takes to read it. Understood: each line of "Your list" counts once
+// you've explained it to Kube (teach), or answered one of Kube's questions about it (right = full, partly = half).
+function meterVals() {
+  const rm = ST.readMs || {};
+  const read = T.ideas.reduce((a, it) => a + Math.min(1, (rm[it.id] || 0) / expectedMs(it)), 0) / T.ideas.length;
+  const u = T.ideas.reduce((a, it) => a + it.points.reduce((b, _, p) => b + ptVal(it, p), 0), 0);
+  return { read: Math.round(read * 100), und: Math.round(u / totalPts() * 100) };
+}
+let lastMeters = "";
+function renderMeters() {
+  const m = $("meters"); if (!m || !T) return;
+  const v = meterVals(), key = v.read + "/" + v.und; if (key === lastMeters) return; lastMeters = key;
+  $("mt-read").style.width = v.read + "%"; $("mt-read-n").textContent = v.read + "%";
+  $("mt-und").style.width = v.und + "%"; $("mt-und-n").textContent = v.und + "%";
+  m.title = `You've read about ${v.read}% of the article and shown Kube you understand about ${v.und}%.`;
+}
+setInterval(renderMeters, 1500);
+const INVITE = ["Click any line and I'll show it to you or quiz you on it", "Click me to test your understanding", "Click me if you want to master this part", "Click a line you're curious about"];
+let inviteN = 0, inviteAt = 0;
+// Whenever Kube is quiet in the article, a small tag under it says what clicking does; the wording changes every 15 seconds.
+function showInvite() {
+  const tag = $("kube-tag"); if (!tag) return;
+  const ok = artOn() && $("kube-say").hidden && $("kpanel").hidden && $("pace-intro").hidden && !R.kubeAway;
+  if (!ok) { tag.hidden = true; return; }
+  if (tag.hidden || Date.now() - inviteAt > 15000) {
+    tag.textContent = INVITE[inviteN++ % INVITE.length]; inviteAt = Date.now();
+    tag.classList.remove("fade"); void tag.offsetWidth; tag.classList.add("fade");
+  }
+  tag.hidden = false;
+}
+setInterval(showInvite, 700);
+$("kube-tag").addEventListener("click", () => { $("kube-tag").hidden = true; $("corner-face").click(); });
 
 })();
 </script>
