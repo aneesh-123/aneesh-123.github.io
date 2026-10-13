@@ -654,6 +654,46 @@ body.focus-on .art-end{opacity:.3;transition:opacity .35s}
 /* v59: lines are clickable */
 .art.all .art-pts li[data-pt],.art-pts li[data-pt]{cursor:pointer}
 .art-pts li[data-pt]:hover:not(.focus):not(.asked){background:var(--surface-2);box-shadow:0 0 0 4px var(--surface-2)}
+/* v61: the "Show me" box beside the line */
+.kp-sec{margin-top:14px}
+.kp-sec>small,.kp-more small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:14px;padding:5px 11px;border-radius:999px;border:1px dashed var(--accent);background:var(--surface);color:var(--ink);cursor:pointer;text-align:left;line-height:1.3}
+.chip:hover,.chip.on{background:var(--accent-soft);border-style:solid}
+.chip.q{border-style:solid;border-color:var(--line);font-family:var(--display);font-size:14.5px}
+.chip.q:hover{border-color:var(--accent)}
+.kp-def{margin:8px 0 0;padding:8px 12px;border-radius:12px;background:var(--surface-2);font-size:15px;line-height:1.45}
+.kp-more{margin-top:12px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--surface-2);border-radius:0 12px 12px 0}
+.kp-more b{font-family:var(--display);font-size:15.5px}
+.kp-more p{margin:4px 0 0;font-size:15.5px;line-height:1.5}
+.kp-ask{display:flex;gap:8px;margin-top:14px}
+.kp-ask input{flex:1;min-width:0;font:inherit;font-size:15px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.kp-ask input:focus{outline:2px solid var(--accent);outline-offset:1px}
+/* v62: the "Show me" box as a node branching off its bullet */
+.pcard{position:absolute;z-index:40;background:var(--surface);border:1.5px solid var(--accent);border-radius:20px;padding:14px 16px 16px;box-shadow:0 18px 40px -18px rgba(0,0,0,.35);opacity:0;transform:scale(.6);transition:transform .35s cubic-bezier(.2,.8,.3,1.2),opacity .25s}
+.pcard.right{transform-origin:0 38px}.pcard.left{transform-origin:100% 38px}
+.pcard.open{opacity:1;transform:none}
+.pcard.closing{opacity:0;transform:scale(.15);transition:transform .32s ease-in,opacity .3s ease-in}
+.pcard .kp-top{display:flex;align-items:flex-start;gap:8px;justify-content:space-between;margin-bottom:10px}
+.pcard .kp-q .kube-face{width:40px;height:40px}
+.pcard .kp-q p{font-size:18px}
+.pcard .pa{font-size:16px}
+.pcard .x{flex:none;border:0;background:none;font-size:22px;line-height:1;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:8px}
+.pcard .x:hover{background:var(--surface-2);color:var(--ink)}
+.pcard .fig{margin:0 0 10px}
+#pc-link{position:absolute;z-index:39;pointer-events:none;overflow:visible}
+#pc-link path{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:400;stroke-dashoffset:400;animation:pclink .45s ease-out forwards}
+#pc-link circle:first-of-type{fill:var(--accent)}
+#pc-link circle:last-of-type{fill:var(--surface);stroke:var(--accent);stroke-width:2}
+#pc-link.closing{opacity:0;transition:opacity .25s}
+@keyframes pclink{to{stroke-dashoffset:0}}
+.art-pts li.shown{background:var(--accent-soft);border-radius:10px;box-shadow:0 0 0 6px var(--accent-soft)}
+.art-pts li.explored::after{content:"";display:inline-block;width:8px;height:8px;margin-left:8px;border-radius:50%;background:var(--accent);vertical-align:middle;opacity:.7}
+/* narrow screens: the box opens right under its bullet, joined by a short line */
+.pcard.inline{position:relative;z-index:auto;box-sizing:border-box;width:auto;max-width:calc(100% - 18px);min-width:0;list-style:none;margin:10px 0 14px 18px;transform-origin:0 0;border-left-width:4px}
+.pcard.inline::before{content:"";position:absolute;left:-16px;top:-12px;width:12px;height:30px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);border-bottom-left-radius:10px}
+.pcard.inline::marker{content:""}
+.pcard .kp-body{grid-template-columns:minmax(0,1fr)}
 
 </style>
 <!-- Topic shelf -->
@@ -771,7 +811,7 @@ body.focus-on .art-end{opacity:.3;transition:opacity .35s}
     <button type="button" class="sig-head" id="sig-toggle" aria-expanded="true"><span class="eyebrow" id="sig-label">Show live signals</span><span class="sig-x">+</span></button>
     <div class="sig-body" id="sig-body"></div>
   </aside>
-  <div class="version">v59 · Learn anything</div>
+  <div class="version">v62 · Learn anything</div>
 </div>
 
 <!-- Results -->
@@ -882,6 +922,140 @@ TOPICS.push({
     }
   ]
 });
+
+// v60: the placebo article gets the Kubernetes treatment: hand-drawn step-by-step pictures, a question for every line ("peeks"),
+// real hints, and a clearer order (what it is, how it works, what it can and can't do, why trials use it, using it on purpose).
+{
+  const K = TOPICS.find((t) => t.id === "placebo");
+  const st = (i) => `class="draw" style="animation-delay:${(0.25 + i * 0.75).toFixed(2)}s"`;
+  const T = (x, y, s, o = "") => `<text x="${x}" y="${y}" font-size="13" ${o}>${s}</text>`;
+  const C = (x, y, s, o = "") => `<text x="${x}" y="${y}" font-size="13" text-anchor="middle" ${o}>${s}</text>`;
+  const MUTED = `style="fill:var(--muted)"`, ACC = `style="fill:var(--accent);font-weight:700"`, BAD = `style="fill:var(--wrong);font-weight:700"`, BR = `style="fill:var(--branch);font-weight:700"`;
+  const line = (d, c = "accent", dash = "") => `<path d="${d}" fill="none" stroke="var(--${c})" stroke-width="2" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
+  const ah = (x, y, dir = "r", c = "accent") => { const d = { r: `M${x - 9} ${y - 5}L${x} ${y}L${x - 9} ${y + 5}z`, l: `M${x + 9} ${y - 5}L${x} ${y}L${x + 9} ${y + 5}z`, d: `M${x - 5} ${y - 9}L${x} ${y}L${x + 5} ${y - 9}z`, u: `M${x - 5} ${y + 9}L${x} ${y}L${x + 5} ${y + 9}z` }[dir]; return `<path d="${d}" fill="var(--${c})"/>`; };
+  const X = (x, y, r = 11) => `<path d="M${x - r} ${y - r}l${2 * r} ${2 * r}M${x + r} ${y - r}l${-2 * r} ${2 * r}" stroke="var(--wrong)" stroke-width="3.5" stroke-linecap="round"/>`;
+  const svg = (h, label, body, w = 520) => ({ type: "svg", svg: `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}">${body}</svg>` });
+  // little drawings
+  const pill = (x, y, w = 54, tone = "branch", empty = false) => `<g transform="rotate(-20 ${x + w / 2} ${y + 11})"><rect x="${x}" y="${y}" width="${w}" height="22" rx="11" fill="var(--surface)" stroke="var(--${tone})" stroke-width="2"/><path d="M${x + w / 2} ${y}h${w / 2 - 11}a11 11 0 0 1 0 22h-${w / 2 - 11}z" fill="var(--${tone}-soft)" stroke="var(--${tone})" stroke-width="2"/>${empty ? `<circle cx="${x + w / 4}" cy="${y + 11}" r="2" fill="var(--muted)"/><circle cx="${x + w * 0.75}" cy="${y + 11}" r="2" fill="var(--muted)"/>` : ""}</g>`;
+  const brain = (cx, cy, s = 1, glow = "") => `<g transform="translate(${cx} ${cy}) scale(${s})"><path d="M-34 6c-12 0-16-14-8-22-4-12 8-22 18-18 4-10 20-12 26-4 8-8 24-4 26 6 12 0 18 14 10 22 6 10-2 22-14 20-4 10-20 12-28 4-8 8-24 4-26-6z" fill="${glow ? "var(--accent-soft)" : "var(--surface)"}" stroke="var(--${glow ? "accent" : "line"})" stroke-width="2.5"/><path d="M-20-10c6 4 6 12 0 16M2-18c-4 8 2 14 10 12M16 4c-6 2-10 8-6 14M-6 6c4 4 4 10-2 12" fill="none" stroke="var(--${glow ? "accent" : "muted"})" stroke-width="1.8" stroke-linecap="round"/></g>`;
+  const person = (x, y, tone = "branch", s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><circle cx="0" cy="-14" r="8" fill="var(--${tone}-soft)" stroke="var(--${tone})" stroke-width="2"/><path d="M-13 14c0-12 6-18 13-18s13 6 13 18z" fill="var(--${tone}-soft)" stroke="var(--${tone})" stroke-width="2"/></g>`;
+  const meter = (x, y, v, label, tone = "wrong") => `<rect x="${x}" y="${y}" width="120" height="12" rx="6" fill="var(--surface-2)" stroke="var(--line)"/><rect x="${x}" y="${y}" width="${Math.max(6, v * 12)}" height="12" rx="6" fill="var(--${tone})"/>${T(x, y - 6, label, `font-size="12" style="fill:var(--muted)"`)}`;
+
+  // ---------- the five main pictures ----------
+  const PIC_WHAT = svg(236, "A sugar pill with nothing active in it. You expect it to help, your brain reacts, and your pain really drops from 7 to 4.",
+    `<g ${st(0)}>${pill(20, 60, 70, "branch", true)}${C(55, 118, "sugar pill")}${C(55, 134, "nothing active", MUTED)}</g>`
+    + `<g ${st(1)}>${line("M104 76H134")}${ah(142, 76)}<path d="M158 40h108a14 14 0 0 1 14 14v26a14 14 0 0 1-14 14h-70l-14 14v-14h-24a14 14 0 0 1-14-14v-26a14 14 0 0 1 14-14z" fill="var(--surface)" stroke="var(--branch)" stroke-width="2"/>${C(212, 64, "\"This will help\"", BR)}${C(212, 82, "you expect relief", `font-size="12" style="fill:var(--muted)"`)}</g>`
+    + `<g ${st(2)}>${line("M286 72H316")}${ah(324, 72)}${brain(380, 70, 1, "glow")}${C(380, 120, "your brain reacts", ACC)}</g>`
+    + `<g ${st(3)}>${meter(330, 150, 7, "pain before")}${T(456, 161, "7", BAD)}</g>`
+    + `<g ${st(3.8)}>${T(330, 178, "pain after", `font-size="12" style="fill:var(--muted)"`)}<rect x="330" y="184" width="120" height="12" rx="6" fill="var(--surface-2)" stroke="var(--line)"/><rect x="330" y="184" width="48" height="12" rx="6" fill="var(--accent)"/>${T(456, 195, "4", ACC)}${T(20, 226, "The relief is real, even though the pill did nothing.", ACC)}</g>`);
+
+  const PIC_HOW = svg(240, "Expecting relief makes the brain release endorphins and dopamine, and mood areas get busier. Feeling cared for by a doctor adds to it. Symptoms feel smaller.",
+    `<g ${st(0)}>${person(46, 70, "accent", 1.3)}<rect x="22" y="104" width="52" height="16" rx="4" fill="var(--surface)" stroke="var(--line)"/>${C(48, 116, "doctor", `font-size="11"`)}${pill(84, 50, 40, "branch")}${C(80, 146, "being cared for", MUTED)}</g>`
+    + `<g ${st(0.9)}>${line("M120 80C160 80 170 70 196 70")}${ah(204, 70)}${C(166, 100, "expect relief", `font-size="12" style="fill:var(--muted)"`)}</g>`
+    + `<g ${st(1.6)}>${brain(270, 72, 1.35)}</g>`
+    + `<g ${st(2.3)}>${brain(270, 72, 1.35, "glow")}<circle cx="250" cy="58" r="7" fill="var(--branch)" opacity=".8"/><circle cx="286" cy="64" r="7" fill="var(--branch)" opacity=".8"/>${T(330, 46, "mood and emotion", ACC)}${T(330, 62, "areas get busier", ACC)}${line("M300 54H326", "accent", "3 3")}</g>`
+    + `<g ${st(3)}>${[0, 1, 2, 3, 4].map((k) => `<circle cx="${244 + k * 13}" cy="${132 + (k % 2) * 12}" r="5" fill="var(--accent)"/>`).join("")}${line("M270 112V166", "accent", "3 4")}${ah(270, 174, "d")}${T(330, 138, "endorphins: ease pain", ACC)}${T(330, 156, "dopamine: lifts mood", ACC)}</g>`
+    + `<g ${st(3.9)}>${meter(200, 206, 7, "symptoms before")}${line("M330 212H352")}${ah(360, 212)}<rect x="368" y="206" width="120" height="12" rx="6" fill="var(--surface-2)" stroke="var(--line)"/><rect x="368" y="206" width="42" height="12" rx="6" fill="var(--accent)"/>${T(368, 200, "symptoms feel smaller", `font-size="12" style="fill:var(--accent);font-weight:700"`)}</g>`);
+
+  const PIC_LIMITS = svg(232, "A placebo can ease what the brain senses, like pain, stress sleeplessness and nausea. It can't fix the body itself, like cholesterol or a tumor.",
+    `<g ${st(0)}><rect x="10" y="10" width="240" height="212" rx="14" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${T(26, 36, "Can ease (the brain senses it)", ACC)}</g>`
+    + `<g ${st(0.6)}><path d="M30 72l10-14 8 22 8-16 10 8" fill="none" stroke="var(--wrong)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>${T(86, 76, "pain")}</g>`
+    + `<g ${st(1)} transform="translate(6 0)"><path d="M44 110a14 14 0 1 1-12-20a11 11 0 0 0 12 20z" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/>${T(86, 112, "sleep trouble from stress")}</g>`
+    + `<g ${st(1.4)}><path d="M28 146c6-8 12 8 18 0s12 8 18 0" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>${T(86, 150, "nausea and tiredness")}${T(86, 166, "from cancer treatment", `font-size="12" style="fill:var(--muted)"`)}</g>`
+    + `<g ${st(1.8)}>${T(26, 204, "Real relief, but you aren't cured", `font-size="12" style="fill:var(--accent);font-weight:700"`)}</g>`
+    + `<g ${st(2.6)}><rect x="270" y="10" width="240" height="212" rx="14" fill="var(--wrong-soft)" stroke="var(--wrong)" stroke-width="2"/>${T(286, 36, "Can't fix (the body itself)", BAD)}</g>`
+    + `<g ${st(3.2)}><path d="M290 64h56M290 88h56" stroke="var(--wrong)" stroke-width="2"/><ellipse cx="318" cy="76" rx="12" ry="7" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/>${T(360, 80, "cholesterol")}</g>`
+    + `<g ${st(3.6)}><circle cx="318" cy="122" r="14" fill="var(--wrong)" opacity=".5"/><circle cx="312" cy="118" r="5" fill="var(--wrong)"/>${T(360, 126, "a tumor")}</g>`
+    + `<g ${st(4)}>${T(360, 166, "the illness itself")}<path d="M300 156h32v18h-32z" fill="none" stroke="var(--wrong)" stroke-width="2"/></g>`
+    + `<g ${st(4.4)}>${T(286, 204, "a fake pill can't reach these", `font-size="12" style="fill:var(--wrong);font-weight:700"`)}</g>`);
+
+  const people = (x, y, n, tone) => Array.from({ length: n }, (_, k) => person(x + (k % 4) * 30, y + Math.floor(k / 4) * 40, tone, 0.8)).join("");
+  const PIC_TRIALS = svg(272, "A drug trial splits people into two groups. One gets the drug, one gets a placebo. The drug only counts if its group improves more than the placebo group.",
+    `<g ${st(0)}>${people(30, 40, 8, "branch")}${C(75, 120, "group A: real drug", BR)}${pill(150, 44, 40, "branch")}</g>`
+    + `<g ${st(0.6)}>${people(300, 40, 8, "accent")}${C(345, 120, "group B: placebo", ACC)}${pill(420, 44, 40, "accent", true)}</g>`
+    + `<g ${st(1.4)}>${T(30, 150, "Who got better?", `font-weight="700"`)}</g>`
+    + `<g ${st(2)}>${T(30, 178, "drug", MUTED)}<rect x="80" y="166" width="0" height="18" rx="5" fill="var(--branch)"><animate attributeName="width" from="0" to="280" begin="2.25s" dur=".8s" fill="freeze"/></rect>${T(370, 180, "70% improved", BR)}</g>`
+    + `<g ${st(2.6)}>${T(30, 208, "placebo", MUTED)}<rect x="80" y="196" width="0" height="18" rx="5" fill="var(--accent)"><animate attributeName="width" from="0" to="160" begin="2.85s" dur=".8s" fill="freeze"/></rect>${T(250, 210, "40% improved", ACC)}</g>`
+    + `<g ${st(3.8)}>${T(30, 242, "The drug only gets credit for the extra 30 points", `font-size="12" style="fill:var(--ink);font-weight:700"`)}${T(30, 260, "the placebo group didn't get. (Example numbers.)", `font-size="12" style="fill:var(--ink);font-weight:700"`)}</g>`);
+
+  const PIC_SELF = svg(200, "In a migraine study, a pill clearly labeled placebo, which patients knew was fake, eased pain about half as much as the real drug.",
+    `<g ${st(0)}><rect x="20" y="30" width="70" height="100" rx="10" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/><rect x="28" y="20" width="54" height="16" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><rect x="26" y="66" width="58" height="26" rx="4" fill="var(--accent-soft)"/>${C(55, 84, "PLACEBO", `font-size="12" style="fill:var(--accent);font-weight:700"`)}${C(55, 154, "they knew", MUTED)}${C(55, 170, "it was fake", MUTED)}</g>`
+    + `<g ${st(1)}>${T(130, 40, "Migraine pain relief", `font-weight="700"`)}${T(130, 76, "real drug", MUTED)}<rect x="240" y="62" width="0" height="20" rx="5" fill="var(--branch)"><animate attributeName="width" from="0" to="240" begin="1.1s" dur=".8s" fill="freeze"/></rect></g>`
+    + `<g ${st(1.8)}>${T(130, 114, "labeled placebo", MUTED)}<rect x="240" y="100" width="0" height="20" rx="5" fill="var(--accent)"><animate attributeName="width" from="0" to="120" begin="1.9s" dur=".8s" fill="freeze"/></rect>${T(370, 115, "about half", ACC)}</g>`
+    + `<g ${st(3)}>${T(130, 160, "Just the ritual of taking a pill", ACC)}${T(130, 178, "seems to help, even when you know.", ACC)}</g>`);
+
+  // ---------- smaller pictures for single lines ----------
+  const PIC_LINK = svg(150, "Positive thinking is just a mood. The placebo effect is your brain sending real signals that change what your body feels.",
+    `<g ${st(0)}><rect x="10" y="20" width="200" height="110" rx="12" fill="var(--surface)" stroke="var(--line)"/>${T(24, 44, "Positive thinking", `font-weight="700"`)}<circle cx="60" cy="88" r="20" fill="var(--branch-soft)" stroke="var(--branch)" stroke-width="2"/><path d="M50 92c6 8 14 8 20 0" fill="none" stroke="var(--branch)" stroke-width="2" stroke-linecap="round"/>${T(92, 92, "a good mood", MUTED)}</g>`
+    + `<g ${st(1.2)}><rect x="230" y="20" width="280" height="110" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${T(244, 44, "Placebo effect", ACC)}${brain(285, 86, 0.8, "glow")}${line("M320 86H380")}${ah(388, 86)}${line("M380 96H322", "accent", "3 3")}${ah(318, 96, "l")}${person(420, 96, "accent", 1)}${T(444, 90, "body", `font-size="12"`)}${T(300, 125, "real signals both ways", `font-size="12" style="fill:var(--accent);font-weight:700"`)}</g>`);
+
+  const PIC_CURE = svg(140, "After a placebo, the pain can feel smaller, but the cholesterol level stays exactly where it was.",
+    `<g ${st(0)}>${T(10, 30, "after a placebo", `font-weight="700"`)}</g>`
+    + `<g ${st(0.8)}>${meter(10, 64, 7, "pain")}${line("M140 70H170")}${ah(178, 70)}<rect x="190" y="64" width="120" height="12" rx="6" fill="var(--surface-2)" stroke="var(--line)"/><rect x="190" y="64" width="40" height="12" rx="6" fill="var(--accent)"/>${T(320, 75, "feels smaller", ACC)}</g>`
+    + `<g ${st(1.8)}>${meter(10, 112, 8, "cholesterol", "branch")}${line("M140 118H170")}${ah(178, 118)}<rect x="190" y="112" width="120" height="12" rx="6" fill="var(--surface-2)" stroke="var(--line)"/><rect x="190" y="112" width="96" height="12" rx="6" fill="var(--branch)"/>${T(320, 123, "no change", BAD)}</g>`, 400);
+
+  const PIC_SAME = svg(140, "If the drug group and the placebo group improve by the same amount, the drug adds nothing, so it's judged not to work.",
+    `<g ${st(0)}>${T(10, 30, "drug", MUTED)}<rect x="80" y="18" width="160" height="18" rx="5" fill="var(--branch)"/>${T(250, 32, "40%", BR)}</g>`
+    + `<g ${st(0.8)}>${T(10, 66, "placebo", MUTED)}<rect x="80" y="54" width="160" height="18" rx="5" fill="var(--accent)"/>${T(250, 68, "40%", ACC)}</g>`
+    + `<g ${st(1.8)}><path d="M240 14v64" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4 3"/>${T(300, 50, "same result", `font-weight="700"`)}${T(10, 110, "The drug added nothing beyond the placebo, so it's judged not to work.", `font-size="12" style="fill:var(--wrong);font-weight:700"`)}</g>`);
+
+  const PIC_RITUAL = svg(130, "The ritual of care: a waiting room, a caring doctor, a pill or a procedure. Each step tells your brain you're being looked after.",
+    [[["waiting room"], 0], [["caring doctor"], 1], [["pill or", "procedure"], 2], [["I'm being", "looked after"], 3]].map(([ls, k]) => `<g ${st(k * 0.8)}><rect x="${10 + k * 132}" y="30" width="104" height="52" rx="10" fill="${k === 3 ? "var(--accent-soft)" : "var(--surface)"}" stroke="var(--${k === 3 ? "accent" : "line"})" stroke-width="1.5"/>${ls.map((l, j) => C(62 + k * 132, 61 + (j - (ls.length - 1) / 2) * 16, l, k === 3 ? ACC : `font-size="12"`)).join("")}${k < 3 ? `${line(`M${116 + k * 132} 56h12`)}${ah(138 + k * 132, 56)}` : ""}</g>`).join("")
+    + `<g ${st(3.4)}>${C(260, 112, "That feeling alone changes how symptoms feel.", ACC)}</g>`);
+
+  const PIC_HABITS = svg(130, "Everyday habits like exercise, good food, yoga or meditation, and time with friends may give placebo-like benefits, especially when you treat them as caring for yourself.",
+    [["exercise", "M-10 6l6-14 8 6 8-10"], ["good food", "M-10 0a10 10 0 0 0 20 0z"], ["yoga, meditation", "M-5-11a5 5 0 1 0 10 0a5 5 0 1 0-10 0M0-6v10M-14 10c6-6 22-6 28 0M-10-2l10 4 10-4"], ["friends", "M-8 0a5 5 0 1 0 0.1 0M8 0a5 5 0 1 0 0.1 0"]].map(([l, d], k) => `<g ${st(k * 0.6)}><circle cx="${60 + k * 130}" cy="46" r="26" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><path transform="translate(${60 + k * 130} 46)" d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>${C(60 + k * 130, 92, l, `font-size="12"`)}</g>`).join("")
+    + `<g ${st(3)}>${C(260, 120, "Treat them as caring for yourself, and they may work like a placebo.", ACC)}</g>`);
+
+  // ---------- a clearer order: what it is, how it works, limits, trials, using it on purpose ----------
+  const by = (id) => K.ideas.find((x) => x.id === id);
+  K.ideas = ["what", "how", "limits", "trials", "self"].map(by);
+  K.hook = "A pill with nothing in it can make real pain fade. How, and where does it stop working?";
+  const set = (id, fig, peeks, hints) => { const it = by(id); it.fig = fig; it.peeks = peeks; it.holes.forEach((h, k) => { if (hints[k]) h.hint = hints[k]; }); };
+  set("what", PIC_WHAT, [
+    { q: "A nurse gives someone a saltwater shot for a headache. Could that be a placebo?", k: 0 },
+    { q: "Can a fake treatment really help as much as a real one?", k: 1 },
+    { q: "Is the placebo effect just positive thinking? What's the difference?", k: 2, pic: PIC_LINK }],
+    ["Think of anything that looks like treatment but has nothing active inside.", "Researchers compared placebos with standard treatments for some symptoms. What did they find?", "Is it only a mood, or does something physical happen?", "Healers noticed this long before modern medicine. How long ago?"]);
+  set("how", PIC_HOW, [
+    { q: "What chemicals do you think the brain releases?", k: 0 },
+    { q: "Which parts of the brain do you think get busier?", k: 1 },
+    { q: "Why might a caring doctor make a fake pill work better?", k: 3, pic: PIC_RITUAL }],
+    ["Two natural chemicals: one eases pain, one lifts mood.", "Think about feelings. Which kinds of brain areas would handle those?", "Brain scans of people with knee pain showed one area busier in those who were helped. Where in the brain?", "Think about everything around the pill: the visit, the staff, the procedure."]);
+  set("limits", PIC_LIMITS, [
+    { q: "Could a sugar pill lower someone's cholesterol? Why or why not?", k: 0, pic: PIC_CURE },
+    { q: "Someone's back pain feels smaller after a placebo. Is that relief fake?", k: 3 },
+    { q: "Name a problem a placebo would probably help with.", k: 2 }],
+    ["Does a placebo change the illness, or how the brain senses symptoms?", "Is the cause gone, or does the brain feel it differently?", "Think of things your brain senses: pain, sleep, feeling sick.", "Does the person actually feel less pain?"]);
+  set("trials", PIC_TRIALS, [
+    { q: "Why would scientists give some people a fake pill on purpose?", k: 0 },
+    { q: "Both groups improve by the same amount. What does that say about the drug?", k: 1, pic: PIC_SAME },
+    { q: "If people on the placebo get better, did the study fail?", k: 2 }],
+    ["People often get better just from being treated. How would you measure that part?", "If the drug group does no better, what did the drug add?", "Experts changed their minds about this. What might that relief come from instead?"]);
+  set("self", PIC_SELF, [
+    { q: "Would a pill labeled \"placebo\" still work on you?", k: 0 },
+    { q: "Why might just taking a pill help, even if you know it's fake?", k: 1 },
+    { q: "How could you give yourself a placebo-like boost every day?", k: 2, pic: PIC_HABITS }],
+    ["Migraine patients were told the truth about their pill. How much relief did they get compared with the real drug?", "Think about what the act of taking a pill tells your brain.", "Think of everyday habits that feel like looking after yourself."]);
+  const PEEK_A = {
+    what: ["Yes. Saltwater has nothing active in it for a headache, so if it helps, that's the placebo effect. A placebo can be a sugar pill, a saline shot, even a fake procedure.",
+      "Sometimes. Under the right conditions, research has found a placebo can work about as well as a standard treatment for some symptoms.",
+      "Positive thinking is just a mood. With a placebo, your brain sets off real changes in your body, like releasing chemicals that ease pain."],
+    how: ["Endorphins, which ease pain, and dopamine, which lifts mood. Both are natural chemicals your brain already makes.",
+      "Areas linked to mood, emotion and self-awareness.",
+      "The ritual helps by itself. A caring doctor, the visit and the pill all tell you you're being looked after, and that changes how you feel your symptoms."],
+    limits: ["No. A placebo doesn't change the illness itself, so cholesterol stays the same. It only changes how your brain handles symptoms, like pain.",
+      "No, the relief is real. They really do feel less pain. The cause of the pain just hasn't been fixed.",
+      "Pain, trouble sleeping because of stress, or side effects of cancer treatment like tiredness and nausea."],
+    trials: ["To see how much people improve just from being treated. The placebo group shows that, so the drug's own effect can be measured on top of it.",
+      "The drug is judged not to work. It added nothing beyond what the placebo did.",
+      "No. Experts now see it as real relief coming from something other than the drug, like the care around it."],
+    self: ["It might. Migraine patients who knew their pill was a placebo still got about half the pain relief of the real drug.",
+      "Researchers think the ritual helps by itself: the act of taking a pill tells your brain that care is happening.",
+      "Habits like exercise, good food, yoga, meditation and time with friends may give similar benefits, more so when you treat them as caring for yourself."]
+  };
+  K.ideas.forEach((it) => (it.peeks || []).forEach((pk, p) => { if (pk && PEEK_A[it.id] && PEEK_A[it.id][p]) pk.a = PEEK_A[it.id][p]; }));
+}
 
 // Compound interest, from the Federal Reserve Bank of St. Louis, "How Does Compound Interest Work?" (Open Vault, 2018).
 TOPICS.push({
@@ -1196,8 +1370,105 @@ TOPICS.push({
   };
   K.ideas.forEach((it) => it.holes.forEach((h) => { if (HINTS[h.q]) h.hint = HINTS[h.q]; }));
   const ing = K.ideas.find((x) => x.id === "services").holes.find((h) => /internet/.test(h.q)); if (ing && !ing.pts) ing.pts = [3];
+  // v60: each line's "Show me" answer answers that line's own question (the shared hole answers started with replies to other questions, like "As a cluster.").
+  const PEEK_A = {
+    why: ["Everything the app needs to run: the code plus its libraries, tools and settings. That's why it runs the same on any machine. Docker is a common tool for building them.",
+      "Big apps are usually split into small pieces called microservices, like cart, payments and search, each in its own container. One app can easily become dozens or hundreds of containers.",
+      "Four jobs: adding copies when traffic changes, running across different clouds, keeping each container secure with enough CPU and memory, and updating without downtime.",
+      "Your Deployment files. You write down what should be running, and Kubernetes makes sure every container plays its part.",
+      "Kubernetes does, not you. Every machine checks in every few seconds. When one goes quiet, Kubernetes sees copies missing and starts new ones on a healthy machine."],
+    cluster: ["Kubernetes running them as one. You hand work to the cluster, not to a particular machine, and it decides which machine does what.",
+      "What runs where: which machine each copy of your app goes on, and what to do when something breaks. It's the brain; the worker nodes do the actual running.",
+      "The control plane notices they're gone and starts new copies on the other worker nodes. You don't have to move anything yourself.",
+      "It's the node's link to the control plane. It takes orders about which Pods to run, starts them, checks they're healthy and reports back.",
+      "It looks for a node with enough free CPU and memory for the new Pod, and puts it there."],
+    deploy: ["A short text file (YAML) that lists the result you want: the app's name, which version (image) to run and how many copies. It doesn't list steps.",
+      "Two lines: the image version (change it to v3) and the number of copies, called replicas (change it to 5). Kubernetes works out the rest.",
+      "A Pod is a thin wrapper around your container (sometimes a few) that gives it its own address. Kubernetes runs and replaces Pods, not bare containers.",
+      "The ReplicaSet behind your Deployment. It keeps counting copies, sees one missing and starts a replacement, on another machine if needed.",
+      "Raise the number of copies in the file, say from 3 to 10, and Kubernetes starts the extra ones. It can also add and remove copies by itself as traffic changes.",
+      "Roll it out: Kubernetes swaps old copies for new ones a few at a time, so some are always running. If new copies fail their health check, the swap stops, and one command rolls back."],
+    services: ["Because a broken Pod isn't fixed, it's replaced, and the replacement is brand new, so it gets a new address.",
+      "A Service: one address that never changes, sitting in front of all your copies.",
+      "Any healthy one. The Service spreads requests across all your copies so none gets swamped.",
+      "Through an Ingress, the front gate for web traffic. Rules like \"shop.com/cart goes to the cart Service\" send each request to the right place."],
+    config: ["Because Pods are temporary. When one is replaced, everything stored inside it is gone, so anything that must last lives outside it.",
+      "In a ConfigMap: settings like which database to use, kept outside your container and handed to each Pod when it starts.",
+      "In a Secret. It works like a ConfigMap, but access can be locked down and it's only handed to Pods that need it, so passwords aren't sitting in plain settings.",
+      "They're on a Persistent Volume: storage outside any Pod. When the Pod is replaced, the volume stays and the new Pod plugs into it."]
+  };
+  K.ideas.forEach((it) => (it.peeks || []).forEach((pk, p) => { if (pk && PEEK_A[it.id] && PEEK_A[it.id][p]) pk.a = PEEK_A[it.id][p]; }));
 }
 
+// v61: short definitions for words in the articles, shown as "Words" in the box that "Show me" opens. Keys match whole words (plurals too).
+{
+  const TERMS = {
+    kubernetes: {
+      "container": "Your app packed with everything it needs to run, so it runs the same on any machine.",
+      "Docker": "A popular tool for building and running containers.",
+      "microservices": "Small pieces of one big app (like cart, payments, search), each running in its own container.",
+      "open-source": "Software whose code is public and free to use and change.",
+      "cluster": "A group of machines that Kubernetes runs as if they were one.",
+      "control plane": "The brain of the cluster: it decides what runs on which machine.",
+      "worker node": "A machine in the cluster that actually runs your containers.",
+      "node": "One machine in the cluster.",
+      "container runtime": "The program on each node that actually starts and stops containers.",
+      "kubelet": "A small helper on every node that takes orders from the control plane and reports back.",
+      "kube-proxy": "A helper on every node that handles network traffic to and from Pods.",
+      "scheduler": "The part of the control plane that picks which node each new Pod goes on.",
+      "Pod": "One running copy of your app: your container in a thin wrapper with its own address.",
+      "Deployment": "A short file that says which version of your app to run and how many copies.",
+      "YAML": "A plain-text format for settings files, made of names and values on separate lines.",
+      "ReplicaSet": "The part behind a Deployment that keeps the right number of Pods running.",
+      "image": "The packaged, ready-to-run version of your app that a container is started from.",
+      "replicas": "How many copies of your app should be running.",
+      "health check": "A quick test Kubernetes runs to see if a copy of your app is working.",
+      "rolls back": "Goes back to the previous version that worked.",
+      "Service": "One address that never changes, in front of all copies of your app.",
+      "Ingress": "The front gate that sends web traffic from outside to the right Service.",
+      "ConfigMap": "A place for settings (like which database to use), kept outside your container.",
+      "Secret": "Like a ConfigMap, but for private things like passwords, with access locked down.",
+      "Persistent Volume": "Storage outside any Pod, so data survives when Pods are replaced.",
+      "declarative": "You describe the result you want, not the steps to get there.",
+      "CPU": "The part of a computer that does the work; apps need some of it to run.",
+      "downtime": "Time when your app is unavailable to users."
+    },
+    placebo: {
+      "placebo": "A fake treatment with nothing active in it, like a sugar pill.",
+      "saline": "Salt water. A saline shot has nothing in it that treats illness.",
+      "endorphins": "Natural chemicals your brain makes that ease pain.",
+      "dopamine": "A natural brain chemical linked to mood, motivation and reward.",
+      "self-awareness": "Noticing your own thoughts, feelings and body.",
+      "cholesterol": "A fat in your blood; too much of it can clog blood vessels.",
+      "tumor": "A lump of cells growing where they shouldn't.",
+      "nausea": "Feeling sick to your stomach.",
+      "migraine": "A very bad headache, often with sensitivity to light or sound.",
+      "drug trial": "A study that tests whether a new medicine works and is safe.",
+      "ineffective": "Doesn't work."
+    },
+    compound: {
+      "interest": "Money paid for the use of money: banks pay it on savings, and you pay it on loans.",
+      "compound": "To grow on itself: interest is added to your balance and then earns interest too.",
+      "balance": "How much money is in your account, or how much you owe.",
+      "CDs": "Certificates of deposit: savings accounts where you leave money for a set time for a set rate.",
+      "Rule of 72": "Divide 72 by the interest rate to estimate how many years money takes to double.",
+      "inflation": "Prices rising over time, so the same money buys less.",
+      "Federal Reserve": "The US central bank. It tries to keep prices stable.",
+      "credit card": "A card that lets you borrow money to pay; unpaid amounts are charged interest."
+    }
+  };
+  TOPICS.forEach((t) => { if (TERMS[t.id]) t.terms = TERMS[t.id]; });
+}
+
+// v62 (on v61): the "Show me" box branches off its bullet like a node on a graph (joined by a curved line, to the right of
+//   the article, else the left, else inline on narrow screens) and folds back into the bullet when done (Got it, ×, Esc,
+//   clicking elsewhere, or scrolling away); the bullet keeps a small dot.
+// v61 (on v60): "Show me" opens a box to the right of the line (Aneesh: not the answer straight under it) with the picture,
+//   the answer, "Words in here" definitions (topics/terms.js), "Ask Kube more" questions, your own question (Claude, else
+//   closest known answer) and "Think you could explain it?".
+// v60 (on v59): a click always gets Kube's attention: it hushes any offer, switches an open panel to the clicked line, still offers
+//   "I'll explain" when the line's picture is already open, and clicking a part's title or intro offers a quiz or a picture.
+//   Every topic now gets line questions (ensurePeeks); each line's "Show me" answers its own question (peek .a), and the placebo article has new pictures, a new order, peeks and hints.
 // v59 (on v58): the list that opens after an answer closes itself; clicking a line brings Kube there to offer to show or explain it; hover waits longer
 // v58 (on v57): the line a question comes from stays highlighted, zoomed and centered beside the panel; the panel quotes it; real hints; a second try (with a nudge) before the answer; after an answer the list opens with the matching line marked and how much Understood went up (never down)
 // v57 (on v56): Kube invites a click ("Click me to test your understanding"); Read and Understood bars in the top bar
@@ -2110,12 +2381,22 @@ function openArticle() {
   // Kube jumps in once the whole thing has been on screen for a moment: is this too much at once?
   paceIntro();
 }
+// v60: every line in every topic gets a question Kube can ask, so a click always gets an answer.
+// Topics without hand-written peeks use the line's own "explain it" question and the closest hole's answer.
+function ensurePeeks() {
+  T.ideas.forEach((it) => { it.peeks = it.peeks || []; it.points.forEach((pt, p) => {
+    if (it.peeks[p]) return; let k = it.holes.findIndex((h) => (h.pts || []).includes(p)); if (k < 0) k = 0;
+    const h = it.holes[k], own = (h.pts || []).includes(p); // the hole's own question when it is about this line, so the answer fits
+    it.peeks[p] = { q: own ? h.q : (it.asks && it.asks[p]) || h.q, k, pic: null, auto: true, a: own ? null : h.a };
+  }); });
+}
 function renderArticle() {
+  ensurePeeks();
   const s = T.source, mins = Math.max(2, Math.round(T.ideas.reduce((n, i) => n + expectedMs(i), 0) / 60000));
   $("art").innerHTML = `<header class="art-head"><div class="eyebrow">${esc(T.subject)} · about ${mins} min to skim</div><h1>${esc(T.title)}</h1><p class="art-hook">${esc(T.hook)}</p><div class="pace" role="group" aria-label="How to go through it"><button type="button" data-pace="all">Read it all</button><button type="button" data-pace="skim">Skim</button><button type="button" data-pace="step">Step by step</button></div><p class="art-src">A short version of <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>, ${esc(s.site)}.</p></header>`
     + T.ideas.map((it, i) => `<section class="art-sec" data-sec="${i}" id="sec-${i}">
       <div class="art-main"><div class="art-num">${i + 1}</div><h2>${esc(it.title)}</h2><p class="art-lead">${esc(lead(it.blurb))}</p><button type="button" class="skim-open" data-open="${i}">Open this part</button>
-        <ul class="art-pts">${it.points.map((pt, p) => `<li data-pt="${i}-${p}">${esc(pt)}</li>${it.peeks && it.peeks[p] ? `<li class="peek" data-peek="${i}-${p}" hidden></li>` : ""}`).join("")}</ul>
+        <ul class="art-pts">${it.points.map((pt, p) => `<li data-pt="${i}-${p}">${esc(pt)}</li>`).join("")}</ul>
         ${it.fig ? `<div class="figwrap" data-figwrap="${i}" hidden><div class="fig anim" data-figbox="${i}"></div><button type="button" class="linkish" data-figx="${i}">Hide the picture</button></div>` : ""}<div class="art-acts"><button type="button" class="btn small art-next" data-next="${i}">Next</button><button type="button" class="ask-me" data-askme="${i}"><span class="nk-face">${FACE("smile")}</span>Ask me about this</button></div></div>
     </section>`).join("")
     + `<section class="art-end" id="art-end"><div class="kube-face">${FACE("happy")}</div><div><h2>That's the whole thing.</h2><p>Now I'd love to learn it from you. Can you teach me?</p><div class="row"><button type="button" class="btn" id="art-teach">Teach Kube</button><button type="button" class="linkish" id="art-top">Skim it again</button></div></div></section>`;
@@ -2235,7 +2516,7 @@ function closePaceIntro(choice) {
   if (R.tipPending) { R.tipPending = false; const tip = $("list-tip"); tip.hidden = false; setTimeout(() => { tip.hidden = true; }, 6500); }
 }
 $("pace-intro").querySelectorAll("[data-pi]").forEach((b) => b.addEventListener("click", () => closePaceIntro(b.dataset.pi)));
-$("pace-intro").addEventListener("click", (e) => { if (e.target === $("pace-intro")) closePaceIntro("dismissed"); });
+$("pace-intro").addEventListener("click", (e) => { if (e.target !== $("pace-intro")) return; closePaceIntro("dismissed"); const el = document.elementFromPoint(e.clientX, e.clientY); if (el && $("art").contains(el)) el.click(); });
 
 // ---------- v51: ask about a part any time ----------
 function askPart(i, how) {
@@ -2578,27 +2859,162 @@ const HOV = { el: null, t: 0 };
 $("art").addEventListener("pointerover", (e) => { const li = e.target.closest(".art-pts li[data-pt]"); if (li !== HOV.el) { HOV.el = li; HOV.t = Date.now(); } });
 $("art").addEventListener("pointerleave", () => { HOV.el = null; });
 // v59: a click (or tap) on a line is a clear sign of interest, so Kube comes to that spot right away. Resting the mouse only counts after 4 seconds.
-$("art").addEventListener("click", (e) => { if (e.target.closest("button,a,.peek")) return; const li = e.target.closest(".art-pts li[data-pt]"); if (li && !getSelection().toString().trim()) { MOUSE.x = e.clientX; MOUSE.y = e.clientY; maybePeek(li, true); } });
+// v60: a click always gets Kube's attention, even when Kube is already offering something, the panel is open, or the line's picture is already showing.
+$("art").addEventListener("click", (e) => {
+  if (e.target.closest("button,a,.peek,.pcard,.figwrap,input,textarea") || getSelection().toString().trim()) return;
+  MOUSE.x = e.clientX; MOUSE.y = e.clientY;
+  const li = e.target.closest(".art-pts li[data-pt]"); if (li) return maybePeek(li, true);
+  const sec = e.target.closest(".art-sec"); if (sec && e.target.closest(".art-main")) partOffer(+sec.dataset.sec);
+});
 setInterval(() => { if (HOV.el && Date.now() - HOV.t > 4000 && Date.now() - E.lastMouse < 5000) maybePeek(HOV.el, false); }, 400);
 function maybePeek(li, tapped) {
   if (!artOn() || !li.isConnected || !li.offsetParent) return;
   const [i, p] = li.dataset.pt.split("-").map(Number), it = T.ideas[i], pk = it.peeks && it.peeks[p]; if (!pk) return;
   R.peeked = R.peeked || new Set(); const key = i + "-" + p;
-  if (tapped && !$("kube-say").hidden && $("kpanel").hidden) kubeHush();
-  if ((!tapped && R.peeked.has(key)) || !$("kube-say").hidden || !$("pace-intro").hidden || !$("kpanel").hidden) return;
-  if (!tapped && Date.now() - (R.lastOffer || 0) < 9000) return;
-  const box = $("art").querySelector(`[data-peek="${key}"]`); if (!box || !box.hidden) return;
+  if (tapped) {
+    if (!$("pace-intro").hidden) closePaceIntro("dismissed");
+    // Panel already open: switch it to the clicked line's question.
+    if (!$("kpanel").hidden) { if (PN && PN.i === i && PN.src === p) return; log("peek-switch", { part: i, line: p }); closePanel(true); openPanel(i, pk.k, "peek", "", { q: pk.q, pic: pk.pic, p }); return; }
+    kubeHush();
+  } else {
+    if (R.peeked.has(key) || !$("kube-say").hidden || !$("pace-intro").hidden || !$("kpanel").hidden) return;
+    if (Date.now() - (R.lastOffer || 0) < 9000) return;
+  }
   R.peeked.add(key); log("peek-offer", { part: i, line: p, how: tapped ? "tap" : "hover" });
   li.classList.add("asked");
   ph(idea().id).nudged.delete("peek");
-  offer("peek", pk.q, [["Show me", () => showPeek(i, p, "kube")], ["I'll explain", () => { log("peek-explain", { part: i, line: p }); openPanel(i, pk.k, "peek", "", { q: pk.q, pic: pk.pic, p }); }], ["Not now", null]]);
+  const explain = ["I'll explain", () => { log("peek-explain", { part: i, line: p }); openPanel(i, pk.k, "peek", "", { q: pk.q, pic: pk.pic, p }); }];
+  offer("peek", pk.q, [["Show me", () => showPeek(i, p, "kube")], explain, ["Not now", null]]);
 }
+// v60: clicking a part's title or intro (not a line) gets a part-level offer.
+function partOffer(i) {
+  if (!artOn() || !T.ideas[i]) return;
+  if (!$("pace-intro").hidden) closePaceIntro("dismissed");
+  if (!$("kpanel").hidden) closePanel(true);
+  kubeHush(); ph(idea().id).nudged.delete("part");
+  const it = T.ideas[i], w = $("art").querySelector(`[data-figwrap="${i}"]`), acts = [["Quiz me", () => openPanel(i, null, "part", "")]];
+  if (it.fig && w && w.hidden) acts.push(["Show me a picture", () => showPic(i, "click")]);
+  acts.push(["Not now", null]); log("part-offer", { part: i });
+  offer("part", `Think you could explain "${it.title}"?`, acts);
+}
+// v61: "Show me" opens a box beside the line (not under it): the picture, the short answer, the words in it explained,
+// more questions to ask Kube, your own question, and a way to explain it back.
+// v62: the box branches off the bullet like a node on a graph, joined by a line, beside the article (right, else left;
+// inline under the line on narrow screens), and folds back into the bullet when you're done with it.
+let SC = null;
 function showPeek(i, p, how) {
-  const it = T.ideas[i], pk = it.peeks[p], h = it.holes[pk.k], box = $("art").querySelector(`[data-peek="${i}-${p}"]`); if (!box) return;
-  box.innerHTML = `${pk.pic ? `<div class="fig anim">${figSVG(pk.pic)}</div>` : ""}<p class="peek-a"><span class="nk-face">${FACE("happy")}</span><span>${esc(h.a)}</span></p><button type="button" class="linkish" data-peekx>Got it</button>`;
-  box.hidden = false; markSeen(i, pk.k); E.pics += pk.pic ? 1 : 0; E.lastRead = `Asked Kube to show "${pk.q}"`; log("peek-show", { part: i, line: p, how, pic: !!pk.pic });
-  box.querySelector("[data-peekx]").addEventListener("click", () => { box.hidden = true; log("peek-hide", { part: i, line: p }); });
-  setTimeout(() => { const r = box.getBoundingClientRect(); if (r.bottom > innerHeight - 20) box.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 80);
+  const it = T.ideas[i], pk = it.peeks && it.peeks[p], li = $("art").querySelector(`li[data-pt="${i}-${p}"]`); if (!pk || !li) return;
+  if (!$("kpanel").hidden) closePanel(true);
+  closeCard(true);
+  SC = { i, k: pk.k, q: pk.q, pf: pk.pic, src: p, ans: pk.a || it.holes[pk.k].a, more: [], def: null, draft: "", li, t0: Date.now() };
+  SC.render = () => renderCard2();
+  markSeen(i, pk.k); E.pics += pk.pic ? 1 : 0; E.lastRead = `Asked Kube to show "${pk.q}"`; log("peek-show", { part: i, line: p, how, pic: !!pk.pic });
+  const card = document.createElement(innerWidth >= 1000 ? "div" : "li"); card.className = "pcard"; card.id = "pcard";
+  const side = innerWidth >= 1000 ? sideFor(li) : "inline"; card.classList.add(side); SC.side = side;
+  if (side === "inline") li.after(card); else document.body.appendChild(card);
+  if (side !== "inline") { const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.id = "pc-link"; svg.innerHTML = `<path/><circle r="5"/><circle r="4"/>`; document.body.appendChild(svg); }
+  li.classList.add("shown"); SC.card = card; renderCard2(); placeCard();
+  requestAnimationFrame(() => card.classList.add("open"));
+  if (voiceOn) say(SC.ans);
+}
+function sideFor(li) {
+  const m = li.closest(".art-main").getBoundingClientRect();
+  return innerWidth - m.right >= 400 ? "right" : m.left >= 400 ? "left" : "inline";
+}
+function renderCard2() {
+  const P = SC; if (!P) return;
+  P.card.innerHTML = `<div class="kp-top"><div class="kp-q"><div class="kube-face">${FACE("happy")}</div><div><small>Kube shows you</small><p>${esc(P.q)}</p></div></div><button type="button" class="x" data-sc="done" aria-label="Close">×</button></div><div class="kp-body">${showHTML(P)}</div>`;
+  P.card.querySelectorAll("[data-sc]").forEach((x) => x.addEventListener("click", (e) => { e.stopPropagation(); cardAct(x.dataset.sc); }));
+  wireShow(P.card, P); placeCard();
+}
+// Where the box sits: its top lines up with the bullet, and the line runs from the end of the bullet's text to the box.
+function placeCard() {
+  const P = SC; if (!P || !P.card.isConnected) return;
+  if (!P.li.isConnected || !P.li.offsetParent) return closeCard(true);
+  if (P.side === "inline") return;
+  const lr = P.li.getBoundingClientRect(), m = P.li.closest(".art-main").getBoundingClientRect(), c = P.card, w = Math.min(380, (P.side === "right" ? innerWidth - m.right : m.left) - 48);
+  const rg = document.createRange(); rg.selectNodeContents(P.li); const rs = [...rg.getClientRects()], tx = rs.length ? rs[rs.length - 1] : lr;
+  c.style.width = w + "px";
+  const top = lr.top - 24 + scrollY;
+  const left = P.side === "right" ? m.right + 36 : m.left - 36 - w;
+  c.style.top = top + "px"; c.style.left = left + scrollX + "px";
+  const x1 = P.side === "right" ? Math.min(tx.right + 8, m.right) : lr.left - 4, y1 = (P.side === "right" ? tx.top + tx.height / 2 : lr.top + 14) + scrollY;
+  const x2 = P.side === "right" ? left : left + w, y2 = top + 38, mx = (x1 + x2) / 2;
+  const svg = $("pc-link"); if (!svg) return;
+  const pad = 10, X = Math.min(x1, x2) - pad, Y = Math.min(y1, y2) - pad, W = Math.abs(x2 - x1) + 2 * pad, H = Math.abs(y2 - y1) + 2 * pad;
+  Object.assign(svg.style, { left: X + "px", top: Y + "px", width: W + "px", height: H + "px" }); svg.setAttribute("viewBox", `${X} ${Y} ${W} ${H}`);
+  svg.querySelector("path").setAttribute("d", `M${x1} ${y1}C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`);
+  const [c1, c2] = svg.querySelectorAll("circle"); c1.setAttribute("cx", x1); c1.setAttribute("cy", y1); c2.setAttribute("cx", x2); c2.setAttribute("cy", y2);
+}
+// Done: the box shrinks back into its bullet, which keeps a small dot to show you've opened it.
+function closeCard(quick) {
+  const P = SC; if (!P) return; SC = null;
+  const c = P.card, l = $("pc-link"); P.li.classList.remove("shown"); P.li.classList.add("explored");
+  log("peek-close", { part: P.i, line: P.src, ms: Date.now() - P.t0, asked: P.more.length });
+  if (quick) { c.remove(); if (l) l.remove(); return; }
+  c.classList.remove("open"); c.classList.add("closing"); if (l) l.classList.add("closing");
+  setTimeout(() => { c.remove(); if (l) l.remove(); }, 380);
+}
+function cardAct(a) {
+  const P = SC; if (!P) return;
+  if (a === "done") return closeCard();
+  if (a === "testme") {
+    // Explain it back: a question on this line Kube hasn't covered yet, or else this one in your own words.
+    const it = T.ideas[P.i], seen = seenSet(it.id), next = it.holes.map((_, k) => k).find((k) => !seen.has(k) && (it.holes[k].pts || []).includes(P.src)), pk = it.peeks[P.src];
+    log("show-testme", { part: P.i, line: P.src }); closeCard();
+    return next != null ? openPanel(P.i, next, "show-test", "", { p: P.src }) : openPanel(P.i, pk.k, "show-test", "", { p: P.src, q: "In your own words: " + pk.q, pic: pk.pic });
+  }
+}
+setInterval(placeCard, 400);
+addEventListener("resize", () => { if (SC && SC.side !== "inline" && sideFor(SC.li) === "inline") closeCard(true); else placeCard(); });
+addEventListener("scroll", () => { if (!SC) return; const r = SC.card.getBoundingClientRect(), l = SC.li.getBoundingClientRect(); if (Math.max(r.bottom, l.bottom) < 0 || Math.min(r.top, l.top) > innerHeight) closeCard(); else requestAnimationFrame(placeCard); }, { passive: true });
+document.addEventListener("pointerdown", (e) => { if (SC && !SC.card.contains(e.target) && !e.target.closest("#kube-corner,#kube-say,.syl,#syl,header.top,.topbar")) closeCard(); }, true);
+addEventListener("keydown", (e) => { if (e.key === "Escape" && SC) closeCard(); });
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function termsIn(text) {
+  const tm = T.terms || {}, hit = Object.keys(tm).filter((w) => new RegExp(`(^|[^A-Za-z-])${reEsc(w)}(s|es)?(?![A-Za-z-])`, "i").test(text));
+  return hit.filter((w) => !hit.some((x) => x !== w && x.toLowerCase().includes(w.toLowerCase())));
+}
+function showMoreQs(P) {
+  const it = T.ideas[P.i], asked = new Set([P.k, ...P.more.map((m) => m.k)]);
+  return it.holes.map((h, k) => ({ q: h.q, k, on: (h.pts || []).includes(P.src) ? 1 : 0 })).filter((x) => !asked.has(x.k)).sort((a, b) => b.on - a.on).slice(0, 3);
+}
+function showHTML(P) {
+  const it = T.ideas[P.i]; let body = "";
+  // Only the first time it opens does it animate; looking up a word or asking more doesn't replay it.
+  const first = !P.drawn; P.drawn = true;
+  if (P.pf) body += `<div class="fig${first ? " anim" : ""}">${figSVG(P.pf)}</div>`;
+  body += `<div class="pa">${sentences(P.ans).map((t, n) => first ? `<span class="sent" style="animation-delay:${0.15 + n * 0.5}s">${esc(t.trim())} </span>` : esc(t.trim()) + " ").join("")}</div>`;
+  const terms = termsIn([it.points[P.src], P.ans, ...P.more.map((m) => m.a || "")].join(" ")).slice(0, 6);
+  if (terms.length) body += `<div class="kp-sec"><small>Words in here</small><div class="chips">${terms.map((w) => `<button type="button" class="chip${P.def === w ? " on" : ""}" data-term="${esc(w)}">${esc(w)}</button>`).join("")}</div>${P.def ? `<p class="kp-def"><b>${esc(P.def)}:</b> ${esc(T.terms[P.def])}</p>` : ""}</div>`;
+  P.more.forEach((m, n) => { body += `<div class="kp-more"${n === P.more.length - 1 ? " data-last" : ""}><small>You asked</small><b>${esc(m.q)}</b>${m.a == null ? `<p class="note"><span class="spin"></span>Kube is thinking…</p>` : `<p>${esc(m.a)}</p>`}</div>`; });
+  const qs = showMoreQs(P);
+  if (qs.length) body += `<div class="kp-sec"><small>Ask Kube more</small><div class="chips">${qs.map((x) => `<button type="button" class="chip q" data-hq="${x.k}">${esc(x.q)}</button>`).join("")}</div></div>`;
+  body += `<div class="kp-ask"><input type="text" data-own placeholder="Ask your own question about this…" aria-label="Ask your own question"><button type="button" class="btn small ghost" data-ownsend disabled>Ask</button></div>`;
+  body += `<div class="row"><button type="button" class="btn small" data-sc="testme">Think you could explain it?</button><button type="button" class="btn small ghost" data-sc="done">Got it</button></div>`;
+  return body;
+}
+function wireShow(pn, P) {
+  if (P.scrollTo) { P.scrollTo = false; const el = pn.querySelector("[data-last]"); if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "nearest" }), 30); }
+  pn.querySelectorAll("[data-term]").forEach((x) => x.addEventListener("click", () => { P.def = P.def === x.dataset.term ? null : x.dataset.term; log("term", { part: P.i, term: P.def }); E.lastRead = `Looked up "${x.dataset.term}"`; P.render(); }));
+  pn.querySelectorAll("[data-hq]").forEach((x) => x.addEventListener("click", () => { const k = +x.dataset.hq, h = T.ideas[P.i].holes[k]; P.more.push({ q: h.q, a: h.a, k }); P.scrollTo = true; markSeen(P.i, k); log("show-more", { part: P.i, q: h.q }); E.lastRead = `Asked Kube "${h.q}"`; P.render(); if (voiceOn) say(h.a); }));
+  const inp = pn.querySelector("[data-own]"), go = pn.querySelector("[data-ownsend]");
+  if (inp) { inp.value = P.draft || ""; const sync = () => { P.draft = inp.value; go.disabled = !inp.value.trim(); }; sync(); inp.addEventListener("input", sync); inp.addEventListener("keydown", (e) => { if (e.key === "Enter" && inp.value.trim()) go.click(); }); go.addEventListener("click", () => ownAsk(P, inp.value)); }
+}
+async function ownAsk(P, q) {
+  q = q.trim(); if (!q) return; const it = T.ideas[P.i], m = { q, a: null, k: -1 }; P.more.push(m); P.draft = ""; P.scrollTo = true; P.render();
+  log("own-ask", { part: P.i, words: nWords(q) }); E.lastRead = "Asked Kube their own question";
+  let a = null;
+  if (grader !== "words") {
+    try { const r = await askClaude(`You are Kube, a friendly guide. A learner is reading a short article on ${T.title}, the part "${it.title}", at the line "${it.points[P.src]}". What the article says about this part:\n${factsOf(it)}\nThey ask: "${q}". Answer in at most 2 short sentences, in plain words a beginner understands. If it's off topic, gently say so. Reply as JSON: {"a":"..."}`); if (r && r.a) a = String(r.a); } catch (e) {}
+  }
+  if (!a) {
+    // No Claude: the closest thing Kube already knows.
+    const all = []; T.ideas.forEach((x) => x.holes.forEach((h) => all.push([h.q + " " + h.a, h.a]))); Object.entries(T.terms || {}).forEach(([w, d]) => all.push([w + " " + w + " " + d, `${w}: ${d}`]));
+    const best = all.map(([key, ans]) => [vScore(q, key), ans]).sort((x, y) => y[0] - x[0])[0];
+    a = best && best[0] >= 0.15 ? best[1] : "I can only answer questions I already know right now. Connect Claude at the top and I can answer anything.";
+  }
+  m.a = a; if (SC === P) { P.scrollTo = true; P.render(); if (voiceOn) say(a); }
 }
 
 // ---------- v57: Read vs Understood, and Kube inviting a click ----------
