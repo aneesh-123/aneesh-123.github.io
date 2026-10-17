@@ -811,7 +811,7 @@ body.focus-on .art-end{opacity:.3;transition:opacity .35s}
     <button type="button" class="sig-head" id="sig-toggle" aria-expanded="true"><span class="eyebrow" id="sig-label">Show live signals</span><span class="sig-x">+</span></button>
     <div class="sig-body" id="sig-body"></div>
   </aside>
-  <div class="version">v62 · Learn anything</div>
+  <div class="version">v63 · Learn anything</div>
 </div>
 
 <!-- Results -->
@@ -1460,6 +1460,7 @@ TOPICS.push({
   TOPICS.forEach((t) => { if (TERMS[t.id]) t.terms = TERMS[t.id]; });
 }
 
+// v63 (on v62): the question list shows in the middle every time you start with Kube, not only on this browser's first visit to that topic.
 // v62 (on v61): the "Show me" box branches off its bullet like a node on a graph (joined by a curved line, to the right of
 //   the article, else the left, else inline on narrow screens) and folds back into the bullet when done (Got it, ×, Esc,
 //   clicking elsewhere, or scrolling away); the bullet keeps a small dot.
@@ -1595,7 +1596,8 @@ function beginLearning(route) {
   Object.assign(R, { secs: T.ideas.map(() => 0), backs: T.ideas.map(() => 0), cur: -1, maxSeen: -1, reachedEnd: false, notes: 0 });
   if (route === "kube") {
     const go = () => openArticle(); // v50: always start fresh on the article; answers stay remembered
-    if (!ST.listShown) { ST.listShown = true; persist(); showView("map"); listIntro(go); } else go();
+    // v63: the list shows every visit, not just the first one on this browser (it was skipped after a topic had been opened once)
+    showView("map"); listIntro(go);
   } else { ST.order = null; showView("map"); goIdea(testing() ? 0 : ST.idx || 0); }
 }
 // The list first appears in the middle, then shrinks into the "Your list" button, with a quick tip next to it.
